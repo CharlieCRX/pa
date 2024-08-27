@@ -49,7 +49,7 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
-  return NEMU_QUIT;
+  return NEMU_END;
 }
 
 static int cmd_help(char *args);
