@@ -48,8 +48,8 @@ static int cmd_c(char *args) {
 }
 
 
-uint64_t get_steps_from_args(char *str) {
-	char *num = strtok(str, " ");
+uint64_t get_steps_from_args() {
+	char *num = strtok(NULL, " ");
 	
   /* no argument given */
 	if (num == NULL) {
@@ -78,7 +78,7 @@ uint64_t get_steps_from_args(char *str) {
 			
 static int cmd_step(char *args) {
 	/* get the num of steps from args*/
-	uint64_t n = get_steps_from_args(args);
+	uint64_t n = get_steps_from_args();
 	cpu_exec(n);
 	return 0;
 }
