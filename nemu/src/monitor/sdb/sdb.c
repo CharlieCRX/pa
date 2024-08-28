@@ -48,6 +48,43 @@ static int cmd_c(char *args) {
 }
 
 
+uint64_t get_steps_from_args(char *str) {
+	char *num = strtok(str, " ");
+	
+  /* no argument given */
+	if (num == NULL) {
+		return 1;
+	} 
+
+	uint64_t result = 0;
+	int i = 0;
+
+	/* Loop through the string*/
+	while(num[i] != '\0') {
+		// Check if the character is a digit (0-9)
+		if (num[i] >= '0' && num[i] <= '9') {
+			result = result * 10 + (num[i] - '0');
+		} else {
+			//Return 1 if a non-digit character is found
+			return 1;
+		}
+		
+		i++;
+	}
+
+	return result;
+}
+
+			
+static int cmd_step(char *args) {
+	/* get the num of steps from args*/
+	uint64_t n = get_steps_from_args(args);
+	cpu_exec(n);
+	return 0;
+}
+
+
+
 static int cmd_q(char *args) {
 	nemu_state.state = NEMU_QUIT;
   return -1;
@@ -63,7 +100,7 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+	{ "si", "Executes n steps in the program", cmd_step},
   /* TODO: Add more commands */
 
 };
