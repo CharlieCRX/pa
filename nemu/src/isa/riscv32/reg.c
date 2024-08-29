@@ -16,7 +16,6 @@
 #include <isa.h>
 #include "local-include/reg.h"
 
-#define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -24,6 +23,7 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+#define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 void isa_reg_display() {
 	for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
 		if (gpr(i) == 0) {
