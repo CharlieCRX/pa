@@ -134,7 +134,11 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_info(char *args) {
-	isa_reg_display();
+	char *arg = strtok(NULL, " ");
+
+	if (arg == NULL || strcmp(arg, "r") == 0) {
+		isa_reg_display();
+	}
 	return 0;
 }
 
