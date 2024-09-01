@@ -42,6 +42,11 @@ static char* rl_gets() {
   return line_read;
 }
 
+/*
+	Input: string
+	output: if str is not a num string, return 0
+					else return the real num value of the string
+*/
 static int string_to_num(char *str) {
 	int i = 0;
 	int result = 0;
