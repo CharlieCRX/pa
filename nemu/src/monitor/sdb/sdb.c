@@ -42,16 +42,16 @@ static char* rl_gets() {
   return line_read;
 }
 
-static int string_to_num(char *num) {
+static int string_to_num(char *str) {
 	int i = 0;
 	int result = 0;
 	/* Loop through the string*/
-	while(num[i] != '\0') {
+	while(str[i] != '\0') {
 		// Check if the character is a digit (0-9)
-		if (num[i] >= '0' && num[i] <= '9') {
-			result = result * 10 + (num[i] - '0');
+		if (str[i] >= '0' && str[i] <= '9') {
+			result = result * 10 + (str[i] - '0');
 		} else {
-			printf("%s is not a num!\n", num);
+			printf("Warning: %s is not a num!\n", str);
 			return 0;
 		}
 		
