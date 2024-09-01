@@ -196,6 +196,7 @@ static int cmd_scan_memory(char *args) {
 		printf("Invalid address!\n");
 		return 0;
 	}
+	printf("CONFIG_MSIZE IS 0x%08x\n", CONFIG_MSIZE);
 
 	printf("now NEMU will printf from 0x%08x and %d lines 4bytes per line data\n", addr_hex, lines);
 	return 0;
