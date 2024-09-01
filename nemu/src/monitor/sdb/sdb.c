@@ -192,11 +192,11 @@ static int cmd_scan_memory(char *args) {
 	int lines = string_to_num(lines_str); //1,2,3...N
 	paddr_t addr_hex = hex_string_to_paddr(addr_str);
 
-	if (addr_hex < CONFIG_MSIZE) {
+	if (addr_hex < CONFIG_MBASE) {
 		printf("Invalid address!\n");
 		return 0;
 	}
-	printf("CONFIG_MSIZE IS 0x%08x\n", CONFIG_MSIZE);
+	printf("CONFIG_MBASE IS 0x%08x\n", CONFIG_MBASE);
 
 	printf("now NEMU will printf from 0x%08x and %d lines 4bytes per line data\n", addr_hex, lines);
 	return 0;
