@@ -42,6 +42,31 @@ static char* rl_gets() {
   return line_read;
 }
 
+static int string_to_num(char *num) {
+	int i = 0;
+	int result = 0;
+	/* Loop through the string*/
+	while(num[i] != '\0') {
+		// Check if the character is a digit (0-9)
+		if (num[i] >= '0' && num[i] <= '9') {
+			result = result * 10 + (num[i] - '0');
+		} else {
+			printf("%s is not a num!\n", num);
+			return 0;
+		}
+		
+		i++;
+	}
+	return result;
+}
+
+paddr_t hex_string_to_paddr(const char* hex_str) {
+	paddr_t result = 0;
+	sscanf(hex_str, "%x", &result);
+	return result;
+}
+
+
 static int cmd_c(char *args) {
   cpu_exec(-1);
   return 0;
@@ -94,6 +119,8 @@ static int cmd_help(char *args);
 
 static int cmd_info(char *args);
 
+static int cmd_scan_memory(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -104,6 +131,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 	{ "si", "Executes n steps in the program", cmd_step},
 	{ "info", "Prints the current infomation of registers or watchpoints", cmd_info},
+	{ "x", "Scans memory starting from a given address and outputs N consecutive 4-byte values.", cmd_scan_memory},
   /* TODO: Add more commands */
 
 };
@@ -142,6 +170,33 @@ static int cmd_info(char *args) {
 	}
 	return 0;
 }
+
+static int cmd_scan_memory(char *args) {
+	char *lines_str = strtok(NULL, " ");
+	if (lines_str == NULL) {
+		printf("Please input N!\n");
+		return 0;
+	}
+
+	char *addr_str = strtok(NULL, " ");
+	if (addr_str == NULL) {
+		printf("Please input address!\n");
+		return 0;
+	}
+
+	int lines = string_to_num(lines_str); //1,2,3...N
+	paddr_t addr_hex = hex_string_to_paddr(addr_str);
+
+	if (addr_hex < CONFIG_MSIZE) {
+		printf("Invalid address!\n");
+		return 0;
+	}
+
+	printf("now NEMU will printf from 0x%08x and %d lines 4bytes per line data\n", addr_hex, lines);
+	return 0;
+
+}
+
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;
