@@ -196,11 +196,14 @@ static int cmd_scan_memory(char *args) {
 		printf("Invalid address!\n");
 		return 0;
 	}
-	printf("CONFIG_MBASE IS 0x%08x\n", CONFIG_MBASE);
 
-	printf("now NEMU will printf from 0x%08x and %d lines 4bytes per line data\n", addr_hex, lines);
+	for (int i = 0; i < lines; i++) {
+		for (int j = 0; j < 4; j++) {
+			//4 bytes per line
+		}
+		printf("\n");
+	}
 	return 0;
-
 }
 
 
