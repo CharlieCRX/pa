@@ -200,7 +200,7 @@ static int cmd_scan_memory(char *args) {
 	for (int i = 0; i < lines; i++) {
 		printf(FMT_WORD ":", addr_hex + i*4);
 		for (int j = 0; j < 4; j++) {
-			word_t data = vaddr_read(addr_hex, 4);
+			uint8_t data = vaddr_read(addr_hex + j, 1);
 			//4 bytes per line
 			//uint8_t data = *addr_hex;
 			printf(" %08x", data);
