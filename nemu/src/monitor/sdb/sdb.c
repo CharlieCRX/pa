@@ -65,8 +65,8 @@ static int string_to_num(char *str) {
 	return result;
 }
 
-paddr_t hex_string_to_paddr(const char* hex_str) {
-	paddr_t result = 0;
+vaddr_t hex_string_to_vaddr(const char* hex_str) {
+	vaddr_t result = 0;
 	sscanf(hex_str, "%x", &result);
 	return result;
 }
@@ -190,7 +190,7 @@ static int cmd_scan_memory(char *args) {
 	}
 
 	int lines = string_to_num(lines_str); //1,2,3...N
-	paddr_t addr_hex = hex_string_to_paddr(addr_str);
+	vaddr_t addr_hex = hex_string_to_vaddr(addr_str);
 
 	if (addr_hex < CONFIG_MBASE) {
 		printf("Invalid address!\n");
@@ -198,8 +198,11 @@ static int cmd_scan_memory(char *args) {
 	}
 
 	for (int i = 0; i < lines; i++) {
+		printf(FMT_WORD ":", addr_hex + i*4);
 		for (int j = 0; j < 4; j++) {
 			//4 bytes per line
+			//uint8_t data = *addr_hex;
+			//printf(" %02x", data);
 		}
 		printf("\n");
 	}
