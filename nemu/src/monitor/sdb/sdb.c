@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include "memory/vaddr.h"
 static int is_batch_mode = false;
 
 void init_regex();
@@ -200,9 +200,10 @@ static int cmd_scan_memory(char *args) {
 	for (int i = 0; i < lines; i++) {
 		printf(FMT_WORD ":", addr_hex + i*4);
 		for (int j = 0; j < 4; j++) {
+			word_t data = vaddr_read(addr_hex, 8);
 			//4 bytes per line
 			//uint8_t data = *addr_hex;
-			//printf(" %02x", data);
+			printf(" %08x", data);
 		}
 		printf("\n");
 	}
