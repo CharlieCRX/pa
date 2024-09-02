@@ -203,7 +203,7 @@ static int cmd_scan_memory(char *args) {
 			uint8_t data = vaddr_read(addr_hex + 4*i + j, 1);
 			//4 bytes per line
 			//uint8_t data = *addr_hex;
-			printf(" %08x", data);
+			printf(" %02x", data);
 		}
 		printf("\n");
 	}
