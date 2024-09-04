@@ -20,10 +20,12 @@
  */
 #include <regex.h>
 #else
+#include <assert.h>
 #include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #endif
 enum {
   TK_NOTYPE = 256, 
@@ -48,11 +50,15 @@ static struct rule {
   {"\\+", '+'},         // plus
 	{"\\-", '-'},					// sub
   {"==", TK_EQ},        // equal
-	{"\\d+", TK_NUM}, // integer
+	{"[0-9]+", TK_NUM}, // integer
 };
-
+#ifndef TEST
 #define NR_REGEX ARRLEN(rules)
-
+#else
+#define NR_REGEX 9
+#define Log printf
+#define panic printf
+#endif
 static regex_t re[NR_REGEX] = {};
 
 /* Rules are used for many times.
@@ -70,6 +76,9 @@ void init_regex() {
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
   }
+	#ifdef TEST
+	printf("rules[8].regex = %s\n",rules[8].regex);
+	#endif
 }
 
 typedef struct token {
@@ -96,7 +105,9 @@ static bool make_token(char *e) {
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
+				#ifdef TEST
+				printf("\n");
+				#endif
         position += substr_len;
 
 				switch (rules[i].token_type) {
@@ -110,6 +121,9 @@ static bool make_token(char *e) {
           default: 
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						tokens[nr_token].type = rules[i].token_type;
+#ifdef TEST
+						printf("str = %s\n", substr_start);
+#endif
 						break;
         }
 
@@ -126,7 +140,7 @@ static bool make_token(char *e) {
   return true;
 }
 
-
+#ifndef TEST
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -138,3 +152,12 @@ word_t expr(char *e, bool *success) {
 
   return 0;
 }
+#endif
+
+#ifdef TEST
+int main() {
+	init_regex();
+	assert(make_token("12345678901234567890123456789012"));
+	return 0;
+}
+#endif
