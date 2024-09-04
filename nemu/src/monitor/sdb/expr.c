@@ -12,20 +12,25 @@
 *
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
-
+#ifndef TEST
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-
+#else
+#include <regex.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#endif
 enum {
   TK_NOTYPE = 256, 
 	TK_EQ,
 	TK_LEFT_BRACKET,
 	TK_RIGHT_BRACKET,
-	TK_INTEGER,
+	TK_NUM,
 
   /* TODO: Add more token types */
 
@@ -35,10 +40,6 @@ static struct rule {
   const char *regex;
   int token_type;
 } rules[] = {
-
-  /* TODO: Add more rules.
-   * Pay attention to the precedence level of different rules.
-   */
 	{"\\(", TK_LEFT_BRACKET},
 	{"\\)", TK_RIGHT_BRACKET},
   {" +", TK_NOTYPE},    // spaces
@@ -47,7 +48,7 @@ static struct rule {
   {"\\+", '+'},         // plus
 	{"\\-", '-'},					// sub
   {"==", TK_EQ},        // equal
-	{"\\d+", TK_INTEGER}, // integer
+	{"\\d+", TK_NUM}, // integer
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -98,13 +99,18 @@ static bool make_token(char *e) {
 
         position += substr_len;
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-
-        switch (rules[i].token_type) {
-          default: TODO();
+				switch (rules[i].token_type) {
+					case TK_NOTYPE:
+						break;
+					case TK_NUM:
+						if(substr_len > 31)	{
+							substr_start = "-1";
+							substr_len = 2;
+						}
+          default: 
+						strncpy(tokens[nr_token].str, substr_start, substr_len);
+						tokens[nr_token].type = rules[i].token_type;
+						break;
         }
 
         break;
