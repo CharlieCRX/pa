@@ -113,19 +113,18 @@ static bool make_token(char *e) {
 				switch (rules[i].token_type) {
 					case TK_NOTYPE:
 						break;
-					case TK_NUM:
-						if(substr_len > 31)	{
-							substr_start = "-1";
-							substr_len = 2;
+          default:
+						if(substr_len > 31) {
+							substr_len = 31;
 						}
-          default: 
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 						tokens[nr_token].type = rules[i].token_type;
 #ifdef TEST
-						printf("str = %s\n", tokens[nr_token].str);
+						printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
 #endif
 						break;
         }
+				nr_token += 1;
 
         break;
       }
@@ -157,7 +156,8 @@ word_t expr(char *e, bool *success) {
 #ifdef TEST
 int main() {
 	init_regex();
-	assert(make_token("12345678901234567890123456789012"));
+	assert(make_token("(123+789-323)"));
+	//assert(make_token("(+-*///**++---)"));
 	return 0;
 }
 #endif
