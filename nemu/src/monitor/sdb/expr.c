@@ -134,6 +134,14 @@ static bool make_token(char *e) {
   return true;
 }
 
+/*
+* Function: print_tokens
+* Description: Outputs the elements of the 'tokens' array within the specified range.
+* Parameters:
+* - p: The starting index (inclusive) for output. can start from 0.
+* - q: The ending index (exclusive) for output. 
+*			q should be less than or equal to the length of the 'tokens' array.
+*/
 void print_tokens(int p, int q) {
 	for(int i = p; i <= q; i++) {
 		if(tokens[i].type == TK_NUM) {
