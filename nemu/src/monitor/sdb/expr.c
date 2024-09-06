@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
 #endif
 enum {
   TK_NOTYPE = 256, 
@@ -196,6 +197,106 @@ bool check_parentheses(int p,int q) {
 	}
 	return true;
 }
+/* 
+* Description: Retrieves the main operator location from an expression.
+*	The main operator is typically the one 
+*	with the lowest precedence that determines the structure of the 
+*	expression.
+*/
+int locate_main_operator(int p, int q) {
+	int location = -1;
+	for (int i = p; i <= q; i++) {
+		// 1. Skip the operator if it is surrounded by parentheses `()`.
+		if (tokens[i].type == '(') {
+			while(tokens[i].type != ')') {
+				i++;
+				// no matches right brancket
+				if (i > q) assert(0);
+			}
+		}
+		// 2. Replace the recorded operator if the next operator is `+` or `-`.
+		else if (tokens[i].type == '+' || tokens[i].type == '-') {
+			location = i;
+		}
+		// 3. If both the recorded and next operators are `*` or `/`, update the recorded operator. 
+		// If the location is uninitialized, update the record operator, too.
+		else if (tokens[i].type == '*' || tokens[i].type == '/') {
+			// Uninitialized location
+			if (location == -1) {
+				location = i;
+			}
+			else if (tokens[location].type == '*' || tokens[location].type == '/') {
+				location = i;
+			}
+		}
+	}
+	assert(location == -1);
+	return location;
+}
+
+static uint32_t string_to_num(char *str) {
+	int i = 0;
+	uint32_t result = 0;
+
+	while(str[i] != '\0') {
+		if(str[i] >= '0' && str[i] <= '9') {
+			result = 10 * result + (str[i] - '0');
+		}
+		else{
+			return 0;
+		}
+		i++;
+	}
+	return result;
+}
+
+
+uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
+	switch (op_type) {
+		case '+': return val1 + val2;
+		case '-': return val1 - val2;
+		case '*': return val1 * val2;
+		case '/': return val1 / val2;
+		default: assert(0);
+	}
+	return 0;
+}
+
+/*
+*	Function: uint32_t eval(int p,int q)
+* Description:Evaluates the value of an expression represented by tokens.
+*
+* Parameters:
+*   p - the starting index of the expression in the tokens array.
+*   q - the ending index of the expression in the tokens array.
+*
+* Returns:
+*   The computed value of the expression as a 32-bit unsigned integer (uint32_t).
+*/
+uint32_t eval(int p, int q) {
+	if(p > q) {
+		//Bad expression
+		assert(0);
+	} 
+	else if (p == q) {
+		return string_to_num(tokens[p].str);
+	} 
+	else if (check_parentheses(p, q) == true) {	
+		return eval(p + 1, q -1);
+	} 
+	else {
+		int operator_position = locate_main_operator(p, q);
+		uint32_t val1 = eval(p , operator_position - 1);
+		uint32_t val2 = eval(operator_position + 1, q);
+
+		uint32_t result = calc_apply(tokens[operator_position].type, val1, val2);
+
+		return result;
+
+	}
+}
+
+
 
 
 #ifndef TEST
