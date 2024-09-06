@@ -30,8 +30,6 @@
 enum {
   TK_NOTYPE = 256, 
 	TK_EQ,
-	TK_LEFT_BRACKET,
-	TK_RIGHT_BRACKET,
 	TK_NUM,
 };
 
@@ -39,8 +37,8 @@ static struct rule {
   const char *regex;
   int token_type;
 } rules[] = {
-	{"\\(", TK_LEFT_BRACKET},
-	{"\\)", TK_RIGHT_BRACKET},
+	{"\\(", '('},
+	{"\\)", ')'},
   {" +", TK_NOTYPE},    // spaces
 	{"\\*", '*'},					// multi
 	{"\\/", '/'},					// div
@@ -73,9 +71,6 @@ void init_regex() {
       panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
   }
-	#ifdef TEST
-	printf("rules[8].regex = %s\n",rules[8].regex);
-	#endif
 }
 
 typedef struct token {
@@ -142,9 +137,9 @@ static bool make_token(char *e) {
 void print_tokens(int p, int q) {
 	for(int i = p; i <= q; i++) {
 		if(tokens[i].type == TK_NUM) {
-			printf("%s ", tokens[i].str);
+			printf("%s", tokens[i].str);
 		} else {
-			printf("%c ", tokens[i].type);
+			printf("%c", tokens[i].type);
 		}
 	}
 	printf("\n");
@@ -163,25 +158,24 @@ void print_tokens(int p, int q) {
 */
 bool check_parentheses(int p,int q) {
 	// 1. Check if the tokens at positions 'p' and 'q' are '(' and ')' respectively.
-	if(tokens[p].type == TK_LEFT_BRACKET && tokens[q].type == TK_RIGHT_BRACKET) {
+	if(tokens[p].type == '('&& tokens[q].type == ')') {
 		p = p + 1;
 		q = q - 1;
 	} else {
 		return false;
 	}
+	print_tokens(p, q);
 	// 2. For the inner expression (i.e., the tokens between 'p+1' and 'q-1'), 
 	// verify that all parentheses are correctly matched.
 	int left_brackets_num = 0;
 
 	for (int i = p; i < q && left_brackets_num >= 0; i++) {
-		if(tokens[i].type == TK_LEFT_BRACKET) {
+		if(tokens[i].type == '(') {
 			left_brackets_num += 1;
-			printf("left + 1i\n");
 		}
 
-		if(tokens[i].type == TK_RIGHT_BRACKET) {
+		if(tokens[i].type == ')') {
 			left_brackets_num -= 1;
-			printf("left - 1\n");
 		}
 	}
 	/*
@@ -213,11 +207,8 @@ void test_check_parentheses() {
 	nr_token = 0;
 	//char *str = "(123 + 456 +12)";
 	//char *str = "()";
-	char *str = "(+-+-*/+-)";
+	char *str = "()(-)";
 	make_token(str);
-	print_tokens(0, nr_token - 1);
-	assert(tokens[0].type == TK_LEFT_BRACKET);
-	assert(tokens[nr_token - 1].type == TK_RIGHT_BRACKET);
 	assert(check_parentheses(0, nr_token -1));
 	printf("check ok!\n");
 }
