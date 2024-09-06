@@ -120,7 +120,7 @@ static bool make_token(char *e) {
           default:
 						tokens[nr_token].type = rules[i].token_type;
 #ifdef TEST
-						printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
+						//printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
 #endif
 						break;
         }
@@ -138,6 +138,19 @@ static bool make_token(char *e) {
 
   return true;
 }
+
+void print_tokens(int p, int q) {
+	for(int i = p; i <= q; i++) {
+		if(tokens[i].type == TK_NUM) {
+			printf("%s ", tokens[i].str);
+		} else {
+			printf("%c ", tokens[i].type);
+		}
+	}
+	printf("\n");
+}
+	
+
 
 /*
  * check_parentheses - Check if the token array is a parenthesized expression.
@@ -163,16 +176,18 @@ bool check_parentheses(int p,int q) {
 	for (int i = p; i < q && left_brackets_num >= 0; i++) {
 		if(tokens[i].type == TK_LEFT_BRACKET) {
 			left_brackets_num += 1;
+			printf("left + 1i\n");
 		}
 
 		if(tokens[i].type == TK_RIGHT_BRACKET) {
 			left_brackets_num -= 1;
+			printf("left - 1\n");
 		}
 	}
 	/*
-	 * If num is greater than 0, it indicates there are extra left parentheses '('
+	 * If left_brackets_num is greater than 0, it indicates there are extra left parentheses '('
 	 * that cannot be matched with corresponding right parentheses.
-	 * If num is less than 0, it indicates there are extra right parentheses ')'.
+	 * If left_brackets_num is less than 0, it indicates there are extra right parentheses ')'.
 	 */
 	if (left_brackets_num != 0) {
 		return false;
@@ -194,10 +209,16 @@ word_t expr(char *e, bool *success) {
 
 #ifdef TEST
 void test_check_parentheses() {
-	tokens[32] = {};
-	char *str = "(123 + 456 +12)";
+	memset(tokens, 0, sizeof(tokens));
+	nr_token = 0;
+	//char *str = "(123 + 456 +12)";
+	//char *str = "()";
+	char *str = "(+-+-*/+-)";
 	make_token(str);
-	assert(check_parentheses(0, sizeof(str)-1));
+	print_tokens(0, nr_token - 1);
+	assert(tokens[0].type == TK_LEFT_BRACKET);
+	assert(tokens[nr_token - 1].type == TK_RIGHT_BRACKET);
+	assert(check_parentheses(0, nr_token -1));
 	printf("check ok!\n");
 }
 
