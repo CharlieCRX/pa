@@ -198,6 +198,7 @@ bool check_parentheses(int p,int q) {
 	return true;
 }
 /* 
+* int locate_main_operator(int p, int q)
 * Description: Retrieves the main operator location from an expression.
 *	The main operator is typically the one 
 *	with the lowest precedence that determines the structure of the 
@@ -209,13 +210,18 @@ int locate_main_operator(int p, int q) {
 		// 1. Skip the operator if it is surrounded by parentheses `()`.
 		if (tokens[i].type == '(') {
 			while(tokens[i].type != ')') {
-				i++;
-				// no matches right brancket
-				if (i > q) assert(0);
+					i++;
+					// no matches right brancket
+					if (i > q) assert(0);
 			}
 		}
 		// 2. Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
+			// "--1" and "1-1-1"
+			// Two consecutive negative signs,choose the first one as the main operator
+			if(location != -1 && (location == i - 1) && tokens[location].type == '-')  {
+				continue;
+			}
 			location = i;
 		}
 		// 3. If both the recorded and next operators are `*` or `/`, update the recorded operator. 
@@ -225,15 +231,18 @@ int locate_main_operator(int p, int q) {
 			if (location == -1) {
 				location = i;
 			}
+			// Also replaces if the previous operator has the same precedence
 			else if (tokens[location].type == '*' || tokens[location].type == '/') {
 				location = i;
 			}
 		}
 	}
-	assert(location == -1);
+	printf("tokens[%d].type = %c\n",location, tokens[location].type);
+	assert(location != -1);
 	return location;
 }
 
+//str to num, if not num, return 0
 static uint32_t string_to_num(char *str) {
 	int i = 0;
 	uint32_t result = 0;
@@ -275,7 +284,11 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 */
 uint32_t eval(int p, int q) {
 	if(p > q) {
-		//Bad expression
+		// Negative number
+		if (tokens[p].type == '-'){
+			return 0;
+		}
+		// Bad expression
 		assert(0);
 	} 
 	else if (p == q) {
@@ -316,17 +329,37 @@ void test_check_parentheses() {
 	nr_token = 0;
 	//char *str = "(123 + 456 +12)";
 	//char *str = "()";
-	char *str = "()(-)";
+	char *str = "(1239991()-)";
 	make_token(str);
 	assert(check_parentheses(0, nr_token -1));
 	printf("check ok!\n");
 }
 
+void test_locate_operator(){
+	memset(tokens, 0, sizeof(tokens));
+	nr_token = 0;
+	char *str = "(1+(3-5)/3*2";
+	make_token(str);
+	int i = locate_main_operator(0, nr_token-1);
+	assert(tokens[i].type == '*');
+	printf("locate main operator is ok!\n");
+}
+
+void test_eval(){
+	memset(tokens, 0, sizeof(tokens));
+	nr_token = 0;
+	char *str = "1--4";
+	make_token(str);
+	assert(eval(0, nr_token - 1) == 5);
+	printf("eval test ok!\n");
+}
 int main() {
 	init_regex();
 	//assert(make_token("(123+789-323)"));
 	//assert(make_token("(+-*///**++---)"));
-	test_check_parentheses();
+	//test_check_parentheses();
+	//test_locate_operator();
+	test_eval();
 	return 0;
 }
 #endif
