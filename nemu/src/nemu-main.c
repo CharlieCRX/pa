@@ -27,7 +27,7 @@ int is_exit_status_bad();
  * expression (expr) and compares the evaluated result with the expected value (result).
  */
 void test_gen_expr() {
-	printf("***** Now test expr()! ********\n*");
+	printf("***** Now test expr()! *********\n");
 	// 1. Read the test file into the buffer `buf`
 	FILE *fp = fopen("/home/crx/study/ics2023/nemu/tools/gen-expr/input", "r");
 	if (fp == NULL) {
