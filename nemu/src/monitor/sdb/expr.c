@@ -322,8 +322,7 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
 
-	word_t result = (word_t) eval(0, nr_token - 1);
-  return result;
+  return 0;
 }
 #endif
 
