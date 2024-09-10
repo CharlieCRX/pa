@@ -265,7 +265,10 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 		case '+': return val1 + val2;
 		case '-': return val1 - val2;
 		case '*': return val1 * val2;
-		case '/': return val1 / val2;
+		case '/':
+			if(val2 != 0) {
+				return val1 / val2;
+			}
 		default: assert(0);
 	}
 	return 0;
