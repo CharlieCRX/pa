@@ -54,7 +54,6 @@ void test_gen_expr() {
 }
 
 int main(int argc, char *argv[]) {
-	test_gen_expr();
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
@@ -62,6 +61,7 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 
+	test_gen_expr();
   /* Start engine. */
   engine_start();
 
