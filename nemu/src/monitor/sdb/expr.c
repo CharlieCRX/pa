@@ -174,7 +174,7 @@ bool check_parentheses(int p,int q) {
 	} else {
 		return false;
 	}
-	print_tokens(p, q);
+	//print_tokens(p, q);
 	// 2. For the inner expression (i.e., the tokens between 'p+1' and 'q-1'), 
 	// verify that all parentheses are correctly matched.
 	int left_brackets_num = 0;
