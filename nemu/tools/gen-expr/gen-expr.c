@@ -37,15 +37,21 @@ uint32_t choose(uint32_t n) {
 	return num;
 }
 
+void write_to_buf(char *source) {
+	if (strlen(buf) + strlen(source) < sizeof(buf) - 100){
+		strcat(buf, source);
+	}
+}
+		
 void gen_num() {
-	int rand_num = rand() % 1000;
+	int rand_num = rand() % 100;
 	sprintf(temp, "%d", rand_num);
 	strcat(buf, temp);
 }
 
 void gen(const char ch) {
 	sprintf(temp, "%c", ch);
-	strcat(buf, temp);
+	write_to_buf(temp);
 }
 
 void gen_rand_op() {
@@ -54,6 +60,7 @@ void gen_rand_op() {
 	gen(op[valid_rand_num]);
 }
 
+
 static void gen_rand_expr() {
 	switch(choose(3)) {
 		case 0: gen_num(); break;
@@ -61,7 +68,7 @@ static void gen_rand_expr() {
 		case 2: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
 	}
 }
-
+#ifndef TEST
 int main(int argc, char *argv[]) {
   int seed = time(0);
   srand(seed);
@@ -71,6 +78,7 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+		buf[0] = '\0';
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -94,3 +102,19 @@ int main(int argc, char *argv[]) {
   }
   return 0;
 }
+#endif
+
+#ifdef TEST
+void test_get_opt() {
+	for(int i = 0; i < 100; i++) {
+		gen_rand_op();
+		printf("buf[%d] = %c\n", i, buf[i]);
+	}
+	printf("\n");
+}
+
+int main() {
+	test_get_opt();
+	return 0;
+}
+#endif
