@@ -198,6 +198,23 @@ bool check_parentheses(int p,int q) {
 	}
 	return true;
 }
+
+/**
+ * @function find_corresponding_right_bracket_position()
+ * @brief Finds the corresponding right bracket position in a tokens array.
+ * 
+ * This function takes the start position `p` in the tokens array, where `p` points to a left parenthesis `(`,
+ * and the end position `q`. It then searches for the matching right parenthesis `)` within the range of the tokens array.
+ * 
+ * @param p The starting position in the tokens array, which points to a left parenthesis `(`.
+ * @param q The ending position in the tokens array.
+ * @return The position of the corresponding right parenthesis `)` if found.
+ *         If no matching right parenthesis is found, the function returns -1.
+ */
+int find_corresponding_right_bracket_position(int p, int q) {
+	int position = -1;
+	return position;
+}
 /* 
 * int locate_main_operator(int p, int q)
 * Description: Retrieves the main operator location from an expression.
@@ -210,11 +227,10 @@ int locate_main_operator(int p, int q) {
 	for (int i = p; i <= q; i++) {
 		// 1. Skip the operator if it is surrounded by parentheses `()`.
 		if (tokens[i].type == '(') {
-			while(tokens[i].type != ')') {
-					i++;
-					// no matches right brancket
-					if (i > q) assert(0);
-			}
+			// Find the corresponding ')'
+			int corresponding_bracket_index = find_corresponding_right_bracket_position(i, q);
+			if (corresponding_bracket_index == -1) assert(0);
+			i = corresponding_bracket_index;
 		}
 		// 2. Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
@@ -238,7 +254,7 @@ int locate_main_operator(int p, int q) {
 			}
 		}
 	}
-	//printf("tokens[%d].type = %c\n",location, tokens[location].type);
+	printf("tokens[%d].type = %c\n",location, tokens[location].type);
 	assert(location != -1);
 	return location;
 }
@@ -342,19 +358,19 @@ void test_check_parentheses() {
 void test_locate_operator(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "(1+(3-5)/3*2";
+	char *str = "72-(36)/((76))";
 	make_token(str);
 	int i = locate_main_operator(0, nr_token-1);
-	assert(tokens[i].type == '*');
+	assert(tokens[i].type == '-');
 	printf("locate main operator is ok!\n");
 }
 
 void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "1--4";
+	char *str = "72-(36)/((76))";
 	make_token(str);
-	assert(eval(0, nr_token - 1) == 5);
+	assert(eval(0, nr_token - 1) == 72);
 	printf("eval test ok!\n");
 }
 int main() {
