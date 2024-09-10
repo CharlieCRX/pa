@@ -54,9 +54,7 @@ void test_gen_expr() {
 }
 
 int main(int argc, char *argv[]) {
-#ifdef TEST 
 	test_gen_expr();
-#endif
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
