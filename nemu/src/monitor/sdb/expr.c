@@ -253,7 +253,7 @@ int locate_main_operator(int p, int q) {
 			int corresponding_bracket_index = find_corresponding_right_bracket_position(i, q);
 			if (corresponding_bracket_index == -1) assert(0);
 			i = corresponding_bracket_index;
-			printf("corresponding right bracket index is %d\n", i);
+			//printf("corresponding right bracket index is %d\n", i);
 		}
 		// 2. Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
