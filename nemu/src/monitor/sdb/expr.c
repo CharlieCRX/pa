@@ -351,7 +351,7 @@ uint32_t eval(int p, int q) {
 
 		uint32_t result = calc_apply(tokens[operator_position].type, val1, val2);
 
-		printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
+		//printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
 		return result;
 
 	}
