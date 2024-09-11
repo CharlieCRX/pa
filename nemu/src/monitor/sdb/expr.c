@@ -100,7 +100,7 @@ static bool make_token(char *e) {
         //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				#ifdef TEST
-				printf("\n");
+				//printf("\n");
 				#endif
         position += substr_len;
 
@@ -167,7 +167,7 @@ void print_tokens(int p, int q) {
  * parenthesized expression, the function returns true. Otherwise, it returns false.
 */
 bool check_parentheses(int p,int q) {
-	printf("start check parenthess!**************\n");
+	//printf("start check parenthess!**************\n");
 	// 1. Check if the tokens at positions 'p' and 'q' are '(' and ')' respectively.
 	if(tokens[p].type == '('&& tokens[q].type == ')') {
 		p = p + 1;
@@ -175,7 +175,7 @@ bool check_parentheses(int p,int q) {
 	} else {
 		return false;
 	}
-	print_tokens(p, q);
+	//print_tokens(p, q);
 	// 2. For the inner expression (i.e., the tokens between 'p+1' and 'q-1'), 
 	// verify that all parentheses are correctly matched.
 	int left_brackets_num = 0;
@@ -194,7 +194,7 @@ bool check_parentheses(int p,int q) {
 	 * that cannot be matched with corresponding right parentheses.
 	 * If left_brackets_num is less than 0, it indicates there are extra right parentheses ')'.
 	 */
-	printf("check paren now left brackets is %d\n", left_brackets_num);
+	//printf("check paren now left brackets is %d\n", left_brackets_num);
 	if (left_brackets_num != 0) {
 		return false;
 	}
@@ -214,18 +214,18 @@ bool check_parentheses(int p,int q) {
  *         If no matching right parenthesis is found, the function returns -1.
  */
 int find_corresponding_right_bracket_position(int p, int q) {
-	print_tokens(p, q);
+	//print_tokens(p, q);
 	int position = -1;
 	int left_brackets_num = 0;
 
 	for (int i = p; i <= q; i++) {
 		if(tokens[i].type == '(') {
 			left_brackets_num += 1;
-			printf("%c index is  %d\n",tokens[i].type, i);
+			//printf("%c index is  %d\n",tokens[i].type, i);
 		} 
 		else if (tokens[i].type == ')') {
 			left_brackets_num -= 1;
-			printf("%c index is  %d\n",tokens[i].type, i);
+			//printf("%c index is  %d\n",tokens[i].type, i);
 		}
 
 		if (left_brackets_num == 0) {
@@ -243,8 +243,8 @@ int find_corresponding_right_bracket_position(int p, int q) {
 *	expression.
 */
 int locate_main_operator(int p, int q) {
-	printf("************START:locate_main_operator*********************\n");
-	print_tokens(p, q);
+	//printf("************START:locate_main_operator*********************\n");
+	//print_tokens(p, q);
 	int location = -1;
 	for (int i = p; i <= q; i++) {
 		// 1. Skip the operator if it is surrounded by parentheses `()`.
@@ -277,9 +277,9 @@ int locate_main_operator(int p, int q) {
 			}
 		}
 	}
-	printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
+	//printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
 	assert(location != -1);
-	printf("locate main operator is over now!\n\n");
+	//printf("locate main operator is over now!\n\n");
 	return location;
 }
 
@@ -327,7 +327,7 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 *   The computed value of the expression as a 32-bit unsigned integer (uint32_t).
 */
 uint32_t eval(int p, int q) {
-	printf("*********Start eval()!*********\n");
+	//printf("*********Start eval()!*********\n");
 	print_tokens(p, q);
 	if(p > q) {
 		// Negative number
