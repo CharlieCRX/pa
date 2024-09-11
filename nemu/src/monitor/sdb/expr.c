@@ -79,7 +79,8 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+//static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[65535] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -328,7 +329,7 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 */
 uint32_t eval(int p, int q) {
 	//printf("*********Start eval()!*********\n");
-	//print_tokens(p, q);
+	print_tokens(p, q);
 	if(p > q) {
 		// Negative number
 		if (tokens[p].type == '-'){
@@ -394,9 +395,9 @@ void test_locate_operator(){
 void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "((76))";
+	char *str = "(94-34+(2/(((61)+((((5))*0+62))))*2-80))";
 	make_token(str);
-	assert(eval(0, nr_token - 1) == 76);
+	assert(eval(0, nr_token - 1) == 4294967276);
 	printf("eval test ok!\n");
 }
 
