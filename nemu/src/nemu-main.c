@@ -48,6 +48,7 @@ void test_gen_expr() {
 		// 2.1 Call the `expr()` function to evaluate the result of the expression
 		bool flag = true;
 		word_t calc_value = expr(expr_str, &flag);
+		printf("result = %u\n", calc_value);
 
 		// 2.2 Compare the calculated result with the expected result
 		assert(result == calc_value);
