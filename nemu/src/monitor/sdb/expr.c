@@ -241,7 +241,7 @@ int find_corresponding_right_bracket_position(int p, int q) {
 *	expression.
 */
 int locate_main_operator(int p, int q) {
-	printf("locate_main_operator:\n");
+	printf("************START:locate_main_operator*********************\n");
 	print_tokens(p, q);
 	int location = -1;
 	for (int i = p; i <= q; i++) {
