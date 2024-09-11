@@ -329,7 +329,7 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 */
 uint32_t eval(int p, int q) {
 	//printf("*********Start eval()!*********\n");
-	print_tokens(p, q);
+	//print_tokens(p, q);
 	if(p > q) {
 		// Negative number
 		if (tokens[p].type == '-'){
