@@ -41,14 +41,14 @@ void test_gen_expr() {
 
 	// 2.Loop through each line to read the result and expression
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		printf("this line:%s\n", buf);
+		printf("this line:%s", buf);
 		// Extract `result` and `expr_str` from the buffer
 		sscanf(buf, "%u %s", &result, expr_str);
 
 		// 2.1 Call the `expr()` function to evaluate the result of the expression
 		bool flag = true;
 		word_t calc_value = expr(expr_str, &flag);
-		printf("result = %u\n", calc_value);
+		printf("result = %u\n\n", calc_value);
 
 		// 2.2 Compare the calculated result with the expected result
 		assert(result == calc_value);
