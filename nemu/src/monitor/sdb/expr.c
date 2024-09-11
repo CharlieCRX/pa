@@ -395,9 +395,9 @@ void test_locate_operator(){
 void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "(94-34+(2/(((61)+((((5))*0+62))))*2-80))";
+	char *str = "((13-43+(49*(((2/49))-(19)+44)/97-15-6)/73-(((((60)))))-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))))/83";
 	make_token(str);
-	assert(eval(0, nr_token - 1) == 4294967276);
+	assert(eval(0, nr_token - 1) == 44);
 	printf("eval test ok!\n");
 }
 
