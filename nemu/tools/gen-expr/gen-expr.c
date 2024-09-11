@@ -31,7 +31,7 @@ static char *code_format =
 "  return 0; "
 "}";
 static char temp[100];
-
+static void gen_rand_expr();
 uint32_t choose(uint32_t n) {
 	uint32_t num = (uint32_t) rand() % n;
 	return num;
@@ -54,18 +54,33 @@ void gen(const char ch) {
 	write_to_buf(temp);
 }
 
-void gen_rand_op() {
-	char op[4] = {'+', '-', '*', '/'};
+char gen_rand_op() {
+	char op[4] = {'+', '-', '*', '/'}; 
 	int valid_rand_num = rand() % 4;
 	gen(op[valid_rand_num]);
+	return op[valid_rand_num];
 }
-
+int evaluate_last_generated_expr() {
+	int last_num = rand() % 99 + 1;
+	return last_num;
+}
 
 static void gen_rand_expr() {
 	switch(choose(3)) {
 		case 0: gen_num(); break;
 		case 1: gen('('); gen_rand_expr(); gen(')'); break;
-		case 2: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
+		case 2: 
+			gen_rand_expr(); 
+			char op = gen_rand_op(); 
+			if (op == '/') {
+				int divisor = evaluate_last_generated_expr();
+				sprintf(temp, "%d", divisor);
+				write_to_buf(temp);
+			} 
+			else {
+				gen_rand_expr(); 
+			}
+			break;
 	}
 }
 #ifndef TEST
