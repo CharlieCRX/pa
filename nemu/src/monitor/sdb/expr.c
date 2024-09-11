@@ -167,6 +167,7 @@ void print_tokens(int p, int q) {
  * parenthesized expression, the function returns true. Otherwise, it returns false.
 */
 bool check_parentheses(int p,int q) {
+	printf("start check parenthess!**************\n");
 	// 1. Check if the tokens at positions 'p' and 'q' are '(' and ')' respectively.
 	if(tokens[p].type == '('&& tokens[q].type == ')') {
 		p = p + 1;
@@ -174,12 +175,12 @@ bool check_parentheses(int p,int q) {
 	} else {
 		return false;
 	}
-	//print_tokens(p, q);
+	print_tokens(p, q);
 	// 2. For the inner expression (i.e., the tokens between 'p+1' and 'q-1'), 
 	// verify that all parentheses are correctly matched.
 	int left_brackets_num = 0;
 
-	for (int i = p; i < q && left_brackets_num >= 0; i++) {
+	for (int i = p; i <= q && left_brackets_num >= 0; i++) {
 		if(tokens[i].type == '(') {
 			left_brackets_num += 1;
 		}
@@ -193,6 +194,7 @@ bool check_parentheses(int p,int q) {
 	 * that cannot be matched with corresponding right parentheses.
 	 * If left_brackets_num is less than 0, it indicates there are extra right parentheses ')'.
 	 */
+	printf("check paren now left brackets is %d\n", left_brackets_num);
 	if (left_brackets_num != 0) {
 		return false;
 	}
@@ -325,6 +327,8 @@ uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
 *   The computed value of the expression as a 32-bit unsigned integer (uint32_t).
 */
 uint32_t eval(int p, int q) {
+	printf("*********Start eval()!*********\n");
+	print_tokens(p, q);
 	if(p > q) {
 		// Negative number
 		if (tokens[p].type == '-'){
@@ -390,9 +394,9 @@ void test_locate_operator(){
 void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "72-(36)/((76))";
+	char *str = "((76))";
 	make_token(str);
-	assert(eval(0, nr_token - 1) == 72);
+	assert(eval(0, nr_token - 1) == 76);
 	printf("eval test ok!\n");
 }
 
@@ -409,8 +413,8 @@ int main() {
 	//assert(make_token("(123+789-323)"));
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
-	test_locate_operator();
-	//test_eval();
+	//test_locate_operator();
+	test_eval();
 	//test_find_corresponding_right_bracket();
 	return 0;
 }
