@@ -212,19 +212,23 @@ bool check_parentheses(int p,int q) {
  *         If no matching right parenthesis is found, the function returns -1.
  */
 int find_corresponding_right_bracket_position(int p, int q) {
+	print_tokens(p, q);
 	int position = -1;
 	int left_brackets_num = 0;
 
 	for (int i = p; i <= q; i++) {
 		if(tokens[i].type == '(') {
 			left_brackets_num += 1;
+			printf("%c index is  %d\n",tokens[i].type, i);
 		} 
 		else if (tokens[i].type == ')') {
 			left_brackets_num -= 1;
+			printf("%c index is  %d\n",tokens[i].type, i);
 		}
 
 		if (left_brackets_num == 0) {
 			position = i;
+			break;
 		}
 	}
 	return position;
@@ -237,6 +241,8 @@ int find_corresponding_right_bracket_position(int p, int q) {
 *	expression.
 */
 int locate_main_operator(int p, int q) {
+	printf("locate_main_operator:\n");
+	print_tokens(p, q);
 	int location = -1;
 	for (int i = p; i <= q; i++) {
 		// 1. Skip the operator if it is surrounded by parentheses `()`.
@@ -245,6 +251,7 @@ int locate_main_operator(int p, int q) {
 			int corresponding_bracket_index = find_corresponding_right_bracket_position(i, q);
 			if (corresponding_bracket_index == -1) assert(0);
 			i = corresponding_bracket_index;
+			printf("corresponding right bracket index is %d\n", i);
 		}
 		// 2. Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
@@ -268,8 +275,9 @@ int locate_main_operator(int p, int q) {
 			}
 		}
 	}
-	printf("tokens[%d].type = %c\n",location, tokens[location].type);
+	printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
 	assert(location != -1);
+	printf("locate main operator is over now!\n\n");
 	return location;
 }
 
@@ -372,7 +380,7 @@ void test_check_parentheses() {
 void test_locate_operator(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "72-(36)/((76))";
+	char *str = "72 - (36)/((76))";
 	make_token(str);
 	int i = locate_main_operator(0, nr_token-1);
 	assert(tokens[i].type == '-');
@@ -387,13 +395,23 @@ void test_eval(){
 	assert(eval(0, nr_token - 1) == 72);
 	printf("eval test ok!\n");
 }
+
+void test_find_corresponding_right_bracket() {
+	memset(tokens, 0, sizeof(tokens));
+	nr_token = 0;
+	char *str = "((76))";
+	make_token(str);
+	assert(find_corresponding_right_bracket_position(0, nr_token - 1) == 4);
+	printf("corresponding is ok!\n");
+}
 int main() {
 	init_regex();
 	//assert(make_token("(123+789-323)"));
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
-	//test_locate_operator();
-	test_eval();
+	test_locate_operator();
+	//test_eval();
+	//test_find_corresponding_right_bracket();
 	return 0;
 }
 #endif
