@@ -213,6 +213,20 @@ bool check_parentheses(int p,int q) {
  */
 int find_corresponding_right_bracket_position(int p, int q) {
 	int position = -1;
+	int left_brackets_num = 0;
+
+	for (int i = p; i <= q; i++) {
+		if(tokens[i].type == '(') {
+			left_brackets_num += 1;
+		} 
+		else if (tokens[i].type == ')') {
+			left_brackets_num -= 1;
+		}
+
+		if (left_brackets_num == 0) {
+			position = i;
+		}
+	}
 	return position;
 }
 /* 
