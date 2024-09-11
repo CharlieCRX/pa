@@ -302,7 +302,7 @@ static uint32_t string_to_num(char *str) {
 }
 
 
-uint32_t calc_apply(int op_type, uint32_t val1, uint32_t val2) {
+int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 	switch (op_type) {
 		case '+': return val1 + val2;
 		case '-': return val1 - val2;
@@ -351,6 +351,7 @@ uint32_t eval(int p, int q) {
 
 		uint32_t result = calc_apply(tokens[operator_position].type, val1, val2);
 
+		printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
 		return result;
 
 	}
@@ -396,6 +397,10 @@ void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
 	char *str = "((13-43+(49*(((2/49))-(19)+44)/97-15-6)/73-(((((60)))))-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))))/83";
+	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";//0
+	//char *str = "-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))";//3777
+	//char *str = "(((((60)))))";//60
+	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";	//0
 	make_token(str);
 	assert(eval(0, nr_token - 1) == 44);
 	printf("eval test ok!\n");
