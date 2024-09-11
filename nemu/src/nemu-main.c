@@ -51,7 +51,7 @@ void test_gen_expr() {
 		printf("result = %u\n\n", calc_value);
 
 		// 2.2 Compare the calculated result with the expected result
-		//assert(result == calc_value);
+		assert(result == calc_value);
 	}
 	printf("TEST SUCCESS!\n");
 }
