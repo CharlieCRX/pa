@@ -120,9 +120,9 @@ static bool make_token(char *e) {
 #ifdef TEST
 						//printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
 #endif
+						nr_token += 1;// If it's a blank, nr_token not add 1
 						break;
         }
-				nr_token += 1;
 
         break;
       }
@@ -169,11 +169,14 @@ void print_tokens(int p, int q) {
 */
 bool check_parentheses(int p,int q) {
 	//printf("start check parenthess!**************\n");
+	//print_tokens(p, q);
+	//printf("token[%d].type = %c, tokenp[%d].type = %c\n", p, tokens[p].type, q, tokens[q].type);
 	// 1. Check if the tokens at positions 'p' and 'q' are '(' and ')' respectively.
 	if(tokens[p].type == '('&& tokens[q].type == ')') {
 		p = p + 1;
 		q = q - 1;
 	} else {
+	  //printf("this expr is not a (expr)\n");
 		return false;
 	}
 	//print_tokens(p, q);
@@ -396,13 +399,15 @@ void test_locate_operator(){
 void test_eval(){
 	memset(tokens, 0, sizeof(tokens));
 	nr_token = 0;
-	char *str = "((13-43+(49*(((2/49))-(19)+44)/97-15-6)/73-(((((60)))))-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))))/83";
+	//char *str = "((13-43+(49*(((2/49))-(19)+44)/97-15-6)/73-(((((60)))))-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))))/83";
 	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";//0
 	//char *str = "-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))";//3777
 	//char *str = "(((((60)))))";//60
 	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";	//0
+	char *str = "(      -19) / 3";//-6
 	make_token(str);
-	assert(eval(0, nr_token - 1) == 44);
+	//printf("nr_token = %d\n", nr_token);
+	assert(eval(0, nr_token - 1) == -6);
 	printf("eval test ok!\n");
 }
 
