@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include "memory/vaddr.h"
 static int is_batch_mode = false;
 
 void init_regex();
@@ -41,6 +41,36 @@ static char* rl_gets() {
 
   return line_read;
 }
+
+/*
+	Input: string
+	output: if str is not a num string, return 0
+					else return the real num value of the string
+*/
+static int string_to_num(char *str) {
+	int i = 0;
+	int result = 0;
+	/* Loop through the string*/
+	while(str[i] != '\0') {
+		// Check if the character is a digit (0-9)
+		if (str[i] >= '0' && str[i] <= '9') {
+			result = result * 10 + (str[i] - '0');
+		} else {
+			printf("Warning: %s is not a num!\n", str);
+			return 0;
+		}
+		
+		i++;
+	}
+	return result;
+}
+
+vaddr_t hex_string_to_vaddr(const char* hex_str) {
+	vaddr_t result = 0;
+	sscanf(hex_str, "%x", &result);
+	return result;
+}
+
 
 static int cmd_c(char *args) {
   cpu_exec(-1);
@@ -94,6 +124,8 @@ static int cmd_help(char *args);
 
 static int cmd_info(char *args);
 
+static int cmd_scan_memory(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -104,6 +136,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 	{ "si", "Executes n steps in the program", cmd_step},
 	{ "info", "Prints the current infomation of registers or watchpoints", cmd_info},
+	{ "x", "Scans memory starting from a given address and outputs N consecutive 4-byte values.", cmd_scan_memory},
   /* TODO: Add more commands */
 
 };
@@ -142,6 +175,41 @@ static int cmd_info(char *args) {
 	}
 	return 0;
 }
+
+static int cmd_scan_memory(char *args) {
+	char *lines_str = strtok(NULL, " ");
+	if (lines_str == NULL) {
+		printf("Please input N!\n");
+		return 0;
+	}
+
+	char *addr_str = strtok(NULL, " ");
+	if (addr_str == NULL) {
+		printf("Please input address!\n");
+		return 0;
+	}
+
+	int lines = string_to_num(lines_str); //1,2,3...N
+	vaddr_t addr_hex = hex_string_to_vaddr(addr_str);
+
+	if (addr_hex < CONFIG_MBASE) {
+		printf("Invalid address!\n");
+		return 0;
+	}
+
+	for (int i = 0; i < lines; i++) {
+		printf(FMT_WORD ":", addr_hex + i*4);
+		for (int j = 0; j < 4; j++) {
+			uint8_t data = vaddr_read(addr_hex + 4*i + j, 1);
+			//4 bytes per line
+			//uint8_t data = *addr_hex;
+			printf(" %02x", data);
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;
