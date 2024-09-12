@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <common.h>
-#include "/home/crx/study/ics2023/nemu/src/monitor/sdb/sdb.h"
+#include "sdb.h"
 void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
