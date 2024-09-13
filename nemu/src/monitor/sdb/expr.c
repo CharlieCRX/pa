@@ -32,6 +32,7 @@ enum {
   TK_NOTYPE = 256, 
 	TK_EQ,
 	TK_NUM,
+	TK_HEX,
 };
 
 static struct rule {
@@ -98,8 +99,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-        //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				#ifdef TEST
 				//printf("\n");
 				#endif
@@ -421,11 +422,11 @@ void test_find_corresponding_right_bracket() {
 }
 int main() {
 	init_regex();
-	//assert(make_token("(123+789-323)"));
+	assert(make_token("0x123456"));
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
 	//test_locate_operator();
-	test_eval();
+	//test_eval();
 	//test_find_corresponding_right_bracket();
 	return 0;
 }
