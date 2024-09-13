@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <common.h>
-#include "/home/crx/study/ics2023/nemu/src/monitor/sdb/sdb.h"
+#include "sdb.h"
 void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
@@ -29,7 +29,14 @@ int is_exit_status_bad();
 void test_gen_expr() {
 	printf("***** Now test expr()! *********\n");
 	// 1. Read the test file into the buffer `buf`
-	FILE *fp = fopen("/home/crx/study/ics2023/nemu/tools/gen-expr/input", "r");
+	const char *nemu_home = getenv("NEMU_HOME");
+	if (nemu_home == NULL) {
+		printf("Error: NEMU_HOME is not set!\n");
+		assert(0);
+	}
+	char filepath[256];
+	snprintf(filepath, sizeof(filepath), "%s/tools/gen-expr/input", nemu_home);
+	FILE *fp = fopen(filepath, "r");
 	if (fp == NULL) {
 		printf("ERROR:Can not open the test file!\n");
 		return;
