@@ -33,6 +33,7 @@ enum {
 	TK_EQ,
 	TK_NUM,
 	TK_HEX,
+	TK_REG,
 };
 
 static struct rule {
@@ -47,13 +48,14 @@ static struct rule {
 	{"\\+", '+'},         // plus
 	{"\\-", '-'},		  // sub
 	{"==", TK_EQ},        // equal
-	{"(0x|0X)[0-9a-fA-F]+", TK_HEX}, //hexadecimal
+	{"(0x|0X)[0-9a-fA-F]+", TK_HEX}, // hexadecimal
+	{"\\$[0-9a-zA-Z]+", TK_REG},     //	register
 	{"[0-9]+", TK_NUM},   // decimal
 };
 #ifndef TEST
 #define NR_REGEX ARRLEN(rules)
 #else
-#define NR_REGEX 10
+#define NR_REGEX 11
 #define Log printf
 #define panic printf
 #endif
@@ -103,7 +105,7 @@ static bool make_token(char *e) {
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				#ifdef TEST
-				//printf("\n");
+				printf("\n");
 				#endif
         position += substr_len;
 
@@ -112,6 +114,7 @@ static bool make_token(char *e) {
 						break;
 					case TK_NUM:
 					case TK_HEX:
+					case TK_REG:
 						if(substr_len > 31) {
 							substr_len = 31;
 						}
@@ -164,15 +167,22 @@ void print_tokens(int p, int q) {
 // ======================
 // Function Prototypes
 // ======================
+#ifdef TEST
+static uint32_t isa_reg_str2val(const char *s, bool *success){
+	return 0;
+}
+#endif
 static uint32_t convert_decimal(const char *str);
 static uint32_t convert_hexadecimal(const char *str);
+static uint32_t get_register_value(const char *str);
 
 // Function pointer array for conversion functions
 typedef uint32_t (*ConversionFunction)(const char *str);
 
 static ConversionFunction conversion_function[] = {
 	[TK_NUM] = convert_decimal,
-	[TK_HEX] = convert_hexadecimal
+	[TK_HEX] = convert_hexadecimal,
+	[TK_REG] = get_register_value
 	// Other types can be added here
 };
 
@@ -208,6 +218,19 @@ static uint32_t convert_hexadecimal(const char *str) {
 	assert(0);
 }
 
+/**
+ * @brief Gets the value(uint32_t) from a register named by the string.
+ * @param str The name of the register.
+ * @return The value of the register, or 0 on failure.
+ */
+static uint32_t get_register_value(const char *str) {
+	bool success = true;
+	uint32_t result = (uint32_t) isa_reg_str2val(str, &success);
+	if (success) {
+		return result;
+	}
+	assert(0);
+}
 
 /**
  * @brief Converts a token's value to a 32-bit unsigned integer based on its type.
@@ -215,6 +238,7 @@ static uint32_t convert_hexadecimal(const char *str) {
  * @return The 32-bit unsigned integer representation of the token's value, or 0 on failure.
  */
 uint32_t convert_token_to_unsigned_num(const Token token){
+
 	ConversionFunction convert_func = conversion_function[token.type];
 	if (convert_func != NULL) {
 		return convert_func(token.str);
@@ -479,26 +503,30 @@ void test_conversion_num() {
 }
 
 void test_convert_func() {
-	char *str = "0x123456+4294967294";
+	char *str = "0x123456+4294967294+($r1)";
 	make_token(str);
 	print_tokens(0 ,nr_token - 1);
 
 	for (int i = 0; i < nr_token; i++) {
-		if ((tokens[i].type == TK_NUM) || (tokens[i].type == TK_HEX)) {
-			uint32_t result = convert_token_to_unsigned_num(tokens[i]);
-			printf("tokens[%d] = %u, 0x%x\n",i, result, result);
+		switch (tokens[i].type) {
+			case TK_NUM:
+			case TK_HEX:
+			case TK_REG:
+				uint32_t result = convert_token_to_unsigned_num(tokens[i]);
+				printf("tokens[%d] = %u, 0x%x\n",i, result, result);
+				break;
 		}
 	}
 }
 
 int main() {
 	init_regex();
-	//assert(make_token("0x12345789ABCDEF0123456789ABCDEF123456789ABCDEFAAAAA"));
+	//assert(make_token("0123+0x12345$reg12+3"));
 	//print_tokens(0, nr_token - 1);
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
 	//test_locate_operator();
-	test_eval();
+	//test_eval();
 	//test_find_corresponding_right_bracket();
 	//test_conversion_num();
 	//test_convert_func();
