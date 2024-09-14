@@ -41,18 +41,19 @@ static struct rule {
 } rules[] = {
 	{"\\(", '('},
 	{"\\)", ')'},
-  {" +", TK_NOTYPE},    // spaces
-	{"\\*", '*'},					// multi
-	{"\\/", '/'},					// div
-  {"\\+", '+'},         // plus
-	{"\\-", '-'},					// sub
-  {"==", TK_EQ},        // equal
-	{"[0-9]+", TK_NUM}, // integer
+	{" +", TK_NOTYPE},    // spaces
+	{"\\*", '*'},		  // multi
+	{"\\/", '/'},		  // div
+	{"\\+", '+'},         // plus
+	{"\\-", '-'},		  // sub
+	{"==", TK_EQ},        // equal
+	{"0x[0-9a-fA-F]+", TK_HEX}, //hex
+	{"[0-9]+", TK_NUM},   // integer
 };
 #ifndef TEST
 #define NR_REGEX ARRLEN(rules)
 #else
-#define NR_REGEX 9
+#define NR_REGEX 10
 #define Log printf
 #define panic printf
 #endif
@@ -99,7 +100,7 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s\n",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 				#ifdef TEST
 				//printf("\n");
@@ -110,9 +111,9 @@ static bool make_token(char *e) {
 					case TK_NOTYPE:
 						break;
 					case TK_NUM:
+					case TK_HEX:
 						if(substr_len > 31) {
-							substr_start = "-1";
-							substr_len = 2;
+							substr_len = 31;
 						}
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 
@@ -148,15 +149,62 @@ static bool make_token(char *e) {
 */
 void print_tokens(int p, int q) {
 	for(int i = p; i <= q; i++) {
-		if(tokens[i].type == TK_NUM) {
-			printf("%s", tokens[i].str);
-		} else {
-			printf("%c", tokens[i].type);
+
+		switch (tokens[i].type) {
+			case TK_NUM:
+			case TK_HEX:	
+				printf("%s", tokens[i].str);
+				break;
+			default:
+				printf("%c", tokens[i].type);
 		}
 	}
 	printf("\n");
 }
-	
+// ======================
+// Function Prototypes
+// ======================
+static uint32_t convert_decimal(const char *str);
+static uint32_t convert_hexadecimal(const char *str);
+
+// Function pointer array for conversion functions
+typedef uint32_t (*ConversionFunction)(const char *str);
+
+static ConversionFunction conversion_function[] = {
+	[TK_NUM] = convert_decimal,
+	[TK_HEX] = convert_hexadecimal
+	// Other types can be added here
+};
+
+
+// =========================
+// Function Implementation
+// =========================
+
+/**
+ * @brief Converts a decimal string to a 32-bit unsigned integer.
+ * @param str The decimal string to convert.
+ * @return The 32-bit unsigned integer representation of the string, or 0 on failure.
+ */
+static uint32_t convert_decimal(const char *str) {}
+
+
+/**
+ * @brief Converts a hexadecimal string to a 32-bit unsigned integer.
+ * @param str The hexadecimal string to convert.
+ * @return The 32-bit unsigned integer representation of the string, or 0 on failure.
+ */
+static uint32_t convert_hexadecimal(const char *str) {}
+
+
+/**
+ * @brief Converts a token's value to a 32-bit unsigned integer based on its type.
+ * @param token Pointer to the token whose value should be converted.
+ * @return The 32-bit unsigned integer representation of the token's value, or 0 on failure.
+ */
+uint32_t convert_token_to_unsigned_num(Token token){}
+
+
 
 
 /*
@@ -422,7 +470,8 @@ void test_find_corresponding_right_bracket() {
 }
 int main() {
 	init_regex();
-	assert(make_token("0x123456"));
+	assert(make_token("0x12345789ABCDEF0123456789ABCDEF123456789ABCDEFAAAAA"));
+	print_tokens(0, nr_token - 1);
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
 	//test_locate_operator();
