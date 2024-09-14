@@ -47,8 +47,8 @@ static struct rule {
 	{"\\+", '+'},         // plus
 	{"\\-", '-'},		  // sub
 	{"==", TK_EQ},        // equal
-	{"0x[0-9a-fA-F]+", TK_HEX}, //hex
-	{"[0-9]+", TK_NUM},   // integer
+	{"(0x|0X)[0-9a-fA-F]+", TK_HEX}, //hexadecimal
+	{"[0-9]+", TK_NUM},   // decimal
 };
 #ifndef TEST
 #define NR_REGEX ARRLEN(rules)
@@ -186,7 +186,13 @@ static ConversionFunction conversion_function[] = {
  * @param str The decimal string to convert.
  * @return The 32-bit unsigned integer representation of the string, or 0 on failure.
  */
-static uint32_t convert_decimal(const char *str) {}
+static uint32_t convert_decimal(const char *str) {
+	uint32_t result = 0;
+	if(sscanf(str, "%u", &result) == 1) {
+		return result;
+	}
+	assert(0);
+}
 
 
 /**
@@ -194,7 +200,13 @@ static uint32_t convert_decimal(const char *str) {}
  * @param str The hexadecimal string to convert.
  * @return The 32-bit unsigned integer representation of the string, or 0 on failure.
  */
-static uint32_t convert_hexadecimal(const char *str) {}
+static uint32_t convert_hexadecimal(const char *str) {
+	uint32_t result = 0;
+	if (sscanf(str, "%x", &result) == 1) {
+		return result;
+	}
+	assert(0);
+}
 
 
 /**
@@ -202,7 +214,13 @@ static uint32_t convert_hexadecimal(const char *str) {}
  * @param token Pointer to the token whose value should be converted.
  * @return The 32-bit unsigned integer representation of the token's value, or 0 on failure.
  */
-uint32_t convert_token_to_unsigned_num(Token token){}
+uint32_t convert_token_to_unsigned_num(const Token token){
+	ConversionFunction convert_func = conversion_function[token.type];
+	if (convert_func != NULL) {
+		return convert_func(token.str);
+	}
+	assert(0);
+}
 
 
 
@@ -336,24 +354,6 @@ int locate_main_operator(int p, int q) {
 	return location;
 }
 
-//str to num, if not num, return 0
-static uint32_t string_to_num(char *str) {
-	int i = 0;
-	uint32_t result = 0;
-
-	while(str[i] != '\0') {
-		if(str[i] >= '0' && str[i] <= '9') {
-			result = 10 * result + (str[i] - '0');
-		}
-		else{
-			return 0;
-		}
-		i++;
-	}
-	return result;
-}
-
-
 int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 	switch (op_type) {
 		case '+': return val1 + val2;
@@ -391,7 +391,7 @@ uint32_t eval(int p, int q) {
 		assert(0);
 	} 
 	else if (p == q) {
-		return string_to_num(tokens[p].str);
+		return convert_token_to_unsigned_num(tokens[p]);
 	} 
 	else if (check_parentheses(p, q) == true) {	
 		return eval(p + 1, q -1);
@@ -453,10 +453,10 @@ void test_eval(){
 	//char *str = "-(((23)+((2)/55-(76))*50)+18/27*(((38)/64-40/45)))";//3777
 	//char *str = "(((((60)))))";//60
 	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";	//0
-	char *str = "(      -19) / 3";//-6
+	char *str = "(      -19) / 3 + 0X12";//-6 + 18 = 12
 	make_token(str);
 	//printf("nr_token = %d\n", nr_token);
-	assert(eval(0, nr_token - 1) == -6);
+	assert(eval(0, nr_token - 1) == 12);
 	printf("eval test ok!\n");
 }
 
@@ -468,15 +468,40 @@ void test_find_corresponding_right_bracket() {
 	assert(find_corresponding_right_bracket_position(0, nr_token - 1) == 4);
 	printf("corresponding is ok!\n");
 }
+
+void test_conversion_num() {
+	char *str1 = "0x1234567812345678901234567890123";
+	char *str2 = "4294967294"; 
+	uint32_t result1 = convert_hexadecimal(str1);
+	uint32_t result2 = convert_decimal(str2);
+	printf("result1 = %u, 0x%x\n",result1, result1);
+	printf("result2 = %u, 0x%x\n",result2, result2);
+}
+
+void test_convert_func() {
+	char *str = "0x123456+4294967294";
+	make_token(str);
+	print_tokens(0 ,nr_token - 1);
+
+	for (int i = 0; i < nr_token; i++) {
+		if ((tokens[i].type == TK_NUM) || (tokens[i].type == TK_HEX)) {
+			uint32_t result = convert_token_to_unsigned_num(tokens[i]);
+			printf("tokens[%d] = %u, 0x%x\n",i, result, result);
+		}
+	}
+}
+
 int main() {
 	init_regex();
-	assert(make_token("0x12345789ABCDEF0123456789ABCDEF123456789ABCDEFAAAAA"));
-	print_tokens(0, nr_token - 1);
+	//assert(make_token("0x12345789ABCDEF0123456789ABCDEF123456789ABCDEFAAAAA"));
+	//print_tokens(0, nr_token - 1);
 	//assert(make_token("(+-*///**++---)"));
 	//test_check_parentheses();
 	//test_locate_operator();
-	//test_eval();
+	test_eval();
 	//test_find_corresponding_right_bracket();
+	//test_conversion_num();
+	//test_convert_func();
 	return 0;
 }
 #endif
