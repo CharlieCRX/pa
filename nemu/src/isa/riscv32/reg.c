@@ -44,6 +44,7 @@ static int reg_idx_by_name(const char *name) {
 
 	// Iterate over the register names array to find a match
 	for (int i = 0; i < num_regs; i++) {
+		printf("reg name is %s\n", regs[i]);
 		if (strcmp(name, regs[i]) == 0) {
 			return i;
 		}
