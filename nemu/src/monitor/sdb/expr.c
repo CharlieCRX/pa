@@ -112,9 +112,11 @@ static bool make_token(char *e) {
 				switch (rules[i].token_type) {
 					case TK_NOTYPE:
 						break;
+
+					case TK_REG:
+						strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
 					case TK_NUM:
 					case TK_HEX:
-					case TK_REG:
 						if(substr_len > 31) {
 							substr_len = 31;
 						}
