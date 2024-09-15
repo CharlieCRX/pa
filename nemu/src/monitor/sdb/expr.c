@@ -113,10 +113,6 @@ static bool make_token(char *e) {
 					case TK_NOTYPE:
 						break;
 					case TK_REG:
-						printf("reg name is %s\n", substr_start + 1);
-						strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
-						tokens[nr_token].type = rules[i].token_type;
-						break;
 					case TK_NUM:
 					case TK_HEX:
 						if(substr_len > 31) {
@@ -227,6 +223,8 @@ static uint32_t convert_hexadecimal(const char *str) {
  * @return The value of the register, or 0 on failure.
  */
 static uint32_t get_register_value(const char *str) {
+	char name[31];
+	strcpy(name, str + 1); 
 	bool success = true;
 	uint32_t result = (uint32_t) isa_reg_str2val(str, &success);
 	if (success) {
