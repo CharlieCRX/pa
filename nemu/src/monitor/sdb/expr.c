@@ -224,7 +224,7 @@ static uint32_t convert_hexadecimal(const char *str) {
  */
 static uint32_t get_register_value(const char *str) {
 	char name[31];
-	strcpy(name, str + 1); 
+	strcpy(name, str + 1); // Omit prefix $
 	bool success = true;
 	uint32_t result = (uint32_t) isa_reg_str2val(name, &success);
 	if (success) {
