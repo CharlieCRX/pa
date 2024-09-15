@@ -114,9 +114,11 @@ static bool make_token(char *e) {
 						break;
 					case TK_NUM:
 					case TK_HEX:
+					case TK_REG:
 						if(substr_len > 31) {
 							substr_len = 31;
 						}
+						printf("sub_str = %s\n", substr_start);	
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
 
           default:
