@@ -29,7 +29,4 @@ static inline const char* reg_name(int idx) {
   extern const char* regs[];
   return regs[check_reg_idx(idx)];
 }
-static inline int reg_idx_by_name(const char *name) {
-	return 0;
-}
 #endif

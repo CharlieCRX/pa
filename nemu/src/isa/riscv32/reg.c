@@ -22,7 +22,6 @@ const char *regs[] = {
   "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
-
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 void isa_reg_display() {
 	for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
@@ -35,6 +34,29 @@ void isa_reg_display() {
 	}
 }
 
+/**
+ * @brief Finds the index of a given register name in the predefined array of register names. 
+ * @param name The register name to search for in the array.
+ * @return The index of the register name if found, otherwise -1.
+ */
+static int reg_idx_by_name(const char *name) {
+	int num_regs = MUXDEF(CONFIG_RVE, 16, 32);
+
+	// Iterate over the register names array to find a match
+	for (int i = 0; i < num_regs; i++) {
+		if (strcmp(name, regs[i]) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+	int idx = reg_idx_by_name(s);
+	if(idx != -1) {
+		*success = true;
+		return (word_t)gpr(idx);
+	}
+	*success = false;
+	return -1;
 }
