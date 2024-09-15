@@ -40,12 +40,10 @@ void isa_reg_display() {
  * @return The index of the register name if found, otherwise -1.
  */
 static int reg_idx_by_name(const char *name) {
-	printf("name is %s\n", name);
 	int num_regs = MUXDEF(CONFIG_RVE, 16, 32);
 
 	// Iterate over the register names array to find a match
 	for (int i = 0; i < num_regs; i++) {
-		printf("reg name is %s\n", regs[i]);
 		if (strcmp(name, regs[i]) == 0) {
 			return i;
 		}
