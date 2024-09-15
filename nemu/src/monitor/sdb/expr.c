@@ -113,6 +113,7 @@ static bool make_token(char *e) {
 					case TK_NOTYPE:
 						break;
 					case TK_REG:
+						printf("reg name is %s\n", substr_start + 1);
 						strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1);
 						tokens[nr_token].type = rules[i].token_type;
 						break;
