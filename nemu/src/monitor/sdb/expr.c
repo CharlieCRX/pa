@@ -226,7 +226,7 @@ static uint32_t get_register_value(const char *str) {
 	char name[31];
 	strcpy(name, str + 1); 
 	bool success = true;
-	uint32_t result = (uint32_t) isa_reg_str2val(str, &success);
+	uint32_t result = (uint32_t) isa_reg_str2val(name, &success);
 	if (success) {
 		return result;
 	}
