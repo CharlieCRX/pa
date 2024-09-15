@@ -126,6 +126,8 @@ static int cmd_info(char *args);
 
 static int cmd_scan_memory(char *args);
 
+static int cmd_eval(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -137,6 +139,7 @@ static struct {
 	{ "si", "Executes n steps in the program", cmd_step},
 	{ "info", "Prints the current infomation of registers or watchpoints", cmd_info},
 	{ "x", "Scans memory starting from a given address and outputs N consecutive 4-byte values.", cmd_scan_memory},
+	{ "p", "Evaluate the expression EXPR to obtain its value, including printing register values and dereferencing pointers.", cmd_eval},
   /* TODO: Add more commands */
 
 };
@@ -207,6 +210,16 @@ static int cmd_scan_memory(char *args) {
 		}
 		printf("\n");
 	}
+	return 0;
+}
+
+static int cmd_eval(char *args) {
+	bool success = true;
+	word_t result = expr(args, &success);
+	if (success) {
+		printf("result = %u(0x%08x)\n", result, result);
+	}
+	assert(0);
 	return 0;
 }
 
