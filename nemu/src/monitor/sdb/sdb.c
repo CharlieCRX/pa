@@ -218,6 +218,7 @@ static int cmd_eval(char *args) {
 	word_t result = expr(args, &success);
 	if (success) {
 		printf("result = %u(0x%08x)\n", result, result);
+		return 0;
 	}
 	assert(0);
 	return 0;
