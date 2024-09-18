@@ -34,6 +34,7 @@ enum {
 	TK_NUM,
 	TK_HEX,
 	TK_REG,
+	TK_DEREF,
 };
 
 static struct rule {
@@ -154,7 +155,8 @@ void print_tokens(int p, int q) {
 
 		switch (tokens[i].type) {
 			case TK_NUM:
-			case TK_HEX:	
+			case TK_HEX:
+			case TK_REG:	
 				printf("%s", tokens[i].str);
 				break;
 			default:
@@ -420,7 +422,11 @@ uint32_t eval(int p, int q) {
 	} 
 	else if (check_parentheses(p, q) == true) {	
 		return eval(p + 1, q -1);
-	} 
+	}
+	//TODO
+	else if (tokens[p].type == TK_DEREF) {
+		return 0; 
+	}
 	else {
 		int operator_position = locate_main_operator(p, q);
 		uint32_t val1 = eval(p , operator_position - 1);
@@ -436,13 +442,17 @@ uint32_t eval(int p, int q) {
 
 
 
-
 #ifndef TEST
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
+	for(int i = 0; i < nr_token; i++) {
+		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == '(')) {
+			tokens[i].type = TK_DEREF;
+		}
+	}
 
   return eval(0, nr_token - 1);
 }
