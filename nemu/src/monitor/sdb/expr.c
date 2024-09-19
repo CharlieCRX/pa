@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#define word_t uint32_t
 #endif
 enum {
   TK_NOTYPE = 256, 
@@ -124,9 +125,9 @@ static bool make_token(char *e) {
 						strncpy(tokens[nr_token].str, substr_start, substr_len);
           default:
 						tokens[nr_token].type = rules[i].token_type;
-#ifdef TEST
-						//printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
-#endif
+						#ifdef TEST
+						printf("tokens[%d].str = %s\n", nr_token, tokens[nr_token].str);
+						#endif
 						nr_token += 1;// If it's a blank, nr_token not add 1
 						break;
         }
@@ -173,6 +174,10 @@ void print_tokens(int p, int q) {
 #ifdef TEST
 static uint32_t isa_reg_str2val(const char *s, bool *success){
 	return 0;
+}
+
+static uint32_t vaddr_read(int address, int size) {
+	return 1;
 }
 #endif
 static uint32_t convert_decimal(const char *str);
@@ -269,13 +274,17 @@ uint32_t convert_token_to_unsigned_num(const Token token){
 
 // TODO
 static bool check_prefix_operation(int index) {
+	#ifdef TEST
+	printf("FUC:check prefix operation start!\n");
+	#endif
 	int op_type = tokens[index].type;
 	switch (op_type) {
 		case TK_DEREF:
 		case TK_NEGATIVE:
-		return true;
+			return true;
+		default:
+			return false;
 	}
-	return false;
 }
 
 static uint32_t defer_strategy_handle(uint32_t address) {
@@ -298,15 +307,21 @@ static uint32_t negative_strategy_handle(uint32_t num) {
  * parenthesized expression, the function returns true. Otherwise, it returns false.
 */
 bool check_parentheses(int p,int q) {
-	//printf("start check parenthess!**************\n");
+	#ifdef TEST
+	printf("start check parenthess!**************\n");
+	#endif
 	//print_tokens(p, q);
-	//printf("token[%d].type = %c, tokenp[%d].type = %c\n", p, tokens[p].type, q, tokens[q].type);
+	#ifdef TEST
+	printf("token[%d].type = %c, tokenp[%d].type = %c\n", p, tokens[p].type, q, tokens[q].type);
+	#endif
 	// 1. Check if the tokens at positions 'p' and 'q' are '(' and ')' respectively.
 	if(tokens[p].type == '('&& tokens[q].type == ')') {
 		p = p + 1;
 		q = q - 1;
 	} else {
-	  //printf("this expr is not a (expr)\n");
+	  #ifdef TEST
+	  printf("this expr is not a (expr)\n");
+	  #endif
 		return false;
 	}
 	//print_tokens(p, q);
@@ -328,7 +343,9 @@ bool check_parentheses(int p,int q) {
 	 * that cannot be matched with corresponding right parentheses.
 	 * If depth is less than 0, it indicates there are extra right parentheses ')'.
 	 */
-	//printf("check paren now left brackets is %d\n", depth);
+	#ifdef TEST
+	printf("check paren now left brackets is %d\n", depth);
+	#endif
 	if (depth!= 0) {
 		return false;
 	}
@@ -355,11 +372,15 @@ int find_corresponding_right_bracket_position(int p, int q) {
 	for (int i = p; i <= q; i++) {
 		if(tokens[i].type == '(') {
 			left_brackets_num += 1;
-			//printf("%c index is  %d\n",tokens[i].type, i);
+			#ifdef TEST
+			printf("%c index is  %d\n",tokens[i].type, i);
+			#endif
 		} 
 		else if (tokens[i].type == ')') {
 			left_brackets_num -= 1;
-			//printf("%c index is  %d\n",tokens[i].type, i);
+			#ifdef TEST
+			printf("%c index is  %d\n",tokens[i].type, i);
+			#endif
 		}
 
 		if (left_brackets_num == 0) {
@@ -377,7 +398,9 @@ int find_corresponding_right_bracket_position(int p, int q) {
 *	expression.
 */
 int locate_main_operator(int p, int q) {
-	//printf("************START:locate_main_operator*********************\n");
+	#ifdef TEST
+	printf("************START:locate_main_operator*********************\n");
+	#endif
 	//print_tokens(p, q);
 	int location = -1;
 	for (int i = p; i <= q; i++) {
@@ -387,7 +410,9 @@ int locate_main_operator(int p, int q) {
 			int corresponding_bracket_index = find_corresponding_right_bracket_position(i, q);
 			if (corresponding_bracket_index == -1) assert(0);
 			i = corresponding_bracket_index;
-			//printf("corresponding right bracket index is %d\n", i);
+			#ifdef TEST
+			printf("corresponding right bracket index is %d\n", i);
+			#endif
 		}
 		// 2. Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
@@ -411,9 +436,13 @@ int locate_main_operator(int p, int q) {
 			}
 		}
 	}
-	//printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
+	#ifdef TEST
+	printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
+	#endif
 	assert(location != -1);
-	//printf("locate main operator is over now!\n\n");
+	#ifdef TEST
+	printf("locate main operator is over now!\n\n");
+	#endif
 	return location;
 }
 
@@ -426,10 +455,13 @@ int locate_main_operator(int p, int q) {
  *   enclosed in parentheses. If no operator is found, returns -1.
 */
 int locate_first_operator(int p, int q) {
+	printf("locate first operator start!\n");
 	for (int i = p; i <= q; i++) {
-		if (tokens[p].type == '(') {
-			i = find_corresponding_right_bracket_position(p ,q);
-			if(i == -1) assert(0);
+		if (tokens[i].type == '(') {
+			int index = find_corresponding_right_bracket_position(i ,q);
+			printf("***** SUCCESS:right index is %d\n", index);
+			if(index == -1) assert(0);
+			i = index;
 		}
 		if (tokens[i].type == '+' || tokens[i].type == '-' 
 			|| tokens[i].type == '*' || tokens[i].type == '/'){
@@ -466,8 +498,10 @@ int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 *   The computed value of the expression as a 32-bit unsigned integer (uint32_t).
 */
 uint32_t eval(int p, int q) {
-	//printf("*********Start eval()!*********\n");
-	//print_tokens(p, q);
+	#ifdef TEST
+	printf("*********Start eval()!*********\n");
+	print_tokens(p, q);
+	#endif
 	if(p > q) {
 		// Negative number
 		if (tokens[p].type == '-'){
@@ -484,8 +518,14 @@ uint32_t eval(int p, int q) {
 	}
 	//TODO
 	else if (check_prefix_operation(p)) {
+		#ifdef TEST
+		printf("start prefix operation!\n");
+		#endif
 		int first_operator_position = locate_first_operator(p, q);
 		if (first_operator_position == -1) { // expression from index p and q, is a single expression
+			#ifdef TEST
+			printf("remaining expr is a single expression!\n");
+			#endif
 			uint32_t expr_value = eval(p + 1 ,q);
 			return prefix_strategies[tokens[p].type](expr_value);
 		} else {
@@ -504,7 +544,9 @@ uint32_t eval(int p, int q) {
 
 		uint32_t result = calc_apply(tokens[operator_position].type, val1, val2);
 
-		//printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
+		#ifdef TEST
+		printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
+		#endif
 		return result;
 
 	}
@@ -512,7 +554,6 @@ uint32_t eval(int p, int q) {
 
 
 
-#ifndef TEST
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -521,12 +562,12 @@ word_t expr(char *e, bool *success) {
 	for(int i = 0; i < nr_token; i++) {
 		if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == '(')) {
 			tokens[i].type = TK_DEREF;
+			printf("tokens[%d].type = TK_DEREF = %d!\n", i, TK_DEREF);
 		}
 	}
 
   return eval(0, nr_token - 1);
 }
-#endif
 
 #ifdef TEST
 void test_check_parentheses() {
@@ -560,7 +601,9 @@ void test_eval(){
 	//char *str = "(49*(((2/49))-(19)+44)/97-15-6)/73";	//0
 	char *str = "(      -19) / 3 + 0X12";//-6 + 18 = 12
 	make_token(str);
-	//printf("nr_token = %d\n", nr_token);
+	#ifdef TEST
+	printf("nr_token = %d\n", nr_token);
+	#endif
 	assert(eval(0, nr_token - 1) == 12);
 	printf("eval test ok!\n");
 }
@@ -600,8 +643,28 @@ void test_convert_func() {
 	}
 }
 
+
+
+void test_first_operator() {
+	char *str1 = "123+456-123*3";
+	char *str2 = "(123+122)-1";
+	char *str3 = "123-111+111";
+	make_token(str2);
+	print_tokens(0, nr_token - 1);
+	int i = locate_first_operator(0, nr_token - 1);
+	printf("i = %d\n", i);
+}
+
+void test_prefix_func() {
+	char *str = "*(0x1234 + 123)";
+	bool flag = true;
+	uint32_t result = expr(str, &flag);
+	printf("result = %d\n", result);
+}
+
 int main() {
 	init_regex();
+	//test_first_operator();
 	//assert(make_token("0123+0x12345$reg12+3"));
 	//print_tokens(0, nr_token - 1);
 	//assert(make_token("(+-*///**++---)"));
@@ -611,6 +674,7 @@ int main() {
 	//test_find_corresponding_right_bracket();
 	//test_conversion_num();
 	//test_convert_func();
+	test_prefix_func();
 	return 0;
 }
 #endif
