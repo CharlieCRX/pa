@@ -35,6 +35,7 @@ enum {
 	TK_HEX,
 	TK_REG,
 	TK_DEREF,
+	TK_NEGATIVE,
 };
 
 static struct rule {
@@ -188,6 +189,22 @@ static ConversionFunction conversion_function[] = {
 };
 
 
+static bool check_prefix_operation(int index);
+static uint32_t defer_strategy_handle(uint32_t address);
+static uint32_t negative_strategy_handle(uint32_t num);
+
+// Function pointer array for prefix operations
+typedef uint32_t (*PrefixStrategy)(uint32_t num);
+
+static PrefixStrategy prefix_strategies[] = {
+	[TK_DEREF] = defer_strategy_handle,
+	[TK_NEGATIVE] = negative_strategy_handle,
+	// Future prefix operation handlers like address-of, increment, decrement can be added here
+};
+
+
+
+
 // =========================
 // Function Implementation
 // =========================
@@ -249,6 +266,18 @@ uint32_t convert_token_to_unsigned_num(const Token token){
 	assert(0);
 }
 
+// TODO
+static bool check_prefix_operation(int index) {
+	return false;
+}
+
+static uint32_t defer_strategy_handle(uint32_t address) {
+	return 0;
+}
+
+static uint32_t negative_strategy_handle(uint32_t num) {
+	return 0;
+}
 
 
 
@@ -276,24 +305,24 @@ bool check_parentheses(int p,int q) {
 	//print_tokens(p, q);
 	// 2. For the inner expression (i.e., the tokens between 'p+1' and 'q-1'), 
 	// verify that all parentheses are correctly matched.
-	int left_brackets_num = 0;
+	int depth = 0;
 
-	for (int i = p; i <= q && left_brackets_num >= 0; i++) {
+	for (int i = p; i <= q && depth >= 0; i++) {
 		if(tokens[i].type == '(') {
-			left_brackets_num += 1;
+			depth += 1;
 		}
 
 		if(tokens[i].type == ')') {
-			left_brackets_num -= 1;
+			depth -= 1;
 		}
 	}
 	/*
-	 * If left_brackets_num is greater than 0, it indicates there are extra left parentheses '('
+	 * If depth is greater than 0, it indicates there are extra left parentheses '('
 	 * that cannot be matched with corresponding right parentheses.
-	 * If left_brackets_num is less than 0, it indicates there are extra right parentheses ')'.
+	 * If depth is less than 0, it indicates there are extra right parentheses ')'.
 	 */
-	//printf("check paren now left brackets is %d\n", left_brackets_num);
-	if (left_brackets_num != 0) {
+	//printf("check paren now left brackets is %d\n", depth);
+	if (depth!= 0) {
 		return false;
 	}
 	return true;
@@ -334,7 +363,7 @@ int find_corresponding_right_bracket_position(int p, int q) {
 	return position;
 }
 /* 
-* int locate_main_operator(int p, int q)
+* Function:int locate_main_operator(int p, int q)
 * Description: Retrieves the main operator location from an expression.
 *	The main operator is typically the one 
 *	with the lowest precedence that determines the structure of the 
@@ -381,6 +410,29 @@ int locate_main_operator(int p, int q) {
 	return location;
 }
 
+
+/*
+ * Function: int locate_first_operator(int p, int q)
+ * Description: Finds the first operator in an expression between positions p and q.
+ * Returns:
+ *   The index of the first operator token in the range [p, q] that is not
+ *   enclosed in parentheses. If no operator is found, returns -1.
+*/
+int locate_first_operator(int p, int q) {
+	for (int i = p; i <= q; i++) {
+		if (tokens[p].type == '(') {
+			i = find_corresponding_right_bracket_position(p ,q);
+			if(i == -1) assert(0);
+		}
+		if (tokens[i].type == '+' || tokens[i].type == '-' 
+			|| tokens[i].type == '*' || tokens[i].type == '/'){
+			return i;
+		}
+	}
+	return -1;
+}
+
+
 int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 	switch (op_type) {
 		case '+': return val1 + val2;
@@ -396,7 +448,7 @@ int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 }
 
 /*
-*	Function: uint32_t eval(int p,int q)
+* Function: uint32_t eval(int p,int q)
 * Description:Evaluates the value of an expression represented by tokens.
 *
 * Parameters:
@@ -424,8 +476,19 @@ uint32_t eval(int p, int q) {
 		return eval(p + 1, q -1);
 	}
 	//TODO
-	else if (tokens[p].type == TK_DEREF) {
-		return 0; 
+	else if (check_prefix_operation(p)) {
+		int first_operator_position = locate_first_operator(p, q);
+		if (first_operator_position == -1) { // expression from index p and q, is a single expression
+			uint32_t expr_value = eval(p + 1 ,q);
+			return prefix_strategies[tokens[p].type](expr_value);
+		} else {
+			uint32_t expr_value = eval(p + 1, first_operator_position - 1);
+			uint32_t val1 = prefix_strategies[tokens[p].type](expr_value);
+			uint32_t val2 = eval(first_operator_position + 1, q);
+			
+			uint32_t result = calc_apply(tokens[first_operator_position].type, val1, val2);
+			return result;
+		}
 	}
 	else {
 		int operator_position = locate_main_operator(p, q);
