@@ -455,11 +455,9 @@ int locate_main_operator(int p, int q) {
  *   enclosed in parentheses. If no operator is found, returns -1.
 */
 int locate_first_operator(int p, int q) {
-	printf("locate first operator start!\n");
 	for (int i = p; i <= q; i++) {
 		if (tokens[i].type == '(') {
 			int index = find_corresponding_right_bracket_position(i ,q);
-			printf("***** SUCCESS:right index is %d\n", index);
 			if(index == -1) assert(0);
 			i = index;
 		}
