@@ -14,6 +14,7 @@
 ***************************************************************************************/
 #ifndef TEST
 #include <isa.h>
+ #include "memory/vaddr.h"
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -268,15 +269,21 @@ uint32_t convert_token_to_unsigned_num(const Token token){
 
 // TODO
 static bool check_prefix_operation(int index) {
+	int op_type = tokens[index].type;
+	switch (op_type) {
+		case TK_DEREF:
+		case TK_NEGATIVE:
+		return true;
+	}
 	return false;
 }
 
 static uint32_t defer_strategy_handle(uint32_t address) {
-	return 0;
+	return (uint32_t) vaddr_read(address, 4);
 }
 
 static uint32_t negative_strategy_handle(uint32_t num) {
-	return 0;
+	return -num;
 }
 
 
