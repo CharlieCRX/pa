@@ -18,16 +18,28 @@
 #define NR_WP 32
 
 typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-
+	int NO;
+	word_t address;
+	char expr[32];
+	struct watchpoint *next;
 } WP;
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 
+// =====================
+// Function Prototypes
+// =====================
+void init_wp_pool();
+void insert_head(WP **head, WP wp);
+void delete_head(WP **head);
+void delte_watchpoint(WP **head, WP *key_wp);
+void print_list(WP *head);
+
+
+// ============================
+// Function Implementation
+// ============================
 void init_wp_pool() {
   int i;
   for (i = 0; i < NR_WP; i ++) {
@@ -39,5 +51,7 @@ void init_wp_pool() {
   free_ = wp_pool;
 }
 
-/* TODO: Implement the functionality of watchpoint */
-
+void insert_head(WP **head, WP wp) {}
+void delete_head(WP **head) {}
+void delte_watchpoint(WP **head, WP *key_wp) {}
+void print_list(WP *head) {}
