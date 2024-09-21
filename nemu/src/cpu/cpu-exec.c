@@ -43,7 +43,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 	bool has_changes = watchpoint_check_changes();
 	if (has_changes) {
 		// Set stop status
-
+		nemu_state.state = NEMU_STOP;
 		// Return the sdb_mainloop
 	}
 }

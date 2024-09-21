@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include "watchpoint.h"
 #include "memory/vaddr.h"
 static int is_batch_mode = false;
 
@@ -128,6 +129,8 @@ static int cmd_scan_memory(char *args);
 
 static int cmd_eval(char *args);
 
+static int cmd_watchpoint_create(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -140,6 +143,7 @@ static struct {
 	{ "info", "Prints the current infomation of registers or watchpoints", cmd_info},
 	{ "x", "Scans memory starting from a given address and outputs N consecutive 4-byte values.", cmd_scan_memory},
 	{ "p", "Evaluate the expression EXPR to obtain its value, including printing register values and dereferencing pointers.", cmd_eval},
+	{ "w", "Set a watchpoint with an valid expression.", cmd_watchpoint_create},
   /* TODO: Add more commands */
 
 };
@@ -224,6 +228,10 @@ static int cmd_eval(char *args) {
 	return 0;
 }
 
+static int cmd_watchpoint_create(char *args) {
+	expr_watchpoint_create(args);
+	return 0;
+}
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;
