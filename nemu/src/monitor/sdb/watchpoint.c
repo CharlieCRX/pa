@@ -54,6 +54,7 @@ void free_wp(WP *wp);
 void expr_watchpoint_create(char *e);
 bool watchpoint_check_changes();
 void print_wp();
+void watchpoint_remove_by_id(int no);
 // ============================
 // Function Implementation
 // ============================
@@ -174,6 +175,28 @@ void free_wp(WP *wp) {
 void print_wp(WP *wp) {
 	printf("watchpoint %d: %s\n", wp->NO, wp->data->expr);
 }
+
+
+WP *watchpoint_get_by_id(int no) {
+	if (head == NULL) return NULL;
+	WP *temp = head;
+	while(temp != NULL) {
+		if(temp->NO == no) {
+			return temp;
+		}
+		temp = temp->next;
+	}
+	return NULL;
+}
+void watchpoint_remove_by_id(int no) {
+	WP *wp = watchpoint_get_by_id(no);
+	if (wp == NULL) {
+		printf("There is no watchpoint numbered %d!\n", no);
+	} else {
+		free_wp(wp);
+	}
+}
+
 
 /*
  * @Function: expr_watchpoint_create

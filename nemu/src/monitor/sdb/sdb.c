@@ -131,6 +131,7 @@ static int cmd_eval(char *args);
 
 static int cmd_watchpoint_create(char *args);
 
+static int cmd_watchpoint_delete(char *args); 
 static struct {
   const char *name;
   const char *description;
@@ -144,6 +145,7 @@ static struct {
 	{ "x", "Scans memory starting from a given address and outputs N consecutive 4-byte values.", cmd_scan_memory},
 	{ "p", "Evaluate the expression EXPR to obtain its value, including printing register values and dereferencing pointers.", cmd_eval},
 	{ "w", "Set a watchpoint with an valid expression.", cmd_watchpoint_create},
+	{ "d", "Delete a watchpoint with a specific number.", cmd_watchpoint_delete},
   /* TODO: Add more commands */
 
 };
@@ -234,6 +236,10 @@ static int cmd_eval(char *args) {
 
 static int cmd_watchpoint_create(char *args) {
 	expr_watchpoint_create(args);
+	return 0;
+}
+
+static int cmd_watchpoint_delete(char *args) {
 	return 0;
 }
 
