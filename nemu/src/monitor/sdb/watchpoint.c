@@ -194,6 +194,7 @@ void watchpoint_remove_by_id(int no) {
 		printf("There is no watchpoint numbered %d!\n", no);
 	} else {
 		free_wp(wp);
+		printf("Delete operation completed!\n");
 	}
 }
 
