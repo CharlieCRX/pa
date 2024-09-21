@@ -237,6 +237,10 @@ bool watchpoint_check_changes() {
 }
 
 void print_watchpoints() {
+	if (head == NULL) {
+		printf("There is no watchpoint!\n");
+		return;
+	}
 	print_list(&head);
 }
 // =====================
