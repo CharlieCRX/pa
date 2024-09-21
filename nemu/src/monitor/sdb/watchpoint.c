@@ -53,6 +53,7 @@ WP* new_wp();
 void free_wp(WP *wp);
 void expr_watchpoint_create(char *e);
 bool watchpoint_check_changes();
+void print_wp();
 // ============================
 // Function Implementation
 // ============================
@@ -214,12 +215,12 @@ void print_comparision_in_wp(WP *wp, word_t result) {
  *  - `false` if no changes were detected.
 */
 bool watchpoint_check_changes() {
-	bool success = false;
+	bool has_changed = false;
 	WP *current = head;
 	// Traverse through all existing watchpoints.
 	while (current != NULL) {
 		// For each watchpoint, retrieve its associated expression.
-		bool success = false;
+		bool success = true;
 		word_t result = expr(current->data->expr, &success);
 
 		// Compare the result with the previous value (`old_value`). 
@@ -228,13 +229,16 @@ bool watchpoint_check_changes() {
 			print_comparision_in_wp(current, result);
 			// Replace the old value with the result
 			current->data->old_value = result;
-			success = true;
+			has_changed = true;
 		}
 		current = current->next;
 	}
-	return success;
+	return has_changed;
 }
 
+void print_watchpoints() {
+	print_list(&head);
+}
 // =====================
 // Test Function
 // =====================
