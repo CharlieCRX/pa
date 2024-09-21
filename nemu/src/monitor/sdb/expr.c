@@ -33,11 +33,13 @@
 enum {
   TK_NOTYPE = 256, 
 	TK_EQ,
+	TK_NEQ,
 	TK_NUM,
 	TK_HEX,
 	TK_REG,
 	TK_DEREF,
 	TK_NEGATIVE,
+	TK_AND,
 };
 
 static struct rule {
@@ -52,9 +54,11 @@ static struct rule {
 	{"\\+", '+'},         // plus
 	{"\\-", '-'},		  // sub
 	{"==", TK_EQ},        // equal
+	{"!=", TK_NEQ},				// not equal
 	{"(0x|0X)[0-9a-fA-F]+", TK_HEX}, // hexadecimal
 	{"\\$[0-9a-zA-Z]+", TK_REG},     //	register
 	{"[0-9]+", TK_NUM},   // decimal
+	{"&&", TK_AND},				// AND
 };
 #ifndef TEST
 #define NR_REGEX ARRLEN(rules)
@@ -435,6 +439,25 @@ int locate_main_operator(int p, int q) {
 				location = i;
 			}
 		}
+
+		else if (tokens[i].type == TK_EQ) {
+			if (location == -1 || tokens[location].type == TK_EQ) {
+				location = i;
+			}
+		}
+
+		else if (tokens[i].type == TK_NEQ) {
+			if (location == -1 || tokens[location].type == TK_NEQ) {
+				location = i;
+			}
+		}
+
+		else if (tokens[i].type == TK_AND) {
+			if (location == -1 || tokens[location].type == TK_AND) {
+				location = i;
+			}
+		}
+
 	}
 	#ifdef TEST
 	printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
@@ -462,7 +485,9 @@ int locate_first_operator(int p, int q) {
 			i = index;
 		}
 		if (tokens[i].type == '+' || tokens[i].type == '-' 
-			|| tokens[i].type == '*' || tokens[i].type == '/'){
+			|| tokens[i].type == '*' || tokens[i].type == '/'
+			|| tokens[i].type == TK_EQ || tokens[i].type == TK_NEQ
+			|| tokens[i].type == TK_AND){
 			return i;
 		}
 	}
@@ -479,6 +504,9 @@ int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 			if(val2 != 0) {
 				return val1 / val2;
 			}
+		case TK_EQ: return val1 == val2;
+		case TK_NEQ: return val1 != val2;
+		case TK_AND: return val1 && val2; 
 		default: assert(0);
 	}
 	return 0;
