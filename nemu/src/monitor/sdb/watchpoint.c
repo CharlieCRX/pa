@@ -64,7 +64,7 @@ static void print_list(WP **head) {
 	WP *temp = *head;
 	while (temp != NULL) {
 		printf("NO = %-2d,", temp->NO);
-		printf("address = 0x%08x, expr = %s, old value = 0x%08x", temp->data->address, temp->data->expr, temp->data->old_value);
+		printf("address = 0x%08x, expr = %s, old value = 0x%08x\n", temp->data->address, temp->data->expr, temp->data->old_value);
 		temp = temp->next;
 	}
 	printf("****************** print_list end! ************************\n");
