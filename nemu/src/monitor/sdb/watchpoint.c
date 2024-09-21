@@ -170,6 +170,11 @@ void free_wp(WP *wp) {
 	insert_tail(&free_, temp);
 }
 
+
+void print_wp(WP *wp) {
+	printf("watchpoint %d: %s\n", wp->NO, wp->data->expr);
+}
+
 /*
  * @Function: expr_watchpoint_create
  * @Description: Inputs a string expression 'expr' and creates a new watchpoint, 
@@ -192,14 +197,12 @@ void expr_watchpoint_create(char *e) {
 		
 		// Assign the result to `old_value` in the watchpoint
 		wp->data->old_value = result;
+		print_wp(wp);
 	} else {
 		printf("Your expression is invalid!\n");
 	}
 }
 
-void print_wp(WP *wp) {
-	printf("watchpoint %d: %s\n", wp->NO, wp->data->expr);
-}
 
 void print_comparision_in_wp(WP *wp, word_t result) {
 	print_wp(wp);
