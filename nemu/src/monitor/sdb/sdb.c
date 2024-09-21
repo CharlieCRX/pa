@@ -240,6 +240,8 @@ static int cmd_watchpoint_create(char *args) {
 }
 
 static int cmd_watchpoint_delete(char *args) {
+	int no = string_to_num(args);
+	watchpoint_remove_by_id(no);
 	return 0;
 }
 
