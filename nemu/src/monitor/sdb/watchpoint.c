@@ -181,7 +181,7 @@ void free_wp(WP *wp) {
  */
 void expr_watchpoint_create(char *e) {
 	// Verify that the expression is legal
-	bool success = false;
+	bool success = true;
 	word_t result = expr(e, &success);
 	if (success) {
 		// Allocate a new watchpoint structure 'wp' using `new_wp()`.
