@@ -54,11 +54,11 @@ static struct rule {
 	{"\\+", '+'},         // plus
 	{"\\-", '-'},		  // sub
 	{"==", TK_EQ},        // equal
-	{"!=", TK_NEQ},				// not equal
 	{"(0x|0X)[0-9a-fA-F]+", TK_HEX}, // hexadecimal
 	{"\\$[0-9a-zA-Z]+", TK_REG},     //	register
 	{"[0-9]+", TK_NUM},   // decimal
 	{"&&", TK_AND},				// AND
+	{"!=", TK_NEQ},				// not equal
 };
 #ifndef TEST
 #define NR_REGEX ARRLEN(rules)
@@ -123,6 +123,7 @@ static bool make_token(char *e) {
 					case TK_REG:
 					case TK_NUM:
 					case TK_HEX:
+					case TK_EQ:
 						if(substr_len > 31) {
 							substr_len = 31;
 						}
@@ -163,7 +164,8 @@ void print_tokens(int p, int q) {
 		switch (tokens[i].type) {
 			case TK_NUM:
 			case TK_HEX:
-			case TK_REG:	
+			case TK_REG:
+			case TK_EQ:	
 				printf("%s", tokens[i].str);
 				break;
 			default:
@@ -279,7 +281,7 @@ uint32_t convert_token_to_unsigned_num(const Token token){
 // TODO
 static bool check_prefix_operation(int index) {
 	#ifdef TEST
-	printf("FUC:check prefix operation start!\n");
+	//printf("FUC:check prefix operation start!\n");
 	#endif
 	int op_type = tokens[index].type;
 	switch (op_type) {
@@ -312,7 +314,7 @@ static uint32_t negative_strategy_handle(uint32_t num) {
 */
 bool check_parentheses(int p,int q) {
 	#ifdef TEST
-	printf("start check parenthess!**************\n");
+	printf("***************** start check parenthess! **************\n");
 	#endif
 	//print_tokens(p, q);
 	#ifdef TEST
@@ -324,7 +326,7 @@ bool check_parentheses(int p,int q) {
 		q = q - 1;
 	} else {
 	  #ifdef TEST
-	  printf("this expr is not a (expr)\n");
+	  printf("************end check parentheses: ERROR!this expr is not a (expr)\n\n");
 	  #endif
 		return false;
 	}
@@ -351,8 +353,14 @@ bool check_parentheses(int p,int q) {
 	printf("check paren now left brackets is %d\n", depth);
 	#endif
 	if (depth!= 0) {
+		#ifdef TEST
+		printf("************end check parentheses: ERROR!depth is not 0!\n\n");
+		#endif
 		return false;
 	}
+	#ifdef TEST
+	printf("************end check parentheses: SUCCESS!this expr is a (expr)\n\n");
+	#endif
 	return true;
 }
 
@@ -418,53 +426,50 @@ int locate_main_operator(int p, int q) {
 			printf("corresponding right bracket index is %d\n", i);
 			#endif
 		}
-		// 2. Replace the recorded operator if the next operator is `+` or `-`.
+		// If both the recorded and next operators are `*` or `/`, update the recorded operator. 
+		// If the location is uninitialized, update the record operator, too.
+		else if (tokens[i].type == '*' || tokens[i].type == '/') {
+			// Also replaces if the previous operator has the same precedence
+			if (location == -1 || tokens[location].type == '*' || tokens[location].type == '/') {
+				location = i;
+			}
+		}
+		//  Replace the recorded operator if the next operator is `+` or `-`.
 		else if (tokens[i].type == '+' || tokens[i].type == '-') {
 			// "--1" and "1-1-1"
 			// Two consecutive negative signs,choose the first one as the main operator
-			if(location != -1 && (location == i - 1) && tokens[location].type == '-')  {
+			if(location != 0 && (location == i - 1) && tokens[location].type == '-')  {
 				continue;
 			}
-			location = i;
-		}
-		// 3. If both the recorded and next operators are `*` or `/`, update the recorded operator. 
-		// If the location is uninitialized, update the record operator, too.
-		else if (tokens[i].type == '*' || tokens[i].type == '/') {
-			// Uninitialized location
-			if (location == -1) {
-				location = i;
-			}
-			// Also replaces if the previous operator has the same precedence
-			else if (tokens[location].type == '*' || tokens[location].type == '/') {
+		else if (location == -1 || tokens[location].type == '*' || tokens[location].type == '/' 
+			|| tokens[location].type == '+' || tokens[location].type == '-'){
 				location = i;
 			}
 		}
 
 		else if (tokens[i].type == TK_EQ) {
-			if (location == -1 || tokens[location].type == TK_EQ) {
+			if ((location == -1) || (tokens[location].type != TK_NEQ && tokens[location].type != TK_AND)) {
 				location = i;
 			}
 		}
 
 		else if (tokens[i].type == TK_NEQ) {
-			if (location == -1 || tokens[location].type == TK_NEQ) {
+			if ((location == -1) || (tokens[location].type != TK_AND)) {
 				location = i;
 			}
 		}
 
 		else if (tokens[i].type == TK_AND) {
-			if (location == -1 || tokens[location].type == TK_AND) {
-				location = i;
-			}
+			location = i;
 		}
 
 	}
 	#ifdef TEST
-	printf("\ntokens[%d].type = %c\n",location, tokens[location].type);
+	printf("\ntokens[%d].type = %c, str : %s\n",location, tokens[location].type, tokens[location].str);
 	#endif
-	assert(location != -1);
+	assert(location != 0);
 	#ifdef TEST
-	printf("locate main operator is over now!\n\n");
+	printf("***********END:locate main operator is over now!*********************************\n\n");
 	#endif
 	return location;
 }
@@ -506,7 +511,7 @@ int32_t calc_apply(int op_type, int32_t val1, int32_t val2) {
 			}
 		case TK_EQ: return val1 == val2;
 		case TK_NEQ: return val1 != val2;
-		case TK_AND: return val1 && val2; 
+		case TK_AND: return val1 && val2;
 		default: assert(0);
 	}
 	return 0;
@@ -572,6 +577,7 @@ uint32_t eval(int p, int q) {
 
 		#ifdef TEST
 		printf("val1 = %d, val2 = %d, op = %c,result = %d\n", val1, val2, tokens[operator_position].type, result);
+		printf("*********End eval()!*********\n");
 		#endif
 		return result;
 
@@ -590,6 +596,12 @@ word_t expr(char *e, bool *success) {
 			tokens[i].type = TK_DEREF;
 			#ifdef TEST
 			printf("tokens[%d].type = TK_DEREF = %d!\n", i, TK_DEREF);
+			#endif
+		} 
+		else if (tokens[i].type == '-' && (i == 0 || tokens[i - 1].type == '(')) {
+			tokens[i].type = TK_NEGATIVE;
+			#ifdef TEST
+			printf("tokens[%d].type = TK_NEGATIVE= %d!\n", i, TK_NEGATIVE);
 			#endif
 		}
 	}
@@ -690,6 +702,14 @@ void test_prefix_func() {
 	printf("result = %d\n", result);
 }
 
+void test_eq_expr() {
+	//char *str = "3+5==2*4";
+	char *str = "(-1)";
+	bool success = true;
+	uint32_t result = expr(str, &success);
+	printf("result = %u!\n", result);
+}
+
 int main() {
 	init_regex();
 	//test_first_operator();
@@ -702,7 +722,8 @@ int main() {
 	//test_find_corresponding_right_bracket();
 	//test_conversion_num();
 	//test_convert_func();
-	test_prefix_func();
+	//test_prefix_func();
+	test_eq_expr();
 	return 0;
 }
 #endif
