@@ -42,7 +42,6 @@ void isa_reg_display() {
  */
 static int reg_idx_by_name(const char *name) {
 	int num_regs = MUXDEF(CONFIG_RVE, 16, 32);
-
 	// Iterate over the register names array to find a match
 	for (int i = 0; i < num_regs; i++) {
 		if (strcmp(name, regs[i]) == 0) {
@@ -53,6 +52,8 @@ static int reg_idx_by_name(const char *name) {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
+	if (strcmp(s, "pc") == 0) 
+		return (word_t)nemu_state.halt_pc;
 	int idx = reg_idx_by_name(s);
 	if(idx != -1) {
 		*success = true;
