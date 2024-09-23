@@ -180,7 +180,6 @@ static int cmd_info(char *args) {
 	char *arg = strtok(NULL, " ");
 
 	if (arg == NULL || strcmp(arg, "r") == 0) {
-		printf("print register!\n\n\n\n");
 		isa_reg_display();
 	}
 
