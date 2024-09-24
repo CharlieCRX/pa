@@ -209,9 +209,6 @@ void watchpoint_remove_by_id(int no) {
  *
  */
 void expr_watchpoint_create(char *e) {
-	#ifndef CONFIG_ITRACE
-	#define CONFIG_ITRACE
-	#endif
 	// Verify that the expression is legal
 	bool success = true;
 	word_t result = expr(e, &success);
