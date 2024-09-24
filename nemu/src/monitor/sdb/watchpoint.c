@@ -250,7 +250,6 @@ bool watchpoint_check_changes() {
 		bool success = true;
 		word_t result = expr(current->data->expr, &success);
 
-		printf("wp:old_value = %d, new_value = %d\n", current->data->old_value, result);
 		// Compare the result with the previous value (`old_value`). 
 		if (result != current->data->old_value) {
 			// Output the comparison between the old value and result

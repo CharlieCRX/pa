@@ -24,7 +24,7 @@ const char *regs[] = {
 };
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 void isa_reg_display() {
-	printf("pc = 0x%08x\n", nemu_state.halt_pc);
+	printf("pc = 0x%08x\n", cpu.pc);
 	for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
 		if (gpr(i) == 0) {
 			printf("%-3s = %d\n", regs[i], gpr(i));
@@ -53,7 +53,7 @@ static int reg_idx_by_name(const char *name) {
 
 word_t isa_reg_str2val(const char *s, bool *success) {
 	if (strcmp(s, "pc") == 0) 
-		return (word_t)nemu_state.halt_pc;
+		return (word_t)cpu.pc;
 	int idx = reg_idx_by_name(s);
 	if(idx != -1) {
 		*success = true;
