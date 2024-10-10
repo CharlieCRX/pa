@@ -23,7 +23,7 @@
 #define Mw vaddr_write
 #undef TODO
 
-#define TODO() do { nemu_state.state = NEMU_STOP;} while(0)
+#define TODO() do { nemu_state.state = NEMU_QUIT;} while(0)
 enum {
   TYPE_R, TYPE_I, TYPE_U, TYPE_S, TYPE_B, TYPE_J,
   TYPE_N, // none
