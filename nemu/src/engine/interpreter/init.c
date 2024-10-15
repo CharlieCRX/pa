@@ -22,6 +22,9 @@ void engine_start() {
   cpu_exec(-1);
 #else
   /* Receive commands from user. */
+#ifdef BATCH_MODE
+	sdb_set_batch_mode();
+#endif
   sdb_mainloop();
 #endif
 }
