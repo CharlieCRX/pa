@@ -16,6 +16,7 @@
 #include <cpu/cpu.h>
 
 void sdb_mainloop();
+void sdb_set_batch_mode();
 
 void engine_start() {
 #ifdef CONFIG_TARGET_AM

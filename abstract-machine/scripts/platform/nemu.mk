@@ -15,7 +15,6 @@ NEMUFLAGS += -l $(shell dirname $(IMAGE).elf)/nemu-log.txt --batch
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
 CFLAGS += -I$(AM_HOME)/am/src/platform/nemu/include
-CFLAGS += -DBATCH_MODE
 .PHONY: $(AM_HOME)/am/src/platform/nemu/trm.c
 
 image: $(IMAGE).elf
