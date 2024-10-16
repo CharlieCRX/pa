@@ -216,7 +216,7 @@ static int cmd_scan_memory(char *args) {
 			uint8_t data = vaddr_read(addr_hex + 4*i + j, 1);
 			//4 bytes per line
 			//uint8_t data = *addr_hex;
-			printf(" %02x(%2c)", data,data);
+			printf(" %02x(%c)", data,data);
 		}
 		printf("\n");
 	}
