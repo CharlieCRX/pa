@@ -1,7 +1,13 @@
+#ifndef TEST
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdint.h>
+#endif
 
+
+#ifdef TEST
+#include <stdio.h>
+#endif
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
@@ -125,12 +131,37 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 	const unsigned char *p1 = s1;
 	const unsigned char *p2 = s2;
 
-	while (*p1 && (*p1 == *p2)) {
-		p1++;
-		p2++;
+	size_t i;
+	for (i = 0; i < n ; i++) {
+		if (*p1 != *p2) 
+			break;
 	}
-
 	return *p1 - *p2;
 }
 
 #endif
+
+#ifdef TEST
+char *s[] = {
+	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+	", World!\n",
+	"Hello, World!\n",
+	"#####"
+};
+
+char str1[] = "Hello";
+char str[20];
+
+int main() {
+	strcat(strcpy(str, str1), s[3]);
+	printf("str = %s\n", str);
+	//if(memcmp(memset(str, '#', 5), s[5], 5) == 0) printf("TEST OK\n");
+	printf("memset(str, '#', 5) = %s\n", (char *)memset(str, '#', 5));
+
+	printf("memcmp(str, s[5], 5) = %d\n",memcmp(str, s[5], 5) );
+	return 0;
+}
+#endif
+
