@@ -142,6 +142,7 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 #endif
 
 #ifdef TEST
+/*
 char *s[] = {
 	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 	"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
@@ -163,5 +164,6 @@ int main() {
 	printf("memcmp(str, s[5], 5) = %d\n",memcmp(str, s[5], 5) );
 	return 0;
 }
+*/
 #endif
 
