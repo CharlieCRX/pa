@@ -18,6 +18,7 @@
 #include <cpu/difftest.h>
 #include <locale.h>
 #include "watchpoint.h"
+#include "iringbuf.h"
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -30,8 +31,12 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+char temp_buf[128];
+static iringbuf *rb = NULL;
+
 
 void device_update();
+static char *get_inst_message(Decode *s);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -50,10 +55,41 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 	}
 }
 
+// 保存当前执行的指令信息
+static char *get_inst_message(Decode *s) {
+	char *p = temp_buf;
+  p += snprintf(p, sizeof(temp_buf), FMT_WORD ":", s->pc);
+  int ilen = s->snpc - s->pc;
+  int i;
+  uint8_t *inst = (uint8_t *)&s->isa.inst.val;
+  for (i = ilen - 1; i >= 0; i --) {
+    p += snprintf(p, 4, " %02x", inst[i]);
+  }
+  int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
+  int space_len = ilen_max - ilen;
+  if (space_len < 0) space_len = 0;
+  space_len = space_len * 3 + 1;
+  memset(p, ' ', space_len);
+  p += space_len;
+
+#ifndef CONFIG_ISA_loongarch32r
+  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
+      MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+#else
+  p[0] = '\0'; // the upstream llvm does not support loongarch32r
+#endif
+	return temp_buf;
+}
+
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
+
+	char *msg = get_inst_message(s);
+	push(rb, msg);
+
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
@@ -117,6 +153,7 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
+	init_ringbuf(rb);
 
   execute(n);
 
@@ -135,4 +172,5 @@ void cpu_exec(uint64_t n) {
       // fall through
     case NEMU_QUIT: statistic();
   }
+	print_ringbuf(rb);
 }
