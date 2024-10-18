@@ -3,12 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #endif
-
-#ifndef TEST
 #include "watchpoint.h"
 #include "sdb.h"
-#endif
-#define IRINGBUF_MAX_LEN 5 
+#define IRINGBUF_MAX_LEN 10 
 
 typedef struct Node {
 	char message[128];
