@@ -57,6 +57,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 // 保存当前执行的指令信息
 static char *get_inst_message(Decode *s) {
+	temp_buf[0] = '\0';
 	char *p = temp_buf;
   p += snprintf(p, sizeof(temp_buf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
