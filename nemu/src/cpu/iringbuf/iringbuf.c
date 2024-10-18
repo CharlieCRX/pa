@@ -1,7 +1,6 @@
 #include "iringbuf.h"
 
 void init_ringbuf(iringbuf *rb) {
-	rb = (iringbuf *) malloc(sizeof(iringbuf));
 	rb->head = NULL;
 	rb->tail = NULL;
 	rb->count = 0;
@@ -52,7 +51,6 @@ void destroy_ringbuf(iringbuf *rb) {
 	while( rb->count > 0 ) {
 		pop(rb);
 	}
-	free(rb);
 }
 
 void print_ringbuf(iringbuf *rb) {
