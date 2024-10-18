@@ -42,10 +42,8 @@ void push(iringbuf *rb, const char *msg) {
 		rb->tail->next = new_node;	// 旧尾节点后添加此节点
 		rb->tail = new_node;				// 更新尾节点指针
 	}
-	rb->count++;
 
-	// 释放临时节点
-	free(new_node);
+	rb->count++;
 
 }
 
