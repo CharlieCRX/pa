@@ -154,7 +154,6 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
-	rb = (iringbuf *) malloc(sizeof(iringbuf));
 	init_ringbuf(rb);
 
   execute(n);
@@ -175,4 +174,5 @@ void cpu_exec(uint64_t n) {
     case NEMU_QUIT: statistic();
   }
 	print_ringbuf(rb);
+	destroy_ringbuf(rb);
 }
