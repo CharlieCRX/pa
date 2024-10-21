@@ -88,8 +88,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->snpc = pc;
   isa_exec_once(s);
 
-	char *msg = get_inst_message(s);
-	push(rb, msg);
+	char *iringbuf_msg = get_inst_message(s);
+	push(rb, iringbuf_msg);
 
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
