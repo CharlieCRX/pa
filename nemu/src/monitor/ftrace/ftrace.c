@@ -40,7 +40,8 @@ void parse_elf(const char *elf_file) {
 	if (elf_file == NULL) {
 		return;
 	}
-
+	
+	ftrace_write("The elf file is %s\n", elf_file);
 	is_trace_func = 1;
 	FILE *file = fopen(elf_file, "rb");
 	assert(file != NULL);
