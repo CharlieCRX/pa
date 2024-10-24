@@ -26,7 +26,7 @@ typedef struct SymbolEntry {
 static SymbolEntry* sym_entrys = NULL;
 static uint32_t sym_num = 0;
 static uint32_t call_depth = 0;
-static uint32_t trace_func_call_flag = 0;
+static uint32_t trace_func_call_flag = 0;	// Flag to determine whether to trace function calls
 
 void init_symtab_entrys(FILE *file);
 char *get_strtab(Elf32_Shdr *strtab, FILE *file);
