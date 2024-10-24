@@ -47,7 +47,7 @@ void parse_elf(const char *elf_file) {
 	assert(file != NULL);
 
 	init_symtab_entrys(file);
-	print_sym_entrys();
+	//print_sym_entrys();
 }
 
 char *get_function_name_by_addres(paddr_t addr) {
