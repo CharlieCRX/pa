@@ -34,7 +34,6 @@ static bool g_print_step = false;
 char temp_buf[128];
 static iringbuf *rb = NULL;
 
-
 void device_update();
 static char *get_inst_message(Decode *s);
 
@@ -114,6 +113,14 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #else
   p[0] = '\0'; // the upstream llvm does not support loongarch32r
+#endif
+
+#ifdef CONFIG_FTRACE
+static uint32_t address = 0;
+if (is_call_instruction(s->isa.inst.val)) {
+	address = s->dnpc;
+	
+	
 #endif
 #endif
 }
