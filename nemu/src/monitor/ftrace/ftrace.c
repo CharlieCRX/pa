@@ -26,7 +26,7 @@ typedef struct SymbolEntry {
 static SymbolEntry* sym_entrys = NULL;
 static uint32_t sym_num = 0;
 static uint32_t call_depth = 0;
-static uint32_t is_trace_func = 0;
+static uint32_t trace_func_call_flag = 0;
 
 void init_symtab_entrys(FILE *file);
 char *get_strtab(Elf32_Shdr *strtab, FILE *file);
@@ -42,7 +42,7 @@ void parse_elf(const char *elf_file) {
 	}
 	
 	Log("The elf file is %s\n", elf_file);
-	is_trace_func = 1;
+	trace_func_call_flag = 1;
 	FILE *file = fopen(elf_file, "rb");
 	assert(file != NULL);
 
@@ -126,7 +126,7 @@ void print_sym_entrys() {
 
 
 void trace_func_call(paddr_t pc, paddr_t target) {
-	if (is_trace_func == 0) return; //No elf file
+	if (trace_func_call_flag == 0) return; //No elf file
 	++call_depth;
 
 	if (call_depth <= 2) return; // ignore _trm_init & main
@@ -143,7 +143,7 @@ void trace_func_call(paddr_t pc, paddr_t target) {
 }
 
 void trace_func_ret(paddr_t pc) {
-	if (is_trace_func == 0) return; //No elf file
+	if (trace_func_call_flag == 0) return; //No elf file
 
 	if (call_depth <= 2) return; // ignore _trm_init & main
 
