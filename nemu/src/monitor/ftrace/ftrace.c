@@ -66,7 +66,7 @@ void init_symtab_entrys(FILE *elf_file) {
 	// Get Section header by ELF header
 	Elf32_Shdr *shdrs = malloc(sizeof(Elf32_Shdr) * ehdr.e_shnum);
 	result = fseek(elf_file, ehdr.e_shoff, SEEK_SET);
-	assert(result == 1);
+	assert(result == 0);
 	result = fread(shdrs, sizeof(Elf32_Shdr), ehdr.e_shnum, elf_file);
 	assert(result != 0);
 
@@ -88,7 +88,7 @@ void init_symtab_entrys(FILE *elf_file) {
 	// Get symtab entrys
 	Elf32_Sym *symbol_tables = malloc(sizeof(Elf32_Sym) * entry_num);
 	result = fseek(elf_file, offset, SEEK_SET);
-	assert(result == 1);
+	assert(result == 0);
 	result = fread(symbol_tables, sizeof(Elf32_Sym), entry_num, elf_file);
 	assert(result != 0);
 
@@ -154,7 +154,7 @@ char *get_strtab(Elf32_Shdr *strtab, FILE *file) {
 	char *str = malloc(strtab->sh_size);
 
 	int result = fseek(file, strtab->sh_offset, SEEK_SET);
-	assert(result == 1);
+	assert(result == 0);
   result = fread(str, 1, strtab->sh_size, file);
 	assert(result != 0);
 
