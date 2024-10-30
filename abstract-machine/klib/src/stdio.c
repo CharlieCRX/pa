@@ -98,34 +98,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	char *out_ptr = out;
-	const char *fmt_ptr = fmt;
 
-	while (*fmt_ptr != '\0') {
-		if (*fmt_ptr == '%') {
-			fmt_ptr++; // Move to the format specifier
-
-			if (*fmt_ptr == 'd') {
-				int i = va_arg(args, int);
-				char num_str[20];
-				int_to_str(i, num_str);	// Convert integer to string
-				strcpy(out_ptr, num_str);	// Copy the number string to buffer
-				out_ptr += strlen(num_str);
-			}
-			else if (*fmt_ptr == 's') {
-				char *s = va_arg(args, char *);
-				strcpy(out_ptr, s);
-				out_ptr += strlen(s);
-			}
-		} else {
-			*out_ptr++ = *fmt_ptr; // Copy other characters
-		}
-		fmt_ptr++;	// Move to the next character in format
-	}
-	*out_ptr = '\0';	// Null-terminate the buffer
-	va_end(args);
-
-	return out_ptr - out;	// Return the length of the string
+	return process_format_string(out, fmt, args);
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
