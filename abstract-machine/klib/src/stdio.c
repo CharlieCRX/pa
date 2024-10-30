@@ -10,8 +10,10 @@
 #endif
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-void int_to_str(int num, char* str);
 
+#define MAX_STRING_LEN 1024
+void int_to_str(int num, char* str);
+int process_format_string(char *out, const char *fmt, va_list args);
 
 void int_to_str(int num, char* str) {
 	int i = 0, is_negative = 0;
@@ -42,18 +44,10 @@ void int_to_str(int num, char* str) {
 		str[k] = temp;
 	}
 }
-int printf(const char *fmt, ...) {
-  panic("Not implemented");
-}
 
-int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
-}
 
-int sprintf(char *out, const char *fmt, ...) {
-	va_list args;
-	va_start(args, fmt);
-	char *buf_ptr = out;
+int process_format_string(char *out, const char *fmt, va_list args) {
+	char *out_ptr = out;
 	const char *fmt_ptr = fmt;
 
 	while (*fmt_ptr != '\0') {
@@ -64,23 +58,74 @@ int sprintf(char *out, const char *fmt, ...) {
 				int i = va_arg(args, int);
 				char num_str[20];
 				int_to_str(i, num_str);	// Convert integer to string
-				strcpy(buf_ptr, num_str);	// Copy the number string to buffer
-				buf_ptr += strlen(num_str);
+				strcpy(out_ptr, num_str);	// Copy the number string to buffer
+				out_ptr += strlen(num_str);
 			}
 			else if (*fmt_ptr == 's') {
 				char *s = va_arg(args, char *);
-				strcpy(buf_ptr, s);
-				buf_ptr += strlen(s);
+				strcpy(out_ptr, s);
+				out_ptr += strlen(s);
 			}
 		} else {
-			*buf_ptr++ = *fmt_ptr; // Copy other characters
+			*out_ptr++ = *fmt_ptr; // Copy other characters
 		}
 		fmt_ptr++;	// Move to the next character in format
 	}
-	*buf_ptr = '\0';	// Null-terminate the buffer
+	*out_ptr = '\0';	// Null-terminate the buffer
 	va_end(args);
 
-	return buf_ptr - out;	// Return the length of the string
+	return out_ptr - out;	// Return the length of the string
+}
+
+int printf(const char *fmt, ...) {
+	char buf[MAX_STRING_LEN];
+	va_list args;
+	va_start(args, fmt);
+
+	int len = process_format_string(buf, fmt, args);
+
+	for (int i = 0; i < len; i++) {
+		putch(buf[i]);
+	}
+	
+	return len;
+}
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  panic("Not implemented");
+}
+
+int sprintf(char *out, const char *fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	char *out_ptr = out;
+	const char *fmt_ptr = fmt;
+
+	while (*fmt_ptr != '\0') {
+		if (*fmt_ptr == '%') {
+			fmt_ptr++; // Move to the format specifier
+
+			if (*fmt_ptr == 'd') {
+				int i = va_arg(args, int);
+				char num_str[20];
+				int_to_str(i, num_str);	// Convert integer to string
+				strcpy(out_ptr, num_str);	// Copy the number string to buffer
+				out_ptr += strlen(num_str);
+			}
+			else if (*fmt_ptr == 's') {
+				char *s = va_arg(args, char *);
+				strcpy(out_ptr, s);
+				out_ptr += strlen(s);
+			}
+		} else {
+			*out_ptr++ = *fmt_ptr; // Copy other characters
+		}
+		fmt_ptr++;	// Move to the next character in format
+	}
+	*out_ptr = '\0';	// Null-terminate the buffer
+	va_end(args);
+
+	return out_ptr - out;	// Return the length of the string
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
