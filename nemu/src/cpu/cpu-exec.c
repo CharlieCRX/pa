@@ -35,7 +35,9 @@ char temp_buf[128];
 static iringbuf *rb = NULL;
 
 void device_update();
+#ifdef CONFIG_ITRACE
 static char *get_inst_message(Decode *s);
+#endif
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -47,13 +49,14 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 	bool has_changes = watchpoint_check_changes();
 	if (has_changes && nemu_state.state == NEMU_RUNNING) {
 		//printf("%s\n", _this->logbuf);
-		puts(_this->logbuf);
+		IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
 		// Set stop status
 		nemu_state.state = NEMU_STOP;
 		// Return the sdb_mainloop
 	}
 }
 
+#ifdef CONFIG_ITRACE
 // 保存当前执行的指令信息
 static char *get_inst_message(Decode *s) {
 	temp_buf[0] = '\0';
@@ -81,17 +84,20 @@ static char *get_inst_message(Decode *s) {
 #endif
 	return temp_buf;
 }
+#endif
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
 
+  cpu.pc = s->dnpc;
+#ifdef CONFIG_ITRACE
+	// iringbuf
 	char *iringbuf_msg = get_inst_message(s);
 	push(rb, iringbuf_msg);
 
-  cpu.pc = s->dnpc;
-#ifdef CONFIG_ITRACE
+	//log
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
