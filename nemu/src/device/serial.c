@@ -28,11 +28,13 @@ static void serial_putc(char ch) {
   MUXDEF(CONFIG_TARGET_AM, putch(ch), putc(ch, stderr));
 }
 
+// 处理串行端口的读写操作
 static void serial_io_handler(uint32_t offset, int len, bool is_write) {
-  assert(len == 1);
+    assert(len == 1);
   switch (offset) {
     /* We bind the serial port with the host stderr in NEMU. */
     case CH_OFFSET:
+      // 只支持写操作，读取操作会导致程序崩溃（panic）
       if (is_write) serial_putc(serial_base[0]);
       else panic("do not support read");
       break;
