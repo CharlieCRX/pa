@@ -48,8 +48,6 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_J:									 immJ(); break;
   }
 }
-void trace_func_call(paddr_t pc, paddr_t target);
-void trace_func_ret(paddr_t pc);
 
 static int decode_exec(Decode *s) {
   int rd = 0;
