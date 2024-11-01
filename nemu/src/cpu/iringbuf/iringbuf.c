@@ -32,7 +32,7 @@ void push(iringbuf *rb, const char *msg) {
 	}
 
 	// 在末尾添加新的带有信息节点
-	strncpy(new_node->message, msg, sizeof(new_node->message));	// 复制信息
+	strncpy(new_node->message, msg, sizeof(new_node->message) - 1);	// 复制信息
 	new_node->next = NULL;
 
 	if (rb->count == 0) { // 如果缓冲区只有此一条新信息，则首尾皆更改为此信息

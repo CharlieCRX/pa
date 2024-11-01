@@ -12,6 +12,7 @@
 #define word_t uint32_t
 #endif
 
+#include <device/map.h>
 #include <fcntl.h>
 #include <elf.h>
 #include <unistd.h>
@@ -35,6 +36,10 @@ void print_sym_entrys();
 char *get_function_name_by_addres(paddr_t addr);
 void trace_func_call(paddr_t pc, paddr_t target);
 void trace_func_ret(paddr_t pc);
+void trace_dread(paddr_t addr, int len, IOMap *map);
+void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map);
+
+
 
 void parse_elf(const char *elf_file) {
 	if (elf_file == NULL) {
@@ -168,6 +173,19 @@ char *get_strtab(Elf32_Shdr *strtab, FILE *file) {
 
 	return str;
 }
+
+
+// dtrace
+void trace_dread(paddr_t addr, int len, IOMap *map) {
+	dtrace_write("dtrace: read %10s at " FMT_PADDR ",%d\n",
+	map->name, addr, len);
+}
+
+void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map) {
+	dtrace_write("dtrace: write %10s at " FMT_PADDR ",%d with " FMT_WORD "\n",
+	map->name, addr, len, data);
+}
+
 
 #ifdef TEST
 int main() {

@@ -23,8 +23,9 @@
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
 
+void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map);
+void trace_dread(paddr_t addr, int len, IOMap *map);
 
-// 
 uint8_t* new_space(int size) {
   uint8_t *p = p_space;
   // page aligned;
@@ -60,6 +61,7 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
+	trace_dread(addr, len, map);
   return ret;
 }
 
@@ -69,4 +71,5 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
+	trace_dwrite(addr, len, data, map);
 }
