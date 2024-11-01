@@ -22,6 +22,12 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
+#ifdef CONFIG_ITRACE
+void trace_func_call(paddr_t pc, paddr_t target);
+void trace_func_ret(paddr_t pc);
+#endif
+
+
 enum {
   TYPE_R, TYPE_I, TYPE_U, TYPE_S, TYPE_B, TYPE_J,
   TYPE_N, // none
