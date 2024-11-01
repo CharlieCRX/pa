@@ -39,6 +39,9 @@ enum {
 };
 
 #define SDL_KEYMAP(k) keymap[SDL_SCANCODE_ ## k] = NEMU_KEY_ ## k;
+
+
+SDL_KEYMAP(ESCAPE)
 static uint32_t keymap[256] = {};
 
 static void init_keymap() {
@@ -49,12 +52,37 @@ static void init_keymap() {
 static int key_queue[KEY_QUEUE_LEN] = {};
 static int key_f = 0, key_r = 0;
 
+/**
+ * @brief Enqueues a key into the key queue.
+ *
+ * This function adds a new key, represented by am_scancode, to the end 
+ * of the key queue. It updates the rear pointer (key_r) to point to 
+ * the next position in the circular queue. The function asserts that 
+ * the queue does not overflow by checking that the new rear pointer 
+ * does not equal the front pointer (key_f).
+ *
+ * @param am_scancode The key to be enqueued, represented as a 
+ *                    uint32_t scan code.
+ */
 static void key_enqueue(uint32_t am_scancode) {
   key_queue[key_r] = am_scancode;
   key_r = (key_r + 1) % KEY_QUEUE_LEN;
   Assert(key_r != key_f, "key queue overflow!");
 }
 
+
+/**
+ * @brief Dequeues a key from the key queue.
+ *
+ * This function removes and returns a key from the front of the key queue.
+ * If the queue is empty, it returns NEMU_KEY_NONE to indicate that no key
+ * is available. The function uses two pointers: key_f (the front of the 
+ * queue) and key_r (the rear of the queue) to manage the circular queue 
+ * behavior.
+ *
+ * @return uint32_t The key dequeued from the queue, or NEMU_KEY_NONE if 
+ *         the queue is empty.
+ */
 static uint32_t key_dequeue() {
   uint32_t key = NEMU_KEY_NONE;
   if (key_f != key_r) {
@@ -64,9 +92,26 @@ static uint32_t key_dequeue() {
   return key;
 }
 
+
+/**
+ * @brief Sends a key event to the key queue.
+ *
+ * This function processes a key event, represented by the given scancode 
+ * and its state (keydown or keyup). If the NEMU is currently running and 
+ * the scancode corresponds to a valid key, it enqueues the event into 
+ * the key queue with the appropriate state mask applied.
+ *
+ * @param scancode The raw scancode of the key event.
+ * @param is_keydown A boolean indicating whether the key event is a 
+ *                   keydown (true) or keyup (false) event.
+ */
+
 void send_key(uint8_t scancode, bool is_keydown) {
+  // NEMU在正常状态`NEMU_RUNNING`运行并且键入的扫描码`scancode`在键盘映射表`keymap`中对应有效的键值。
   if (nemu_state.state == NEMU_RUNNING && keymap[scancode] != NEMU_KEY_NONE) {
+    // 构造一个扩展的扫描码 am_scancode
     uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
+    // 写入键盘事件队列
     key_enqueue(am_scancode);
   }
 }
