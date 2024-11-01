@@ -9,12 +9,14 @@ void __am_gpu_init() {
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = 0, .height = 0,
-    .vmemsz = 0
+    .width  = BITS(inl(VGACTL_ADDR), 31, 16), 
+    .height = BITS(inl(VGACTL_ADDR), 15, 0),
+    .vmemsz = inl(FB_ADDR)
   };
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+  // 若`sync`为`true`, 则马上将帧缓冲中的内容同步到屏幕上
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }

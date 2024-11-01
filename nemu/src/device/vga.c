@@ -74,17 +74,25 @@ static inline void update_screen() {
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
+  if (vgactl_port_base[1]) {
+    update_screen();
+    vgactl_port_base[1] = 0;
+  }
 }
 
 void init_vga() {
+  // 初始化VGA显示控制器数据，将 vgactl 的控制寄存器映射到内存地址[0xa0000100,0xa0000108]
   vgactl_port_base = (uint32_t *)new_space(8);
+
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
+
 #ifdef CONFIG_HAS_PORT_IO
   add_pio_map ("vgactl", CONFIG_VGA_CTL_PORT, vgactl_port_base, 8, NULL);
 #else
   add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 #endif
 
+  // 初始化显存vmem数据.将 vmem 映射到内存地址[0xa1000000， 0xa1000008]
   vmem = new_space(screen_size());
   add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
