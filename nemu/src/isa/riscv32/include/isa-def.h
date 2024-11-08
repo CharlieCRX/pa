@@ -18,9 +18,18 @@
 
 #include <common.h>
 
+// 系统寄存器
+typedef struct system_register {
+	word_t mtvec;  // 异常入口地址
+	word_t mepc;   // 触发异常的PC
+	word_t mstatus;// 处理器的状态
+	word_t mcause; // 触发异常的原因
+}sys_regs;
+
 typedef struct {
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   vaddr_t pc;
+	sys_regs sr;
 } MUXDEF(CONFIG_RV64, riscv64_CPU_state, riscv32_CPU_state);
 
 // decode
