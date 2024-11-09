@@ -16,7 +16,7 @@
 #include <isa.h>
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
-	printf("start - isa_raise_intr: no = %d, epc = 0x%08x\n", NO, epc);
+	printf("/nstart - isa_raise_intr: no = %d, epc = 0x%08x\n", NO, epc);
   /* Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
