@@ -28,8 +28,10 @@ typedef struct control_and_status_registers {
 
 // CSR 编号
 typedef enum {
-	CSR_MTVEC = 0x305, // mtvec
-
+	CSR_MSTATUS = 0x300, // mstatus
+	CSR_MTVEC = 0x305,   // mtvec
+	CSR_MEPC = 0x341,		 // mepc
+	CSR_MCAUSE = 0x342,  // mcause
 }csr_id;
 
 typedef struct {

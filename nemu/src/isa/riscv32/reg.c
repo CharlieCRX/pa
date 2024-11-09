@@ -72,13 +72,20 @@ word_t get_csr_val_by_id(int csr_id) {
 	// TODO
 	printf("csr_id = %x\n", csr_id);
 	switch(csr_id) {
-		case CSR_MTVEC: return cpu.csrs.mtvec;
+		case CSR_MSTATUS: return cpu.csrs.mstatus;
+		case CSR_MTVEC  :	return cpu.csrs.mtvec;
+		case CSR_MEPC   : return cpu.csrs.mepc;
+		case CSR_MCAUSE : return cpu.csrs.mcause;
 		default:assert(0);
 	}
 }
 
 void set_csr_val_by_id(int csr_id, word_t val) {
 	switch(csr_id) {
-		case CSR_MTVEC:	cpu.csrs.mtvec = val;	break;
+		case CSR_MSTATUS:	cpu.csrs.mstatus = val;	break;
+		case CSR_MTVEC:		cpu.csrs.mtvec   = val;	break;
+		case CSR_MEPC:		cpu.csrs.mepc    = val;	break;
+		case CSR_MCAUSE:	cpu.csrs.mcause  = val;	break;
+		default:assert(0);
 	}
 }
