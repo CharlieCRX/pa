@@ -5,8 +5,6 @@
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context *c) {
-	c->gpr[2] = 0x12345678;
-	printf("Context:\nmcause = 0x%x, mstatus = 0x%x, epc = 0x%x\n", c->mcause, c->mstatus, c->mepc);
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
