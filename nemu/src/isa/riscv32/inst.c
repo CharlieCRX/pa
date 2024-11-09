@@ -146,6 +146,8 @@ static int decode_exec(Decode *s) {
 
 	/**interupt**/
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(16, s->pc));//TODO
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , N, s->dnpc = read_csrs(CSR_MEPC));//TODO
+
 
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
 
