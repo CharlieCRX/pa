@@ -16,7 +16,7 @@
 #include <isa.h>
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
-	printf("isa_raise_intr: no = %d, epc = 0x%08x\n", NO, epc);
+	printf("start - isa_raise_intr: no = %d, epc = 0x%08x\n", NO, epc);
   /* Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
@@ -25,6 +25,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	cpu.csrs.mcause = NO;
 
 	// 跳转异常处理入口地址
+	printf("end - isa_raise_intr: mcause = %d, mepc = 0x%08x\n", cpu.csrs.mepc, cpu.csrs.mcause);
 	return cpu.csrs.mtvec;
 }
 
