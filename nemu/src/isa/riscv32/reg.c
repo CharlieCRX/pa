@@ -73,10 +73,10 @@ word_t get_csr_val_by_id(int csr_id) {
 	printf("read from csr(%x)", csr_id);
 	word_t val = 0;
 	switch(csr_id) {
-		case CSR_MSTATUS: val =  cpu.csrs.mstatus;
-		case CSR_MTVEC  :	val =  cpu.csrs.mtvec;
-		case CSR_MEPC   : val =  cpu.csrs.mepc;
-		case CSR_MCAUSE : val =  cpu.csrs.mcause;
+		case CSR_MSTATUS: val =  cpu.csrs.mstatus;	break;
+		case CSR_MTVEC  :	val =  cpu.csrs.mtvec;		break;
+		case CSR_MEPC   : val =  cpu.csrs.mepc;			break;
+		case CSR_MCAUSE : val =  cpu.csrs.mcause;		break;
 		default:assert(0);
 	}
 	printf("val = 0x%08x\n", val);
