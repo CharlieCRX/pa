@@ -25,7 +25,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 	cpu.csrs.mcause = NO;
 
 	// 跳转异常处理入口地址
-	printf("end - isa_raise_intr: mcause = %d, mepc = 0x%08x\n", cpu.csrs.mepc, cpu.csrs.mcause);
+	printf("end - isa_raise_intr: mcause = %d, mepc = 0x%08x\n", cpu.csrs.mcause, cpu.csrs.mepc);
 	return cpu.csrs.mtvec;
 }
 
