@@ -70,7 +70,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 
 word_t get_csr_val_by_id(int csr_id) {
 	// TODO
-	printf("csr_id = %x\n", csr_id);
+	printf("read:csr_id = %x\n", csr_id);
 	switch(csr_id) {
 		case CSR_MSTATUS: return cpu.csrs.mstatus;
 		case CSR_MTVEC  :	return cpu.csrs.mtvec;
