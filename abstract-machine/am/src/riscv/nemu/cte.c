@@ -5,11 +5,6 @@
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context *c) {
-	int epc = c->mepc;
-	int mstatus = c->mstatus;
-	int mcause = c->mcause;
-	int sum = epc + mstatus + mcause;
-	assert(sum != 0);
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
