@@ -65,6 +65,10 @@ __am_asm_trap:
   csrw mstatus, t1
   csrw mepc, t2
 
+	#将 mepc + 4，返回到 `ecall` 指令后的下一条指令
+	addi t2, t2, 4
+	csrw mepc, t2
+
   MAP(REGS, POP)
 
   addi sp, sp, CONTEXT_SIZE
