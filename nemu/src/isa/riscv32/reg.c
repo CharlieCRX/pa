@@ -24,6 +24,8 @@ const char *regs[] = {
 };
 
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
+#define read_csrs(idx) (get_csr_val_by_id(idx))
+#define write_csrs(idx, val) (set_csr_val_by_id(idx, val))
 void isa_reg_display() {
 	printf("pc = 0x%08x\n", cpu.pc);
 	for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++) {
@@ -62,4 +64,20 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 	}
 	*success = false;
 	return -1;
+}
+
+/* CSR */
+
+word_t get_csr_val_by_id(int csr_id) {
+	// TODO
+	switch(csr_id) {
+		case CSR_MTVEC: return cpu.csrs.mtvec;
+		default:assert(0);
+	}
+}
+
+void set_csr_val_by_id(int csr_id, word_t val) {
+	switch(csr_id) {
+		case CSR_MTVEC:	cpu.csrs.mtvec = val;	break;
+	}
 }

@@ -20,11 +20,11 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    * Then return the address of the interrupt/exception vector.
    */
 	// 保存程序状态
-	cpu.sr.mepc = epc;
-	cpu.sr.mcause = NO;
+	cpu.csrs.mepc = epc;
+	cpu.csrs.mcause = NO;
 
 	// 跳转异常处理入口地址
-	return cpu.sr.mtvec;
+	return cpu.csrs.mtvec;
 }
 
 word_t isa_query_intr() {

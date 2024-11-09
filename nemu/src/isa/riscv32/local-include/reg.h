@@ -29,4 +29,10 @@ static inline const char* reg_name(int idx) {
   extern const char* regs[];
   return regs[check_reg_idx(idx)];
 }
+
+word_t get_csr_val_by_id(int csr_id);
+void set_csr_val_by_id(int csr_id, word_t val);
+
+#define read_csrs(idx) (get_csr_val_by_id(idx)) 
+#define write_csrs(idx, val) (set_csr_val_by_id(idx, val))
 #endif
