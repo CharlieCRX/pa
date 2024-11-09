@@ -79,7 +79,7 @@ word_t get_csr_val_by_id(int csr_id) {
 		case CSR_MCAUSE : val =  cpu.csrs.mcause;		break;
 		default:assert(0);
 	}
-	printf("val = 0x%08x\n", val);
+	//printf("val = 0x%08x\n", val);
 	return val;
 }
 
