@@ -14,7 +14,7 @@
 
 void get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments);
 void load_segments(Elf_Phdr *pt_load_segments, int num_segments);
-
+void print_pt_load_segments(const Elf_Phdr *segments, size_t count);
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
   size_t count;
@@ -22,6 +22,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // 获取要加载的段信息
   get_pt_load_segments(filename, pt_load_segments, &count);
 
+  print_pt_load_segments(pt_load_segments, count);
   // 加载段到内存中
 	load_segments(pt_load_segments, count);
   return 0;
