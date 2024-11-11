@@ -12,7 +12,7 @@
 
 #define MAX_SEGMENTS 16  // 假设 ELF 文件中 Program Headers 的最大数量
 
-void get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments);
+uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments);
 void load_segments(Elf_Phdr *pt_load_segments, int num_segments);
 void print_pt_load_segments(const Elf_Phdr *segments, size_t count);
 
@@ -20,11 +20,11 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   size_t count;
   Elf_Phdr pt_load_segments[MAX_SEGMENTS];
   // 获取要加载的段信息
-  get_pt_load_segments(filename, pt_load_segments, &count);
+  uintptr_t entry = get_pt_load_segments(filename, pt_load_segments, &count);
 
   // 加载段到内存中
 	load_segments(pt_load_segments, count);
-  return 0x830000b4;
+  return entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
@@ -35,7 +35,7 @@ void naive_uload(PCB *pcb, const char *filename) {
 
 
 // 获取 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 count 中
-void get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
+uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
 
   Elf_Ehdr ehdr;
   
@@ -60,6 +60,7 @@ void get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size
   }
   *num_pt_load_segments = count;
 
+  return ehdr.e_entry;
 }
 
 // 示例：打印 PT_LOAD 段信息
