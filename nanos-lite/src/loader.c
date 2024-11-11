@@ -24,7 +24,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
   // 加载段到内存中
 	load_segments(pt_load_segments, count);
-  return 0;
+  return 0x83000000;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
@@ -66,7 +66,7 @@ void get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size
 void print_pt_load_segments(const Elf_Phdr *segments, size_t count) {
     for (size_t i = 0; i < count; i++) {
         const Elf_Phdr *phdr = &segments[i];
-        printf("PT_LOAD Segment %d: Offset 0x%d, Virtual Address 0x%d, Size in File %d, Size in Memory %d\n",
+        Log("PT_LOAD Segment %d: Offset 0x%d, Virtual Address 0x%d, Size in File %d, Size in Memory %d\n",
                i, phdr->p_offset, phdr->p_vaddr, phdr->p_filesz, phdr->p_memsz);
     }
 }
