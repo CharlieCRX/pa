@@ -23,7 +23,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   uintptr_t entry = get_pt_load_segments(filename, pt_load_segments, &count);
 
   // 加载段到内存中
-	load_segments(pt_load_segments, count);
+  load_segments(pt_load_segments, count);
   return entry;
 }
 
