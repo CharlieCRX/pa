@@ -22,7 +22,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // 获取要加载的段信息
   get_pt_load_segments(filename, pt_load_segments, &count);
 
-  print_pt_load_segments(pt_load_segments, count);
   // 加载段到内存中
 	load_segments(pt_load_segments, count);
   return 0x83000000;
@@ -85,7 +84,6 @@ void load_segments(Elf_Phdr *pt_load_segments, int num_segments){
 
     // 从ramdisk中读取段数据到内存
     ramdisk_read((void *)(vaddr), offset, filesz);
-    Log("ramdisk read - vaddr: %d, offset: %d, filesz: %d", vaddr, offset, filesz);
 
     // 清零 [VirtAddr + FileSiz, VirtAddr + MemSiz) 的内存
     if (memsz > filesz) {
