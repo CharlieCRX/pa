@@ -24,7 +24,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
   // 加载段到内存中
 	load_segments(pt_load_segments, count);
-  return 0x83000000;
+  return 0x830000b4;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
