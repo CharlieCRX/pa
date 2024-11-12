@@ -26,10 +26,13 @@ typedef struct control_and_status_registers {
 	word_t mcause; // 触发异常的原因
 }CSRs;
 
-// CSR 编号
+// 常用 CSR 地址
 typedef enum {
+  // Machine Trap Setup
 	CSR_MSTATUS = 0x300,  // mstatus
 	CSR_MTVEC   = 0x305,  // mtvec
+
+  // Machine Trap Handling
 	CSR_MEPC    = 0x341,	// mepc
 	CSR_MCAUSE  = 0x342,  // mcause
 }csr_id;
