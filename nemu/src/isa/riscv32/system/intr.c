@@ -15,17 +15,16 @@
 
 #include <isa.h>
 
+/** 模拟硬件异常响应机制*/
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
-	//printf("\nstart - isa_raise_intr: no = %d, epc = 0x%08x\n", NO, epc);
-  /* Trigger an interrupt/exception with ``NO''.
-   * Then return the address of the interrupt/exception vector.
-   */
-	// 保存程序状态
+
+	// 将当前PC值保存到mepc寄存器
 	cpu.csrs.mepc = epc;
+
+  // 在mcause寄存器中设置异常号
 	cpu.csrs.mcause = NO;
 
-	// 跳转异常处理入口地址
-	//printf("end - isa_raise_intr: mcause = %d, mepc = 0x%08x\n", cpu.csrs.mcause, cpu.csrs.mepc);
+	// 从mtvec寄存器中取出异常入口地址
 	return cpu.csrs.mtvec;
 }
 
