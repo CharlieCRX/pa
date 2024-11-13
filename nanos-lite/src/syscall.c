@@ -7,7 +7,7 @@ void strace(Context *c) {
 }
 void sys_yield(Context *c) {
   yield();
-  c->GPRx = 0;
+  c->GPRx = 1;
 }
 void sys_exit() {
   halt(SYS_exit);
