@@ -7,10 +7,11 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    switch (c->mcause)
+    switch (c->GPR1)
     {
-      case ENVIRONMENT_CALL_FROM_U_MODE:  ev.event = EVENT_YIELD; break;
-      default:  ev.event = EVENT_YIELD; break;
+      case -1:  ev.event = EVENT_YIELD;   break;
+      case 1:   ev.event = EVENT_SYSCALL; break;
+      default: break;
     }
     c = user_handler(ev, c);
     assert(c != NULL);
