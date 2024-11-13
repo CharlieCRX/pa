@@ -7,9 +7,10 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    if (c->GPR1 < 0) {
+    int type = (int) c->GPR1;
+    if (type < 0) {
       ev.event = EVENT_YIELD;
-    } else if (c->GPR1 >= 0 && c->GPR1 <= 16) {
+    } else if (type >= 0 && type <= 16) {
       ev.event = EVENT_SYSCALL; 
     }else {
       printf("c->GPR1 = %d\n", c->GPR1);
