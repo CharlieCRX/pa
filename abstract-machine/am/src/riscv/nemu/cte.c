@@ -12,6 +12,7 @@ Context* __am_irq_handle(Context *c) {
     } else if (c->GPR1 >= 0 && c->GPR1 <= 16) {
       ev.event = EVENT_SYSCALL; 
     }else {
+      printf("c->GPR1 = %d\n", c->GPR1);
       assert(0);
     }
     c = user_handler(ev, c);
