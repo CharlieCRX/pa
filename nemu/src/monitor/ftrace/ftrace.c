@@ -189,7 +189,8 @@ void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map) {
 // etrace
 /* 记录异常处理的踪迹 */
 void etrace(vaddr_t epc, word_t mcause, word_t gpr, word_t mtvec) {
-  IFDEF(CONFIG_TARGET_NATIVE_ELF, printf("\nCONFIG_TARGET_NATIVE_ELF\n"));
+  extern bool log_enable();
+  if (!log_enable()) printf("No way!\n");
   log_write("etrace: epc = " FMT_WORD ", mcause = "FMT_WORD", gpr(a7) = " FMT_WORD", mtvec = "FMT_WORD "\n",
   epc, mcause, gpr, mtvec);
 }
