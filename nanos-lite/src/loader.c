@@ -29,12 +29,12 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
-  Log("Jump to entry = %p", entry);
+  Log("Jump to entry = %d", entry);
   ((void(*)())entry) ();
 }
 
 
-// 获取 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 count 中
+// 获取 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 num_pt_load_segments 中
 uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
 
   Elf_Ehdr ehdr;
