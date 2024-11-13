@@ -71,10 +71,8 @@ int process_format_string(char *out, const char *fmt, va_list args) {
         // Handle hexadecimal format (%x)
         int i = va_arg(args, int);
         char hex_str[30];
-        printf("start handle...");
         int_to_hex(i, hex_str); // Convert integer to hexadecimal string
         strcpy(out_ptr, hex_str); // Copy the hex string to buffer
-        printf("end handle...");
         out_ptr += strlen(hex_str);
       }
 		} else {
@@ -128,15 +126,15 @@ void int_to_hex(int value, char *out) {
     char buffer[20];
     int index = 0;
     
-    if (value == 0) {
-        printf("@value = %d,", value);
-        buffer[index++] = '0';
+    // Handle negative numbers by converting them to unsigned
+    unsigned int uvalue = (unsigned int)value;
+    if (uvalue == 0) {
+      buffer[index++] = '0';
     } else {
-        while (value > 0) {
-          printf("@value = %d,", value);
-            buffer[index++] = hex_digits[value & 0xF];
-            value >>= 4;
-        }
+      while (uvalue > 0) {
+        buffer[index++] = hex_digits[value & 0xF];
+        uvalue >>= 4;
+      }
     }
 
     // Reverse the buffer to get the correct hexadecimal string
