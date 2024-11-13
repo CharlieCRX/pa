@@ -133,7 +133,7 @@ void int_to_hex(int value, char *out) {
       buffer[index++] = '0';
     } else {
       while (uvalue > 0) {
-        printf("uvalue = %d", uvalue);
+        printf(" uvalue = %d", uvalue);
         buffer[index++] = hex_digits[value & 0xF];
         uvalue >>= 4;
       }
