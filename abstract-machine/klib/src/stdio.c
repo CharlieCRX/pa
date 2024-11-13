@@ -13,6 +13,7 @@
 
 #define MAX_STRING_LEN 1024
 void int_to_str(int num, char* str);
+void int_to_hex(int value, char *out);
 int process_format_string(char *out, const char *fmt, va_list args);
 
 void int_to_str(int num, char* str) {
@@ -66,6 +67,14 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 				strcpy(out_ptr, s);
 				out_ptr += strlen(s);
 			}
+      else if (*fmt_ptr == 'x') {
+        // Handle hexadecimal format (%x)
+        int i = va_arg(args, int);
+        char hex_str[20];
+        int_to_hex(i, hex_str); // Convert integer to hexadecimal string
+        strcpy(out_ptr, hex_str); // Copy the hex string to buffer
+        out_ptr += strlen(hex_str);
+      }
 		} else {
 			*out_ptr++ = *fmt_ptr; // Copy other characters
 		}
@@ -109,5 +118,31 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
 }
+
+
+// Helper function to convert an integer to a hexadecimal string
+void int_to_hex(int value, char *out) {
+    const char *hex_digits = "0123456789abcdef";
+    char buffer[20];
+    int index = 0;
+    
+    if (value == 0) {
+        buffer[index++] = '0';
+    } else {
+        while (value > 0) {
+            buffer[index++] = hex_digits[value & 0xF];
+            value >>= 4;
+        }
+    }
+
+    // Reverse the buffer to get the correct hexadecimal string
+    int j = 0;
+    for (int i = index - 1; i >= 0; i--) {
+        out[j++] = buffer[i];
+    }
+    out[j] = '\0'; // Null-terminate the string
+}
+
+
 
 #endif
