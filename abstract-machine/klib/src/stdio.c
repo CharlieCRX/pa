@@ -127,6 +127,7 @@ void int_to_hex(int value, char *out) {
     int index = 0;
     for (int i = 0; i < 8; i++) {
       strncpy(buffer + index, &hex_digits[value & 0xf], 1);
+      printf("buffer = %s", buffer);
       value >>= 4;
     }
 
