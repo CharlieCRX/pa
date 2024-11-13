@@ -60,6 +60,7 @@ uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments,
   }
   *num_pt_load_segments = count;
 
+  // Step 4: 返回控制转移的入口地址
   return ehdr.e_entry;
 }
 
