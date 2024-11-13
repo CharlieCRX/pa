@@ -70,7 +70,7 @@ int process_format_string(char *out, const char *fmt, va_list args) {
       else if (*fmt_ptr == 'x') {
         // Handle hexadecimal format (%x)
         int i = va_arg(args, int);
-        char hex_str[20];
+        char hex_str[30];
         int_to_hex(i, hex_str); // Convert integer to hexadecimal string
         strcpy(out_ptr, hex_str); // Copy the hex string to buffer
         out_ptr += strlen(hex_str);
@@ -127,6 +127,7 @@ void int_to_hex(int value, char *out) {
     int index = 0;
     
     if (value == 0) {
+        printf("@value = %d,", value);
         buffer[index++] = '0';
     } else {
         while (value > 0) {
