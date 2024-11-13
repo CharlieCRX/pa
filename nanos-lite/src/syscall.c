@@ -7,7 +7,7 @@ void strace(Context *c) {
 }
 void sys_yield(Context *c) {
   yield();
-  c->GPRx = 0;
+  c->GPRx = 1;
 }
 void sys_exit() {
   halt(SYS_exit);
@@ -17,8 +17,8 @@ void do_syscall(Context *c) {
   a[0] = c->GPR1;
 
   switch (a[0]) {
-    case SYS_exit : strace(c);sys_exit(c);  break;
-    case SYS_yield: strace(c);sys_yield(c); break;
+    case SYS_exit : sys_exit(c);  strace(c); break;
+    case SYS_yield: sys_yield(c); strace(c);break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
   
