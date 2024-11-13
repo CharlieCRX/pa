@@ -38,7 +38,7 @@ void trace_func_call(paddr_t pc, paddr_t target);
 void trace_func_ret(paddr_t pc);
 void trace_dread(paddr_t addr, int len, IOMap *map);
 void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map);
-
+void etrace(vaddr_t epc, word_t mcause, word_t gpr, word_t mtvec);
 
 
 void parse_elf(const char *elf_file) {
@@ -184,6 +184,13 @@ void trace_dread(paddr_t addr, int len, IOMap *map) {
 void trace_dwrite(paddr_t addr, int len, word_t data, IOMap *map) {
 	dtrace_write("dtrace: write %10s at " FMT_PADDR ",%d with " FMT_WORD "\n",
 	map->name, addr, len, data);
+}
+
+// etrace
+/* 记录异常处理的踪迹 */
+void etrace(vaddr_t epc, word_t mcause, word_t gpr, word_t mtvec) {
+  log_write("etrace: epc = " FMT_WORD ", mcause = "FMT_WORD", gpr(a7) = " FMT_WORD", mtvec = "FMT_WORD "\n",
+  epc, mcause, gpr, mtvec);
 }
 
 

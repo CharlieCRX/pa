@@ -25,6 +25,7 @@
 #ifdef CONFIG_ITRACE
 void trace_func_call(paddr_t pc, paddr_t target);
 void trace_func_ret(paddr_t pc);
+void etrace(vaddr_t epc, word_t mcause, word_t gpr, word_t mtvec);
 #endif
 
 
@@ -40,7 +41,8 @@ enum {
 #define immB() do { *imm = SEXT(BITS(i, 31, 31), 1) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1 | 0; } while(0)
 #define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
 #define immJ() do { *imm = SEXT(((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1) | 0),21);} while(0) 
-#define ECALL(dnpc) { dnpc = isa_raise_intr(ENVIRONMENT_CALL_FROM_U_MODE, s->pc);}
+#define ETRACE() do { bool success = true; word_t a7 = isa_reg_str2val("a7",&success); assert(success);  etrace(read_csrs(CSR_MEPC), read_csrs(CSR_MCAUSE), a7, read_csrs(CSR_MTVEC));} while(0)
+#define ECALL(dnpc) do { dnpc = isa_raise_intr(ENVIRONMENT_CALL_FROM_U_MODE, s->pc); ETRACE();} while(0)
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
