@@ -75,4 +75,12 @@ uint64_t get_time();
 
 #define ftrace_write log_write
 #define dtrace_write log_write
+
+#define etrace_write(...) IFDEF(CONFIG_TARGET_NATIVE_ELF, \
+  do { \
+    extern FILE* log_fp; \
+    fprintf(log_fp, __VA_ARGS__); \
+    fflush(log_fp); \
+  } while (0) \
+)
 #endif
