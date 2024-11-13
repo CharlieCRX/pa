@@ -129,8 +129,10 @@ void int_to_hex(int value, char *out) {
       strncpy(buffer + index, &hex_digits[value & 0xf], 1);
       printf("buffer = %s", buffer);
       value >>= 4;
+      index++;
+      buffer[index] = '\0';
     }
-
+    
     // Reverse the buffer to get the correct hexadecimal string
     int j = 0;
     for (int i = index - 1; i >= 0; i--) {
