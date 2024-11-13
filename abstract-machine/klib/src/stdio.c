@@ -139,6 +139,7 @@ void int_to_hex(int value, char *out) {
         out[j++] = buffer[i];
     }
     out[j] = '\0'; // Null-terminate the string
+    printf(" out = %s", out);
 }
 
 
