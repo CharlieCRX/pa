@@ -129,17 +129,14 @@ void int_to_hex(int value, char *out) {
       strncpy(buffer + index, &hex_digits[value & 0xf], 1);
       value >>= 4;
       index++;
-      buffer[index] = '\0';
-      printf(" buffer = %s", buffer);
     }
-    
+
     // Reverse the buffer to get the correct hexadecimal string
     int j = 0;
     for (int i = index - 1; i >= 0; i--) {
         out[j++] = buffer[i];
     }
     out[j] = '\0'; // Null-terminate the string
-    printf(" out = %s", out);
 }
 
 
