@@ -128,6 +128,7 @@ void int_to_hex(int value, char *out) {
     
     // Handle negative numbers by converting them to unsigned
     unsigned int uvalue = (unsigned int)value;
+    printf("uvalue = %d", uvalue);
     if (uvalue == 0) {
       buffer[index++] = '0';
     } else {
