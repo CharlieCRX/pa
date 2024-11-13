@@ -69,7 +69,7 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 			}
       else if (*fmt_ptr == 'x') {
         // Handle hexadecimal format (%x)
-        int i = va_arg(args, int);
+        int i = va_arg(args, int);  
         char hex_str[30];
         int_to_hex(i, hex_str); // Convert integer to hexadecimal string
         strcpy(out_ptr, hex_str); // Copy the hex string to buffer
@@ -128,11 +128,12 @@ void int_to_hex(int value, char *out) {
     
     // Handle negative numbers by converting them to unsigned
     unsigned int uvalue = (unsigned int)value;
-    printf("uvalue = %d", uvalue);
+    
     if (uvalue == 0) {
       buffer[index++] = '0';
     } else {
       while (uvalue > 0) {
+        printf("uvalue = %d", uvalue);
         buffer[index++] = hex_digits[value & 0xF];
         uvalue >>= 4;
       }
