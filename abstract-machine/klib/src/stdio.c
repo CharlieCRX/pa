@@ -127,6 +127,10 @@ void int_to_hex(int value, char *out) {
     int index = 0;
     for (int i = 0; i < 8; i++) {
       printf(" value & 0xf = %d, ", value & 0xf);
+      if(value == 0) {
+        buffer[i++] = '0';
+        continue;
+      }
       buffer[i++] = hex_digits[value & 0xf];
       value >>= 4;
     }
