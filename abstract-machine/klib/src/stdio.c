@@ -71,8 +71,10 @@ int process_format_string(char *out, const char *fmt, va_list args) {
         // Handle hexadecimal format (%x)
         int i = va_arg(args, int);
         char hex_str[30];
+        printf("start handle...");
         int_to_hex(i, hex_str); // Convert integer to hexadecimal string
         strcpy(out_ptr, hex_str); // Copy the hex string to buffer
+        printf("end handle...");
         out_ptr += strlen(hex_str);
       }
 		} else {
