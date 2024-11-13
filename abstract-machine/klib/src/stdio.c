@@ -125,18 +125,9 @@ void int_to_hex(int value, char *out) {
     const char *hex_digits = "0123456789abcdef";
     char buffer[20];
     int index = 0;
-    
-    // Handle negative numbers by converting them to unsigned
-    unsigned int uvalue = (unsigned int)value;
-    
-    if (uvalue == 0) {
-      buffer[index++] = '0';
-    } else {
-      while (uvalue > 0) {
-        printf(" uvalue = %d", uvalue);
-        buffer[index++] = hex_digits[value & 0xF];
-        uvalue >>= 4;
-      }
+    for (int i = 0; i < 8; i++) {
+      buffer[i++] = hex_digits[value & 0xf];
+      value >>= 4;
     }
 
     // Reverse the buffer to get the correct hexadecimal string
