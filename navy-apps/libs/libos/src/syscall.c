@@ -72,7 +72,7 @@ int _write(int fd, void *buf, size_t count) {
 
 void *_sbrk(intptr_t increment) {
   intptr_t new_address = (intptr_t) &end + increment;
-  return _syscall_(SYS_brk, new_address, 0, 0);
+  return _syscall_(SYS_brk, 0, 0, 0);
 }
 
 int _read(int fd, void *buf, size_t count) {
