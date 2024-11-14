@@ -11,7 +11,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-#define MAX_STRING_LEN 1024
+#define MAX_STRING_LEN 3* 1024 * 1024
 void int_to_str(int num, char* str);
 void int_to_hex(int value, char *out);
 int process_format_string(char *out, const char *fmt, va_list args);
