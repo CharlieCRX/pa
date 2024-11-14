@@ -49,6 +49,7 @@ CFLAGS_TRACE += -DITRACE_COND=$(if $(CONFIG_ITRACE_COND),$(call remove_quote,$(C
 CFLAGS  += $(CFLAGS_BUILD) $(CFLAGS_TRACE) -D__GUEST_ISA__=$(GUEST_ISA)
 CFLAGS += -I$(NEMU_HOME)/src/monitor/sdb
 CFLAGS += -I$(NEMU_HOME)/src/cpu/iringbuf
+CFLAGS += -I$(NEMU_HOME)/src/isa/riscv32/local-include
 LDFLAGS += $(CFLAGS_BUILD)
 
 # Include rules for menuconfig
