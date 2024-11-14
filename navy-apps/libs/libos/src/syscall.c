@@ -71,9 +71,15 @@ int _write(int fd, void *buf, size_t count) {
 }
 
 void *_sbrk(intptr_t increment) {
-  intptr_t new_address = (intptr_t) &end + increment;
-  return _syscall_(SYS_brk, 0, 0, 0);
+  static char *myend = &end;
+  if (_syscall_(SYS_brk, increment, 0, 0) == 0) {
+    void *ret = myend;
+    myend += increment;
+    return (void*)ret;
+  }
+  return (void*)-1;
 }
+
 
 int _read(int fd, void *buf, size_t count) {
   _exit(SYS_read);
