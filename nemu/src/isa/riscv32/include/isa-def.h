@@ -22,7 +22,7 @@
 typedef struct control_and_status_registers {
 	word_t mtvec;  // 异常入口地址
 	word_t mepc;   // 触发异常的PC
-	word_t mstatus;// 处理器的状态
+	word_t mstatus;// 处理器的状态 -- for diffTest
 	word_t mcause; // 触发异常的原因
 }CSRs;
 
