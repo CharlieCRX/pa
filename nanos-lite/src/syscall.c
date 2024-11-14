@@ -2,7 +2,7 @@
 #include "syscall.h"
 
 void strace(Context *c) {
-  Log("strace: Syscall num: %d, param(a0, a1, a2) = (%d, %d, %d), ret  = %d\n", 
+  Log("strace: Syscall num: %d, param(a0, a1, a2) = (0x%x, 0x%x, 0x%x), ret  = 0x%x\n", 
   c->GPR1, c->GPR2, c->GPR3, c->GPR4, c->GPRx);
 }
 void sys_yield(Context *c) {
