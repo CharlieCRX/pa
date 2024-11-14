@@ -29,7 +29,11 @@ static const uint32_t img [] = {
 static void restart() {
   /* Set the initial program counter. */
   cpu.pc = RESET_VECTOR;
-	IFDEF(CONFIG_DIFFTEST_REF_SPIKE, write_csrs(CSR_MSTATUS, 0x1800));
+	if(ISONE(CONFIG_DIFFTEST_REF_SPIKE)) {
+		printf("spile is ok mstatus is initializing......\n");
+		write_csrs(CSR_MSTATUS, 0x1800);
+		printf("csr(CSR_MSTATUS) = 0x%x\n", read_csrs(CSR_MSTATUS));
+	}
 
   /* The zero register is always 0. */
   cpu.gpr[0] = 0;
