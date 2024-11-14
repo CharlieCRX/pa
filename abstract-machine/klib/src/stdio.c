@@ -87,7 +87,8 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 }
 
 int printf(const char *fmt, ...) {
-	char buf[MAX_STRING_LEN];
+	int str_len = strlen(fmt);
+	char buf[str_len + 10];
 	va_list args;
 	va_start(args, fmt);
 
