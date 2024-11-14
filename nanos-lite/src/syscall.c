@@ -1,6 +1,6 @@
 #include <common.h>
 #include "syscall.h"
-
+extern char end;
 void strace(Context *c) {
   Log("strace: Syscall num: %d, param(a0, a1, a2) = (0x%x, 0x%x, 0x%x), ret  = 0x%x\n", 
   c->GPR1, c->GPR2, c->GPR3, c->GPR4, c->GPRx);
@@ -26,6 +26,10 @@ void sys_write(Context *c) {
 
   c->GPRx = count;
 }
+
+void sys_sbrk(Context *c) {
+  c->GPRx = 0;
+}
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -34,6 +38,7 @@ void do_syscall(Context *c) {
     case SYS_exit : strace(c); sys_exit(SYS_exit);   break;
     case SYS_yield: strace(c); sys_yield(c);  break;
     case SYS_write: sys_write(c);  break;
+    case SYS_brk:  sys_sbrk(c);   break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
   
