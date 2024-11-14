@@ -1,4 +1,5 @@
 #HAS_NAVY = 1
+MAKEFLAGS += -j 8
 RAMDISK_FILE = build/ramdisk.img
 
 NAME = nanos-lite
