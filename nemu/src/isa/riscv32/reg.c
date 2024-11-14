@@ -84,7 +84,7 @@ word_t get_csr_val_by_id(int csr_id) {
 }
 
 void set_csr_val_by_id(int csr_id, word_t val) {
-	//printf("write %d to csr(%x)\n", val, csr_id);
+	printf("write %d to csr(%x)\n", val, csr_id);
 	switch(csr_id) {
 		case CSR_MSTATUS:	cpu.csrs.mstatus = val;	break;
 		case CSR_MTVEC:		cpu.csrs.mtvec   = val;	break;
