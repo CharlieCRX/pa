@@ -1,145 +1,190 @@
-#ifndef TEST
 #include <am.h>
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdarg.h>
-#endif
-#ifdef TEST
-#define panic(str) do {} while(0)
-#include "string.h"
-#endif
+#include <math.h>
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-#define MAX_STRING_LEN 1024
-void int_to_str(int num, char* str);
-void int_to_hex(int value, char *out);
-int process_format_string(char *out, const char *fmt, va_list args);
+#define BUFSIZE 2048
 
-void int_to_str(int num, char* str) {
-	int i = 0, is_negative = 0;
+#define MAKE_BUF \
+  int ph_width = fmt_width - arg_width; \
+  int buf_width = fmt_width>arg_width?fmt_width:arg_width; \
+  char buf[buf_width]; \
+  for (int _i = ph_width-1; _i >= 0 ; _i--) \
+    buf[_i] = placeholder; \
+  char *buf_start = buf+buf_width-arg_width
 
-	// Handle the negative numbers
-	if (num < 0) {
-		is_negative = 1;
-		num = -num;
-	}
+#define OUT_BUF \
+  int real_width = arg_width<n?arg_width:n; \
+  memcpy(out, buf, real_width); \
+  out += real_width; \
+  n -= real_width
 
-	// Convert the number to string
-	do {
-		str[i++] = (num % 10) + '0';
-		num /= 10;
-	} while (num > 0);
 
-	// Add rhe negative sign if needed
-	if (is_negative) {
-		str[i++] = '-';
-	}
-	// Null-terminate the string
-	str[i] = '\0';
-
-	// Reverse the string
-	for ( int j = 0, k = i - 1; j < k ; j++, k--) {
-		char temp = str[j];
-		str[j] = str[k];
-		str[k] = temp;
-	}
+static int width_int(int64_t n, int base) {
+    int ret = n < 0 + (base==8?1:(base==16?2:0));
+    do ++ret; while ((n /= base) != 0);
+    return ret;
 }
 
+static int width_uint(uint64_t n, int base) {
+    int ret = base==8?1:(base==16?2:0);
+    do ++ret; while ((n /= base) != 0);
+    return ret;
+}
 
-int process_format_string(char *out, const char *fmt, va_list args) {
-	char *out_ptr = out;
-	const char *fmt_ptr = fmt;
+static void out_int(char *out, int64_t n, int base, int width) {
+    int prefix = 0;
+    if (n < 0) {
+        out[prefix] = '-';
+        n = -n;
+        ++prefix;
+    }
+    if (base == 8) {
+        out[prefix++] = '0';
+    } else if (base == 16) {
+        out[prefix++] = '0';
+        out[prefix++] = 'x';
+    }
+    prefix += base==8?1:(base==16?2:0);
+    for (int i = width-1; i >= prefix; i--, n /= base) {
+        int digit = n % base;
+        out[i] = (digit>=10)?('a'+digit-10):('0'+digit);
+    }
+}
 
-	while (*fmt_ptr != '\0') {
-		if (*fmt_ptr == '%') {
-			fmt_ptr++; // Move to the format specifier
-
-			if (*fmt_ptr == 'd') {
-				int i = va_arg(args, int);
-				char num_str[20];
-				int_to_str(i, num_str);	// Convert integer to string
-				strcpy(out_ptr, num_str);	// Copy the number string to buffer
-				out_ptr += strlen(num_str);
-			}
-			else if (*fmt_ptr == 's') {
-				char *s = va_arg(args, char *);
-				strcpy(out_ptr, s);
-				out_ptr += strlen(s);
-			}
-      else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
-        // Handle hexadecimal format (%x)
-        int i = va_arg(args, int);  
-        char hex_str[30];
-        int_to_hex(i, hex_str); // Convert integer to hexadecimal string
-        strcpy(out_ptr, hex_str); // Copy the hex string to buffer
-        out_ptr += strlen(hex_str);
-      }
-		} else {
-			*out_ptr++ = *fmt_ptr; // Copy other characters
-		}
-		fmt_ptr++;	// Move to the next character in format
-	}
-	*out_ptr = '\0';	// Null-terminate the buffer
-	va_end(args);
-
-	return out_ptr - out;	// Return the length of the string
+static void out_uint(char *out, uint64_t n, int base, int width) {
+    int prefix = 0;
+    if (base == 8) {
+        out[prefix++] = '0';
+    } else if (base == 16) {
+        out[prefix++] = '0';
+        out[prefix++] = 'x';
+    }
+    for (int i = width-1; i >= prefix; i--, n /= base) {
+        int digit = n % base;
+        out[i] = (digit>=10)?('a'+digit-10):('0'+digit);
+    }
 }
 
 int printf(const char *fmt, ...) {
-	char buf[MAX_STRING_LEN];
-	va_list args;
-	va_start(args, fmt);
-
-  panic_on((strlen(fmt) > MAX_STRING_LEN), "Too lang for printf");
-	int len = process_format_string(buf, fmt, args);
-
-	for (int i = 0; i < len; i++) {
-		putch(buf[i]);
-	}
-	
-	return len;
-}
-
-int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
+  char buffer[BUFSIZE];
+  va_list pArgs;
+  va_start(pArgs, fmt);
+  int ret = vsprintf(buffer, fmt, pArgs);
+  va_end(pArgs);
+  for (int i = 0; i < ret; i++) putch(buffer[i]);
+  return ret;
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-	va_list args;
-	va_start(args, fmt);
-
-	return process_format_string(out, fmt, args);
+  va_list pArgs;
+  va_start(pArgs, fmt);
+  int ret = vsprintf(out, fmt, pArgs);
+  va_end(pArgs);
+  return ret;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
-  panic("Not implemented");
+  va_list pArgs;
+  va_start(pArgs, fmt);
+  int ret = vsnprintf(out, n, fmt, pArgs);
+  va_end(pArgs);
+  return ret;
+}
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  return vsnprintf(out, BUFSIZE, fmt, ap);
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  panic("Not implemented");
+    char *start = out;
+    bool ps = false; // has meet percent sign '%'
+    --n; // for '\0'
+    char placeholder = ' ';
+    int fmt_width = 0;
+
+    for (; n && *fmt; ++fmt) {
+        if (!ps) {
+            if (*fmt == '%') ps = true;
+            else {
+                *out++ = *fmt;
+                --n;
+            }
+            continue;
+        }
+        switch (*fmt) {
+            case '%': *out++ = *fmt; --n; break;
+            case 'd': {
+                int64_t arg = va_arg(ap, int64_t);
+                int arg_width = width_int(arg, 10);
+                MAKE_BUF;
+                out_int(buf_start, arg, 10, arg_width);
+                OUT_BUF;
+                break;
+            }
+            case 'u': {
+                uint64_t arg = va_arg(ap, uint64_t);
+                int arg_width = width_uint(arg, 10);
+                MAKE_BUF;
+                out_int(buf_start, arg, 10, arg_width);
+                OUT_BUF;
+                break;
+            }
+            case 'l': { 
+                continue;
+            }
+            case 'x': case 'p': {
+                uint64_t arg = va_arg(ap, uint64_t);
+                int arg_width = width_uint(arg, 16);
+                MAKE_BUF;
+                out_uint(buf_start, arg, 16, arg_width);
+                OUT_BUF;
+                break;
+            }
+            case 's': {
+                char *arg = va_arg(ap, char*);
+                int arg_width = strlen(arg);
+                MAKE_BUF;
+                strcpy(buf_start, arg);
+                OUT_BUF;
+                break;
+            }
+            case 'c': {
+                char arg = va_arg(ap, int);
+                *out++ = arg;
+                --n;
+                break;
+            }
+            default: {
+                char c = *fmt;
+                if (c >= '0' && c <= '9') { // e.g. %09d, %9d, %6s
+                    placeholder = c=='0'?'0':' ';
+                    fmt_width = 0;
+                    if (placeholder == '0') ++fmt;
+                    while (*fmt >= '0' && *fmt <= '9') {
+                        fmt_width *= 10;
+                        fmt_width += *fmt-'0';
+                        ++fmt;
+                    }
+                    --fmt;
+                }
+                continue;
+            }
+        }
+        ps = false;
+        fmt_width = 0;
+    }
+    *out++ = '\0';
+    return out-start;
 }
 
-
-// Helper function to convert an integer to a hexadecimal string
-void int_to_hex(int value, char *out) {
-    const char *hex_digits = "0123456789abcdef";
-    char buffer[20];
-    int index = 0;
-    for (int i = 0; i < 8; i++) {
-      strncpy(buffer + index, &hex_digits[value & 0xf], 1);
-      value >>= 4;
-      index++;
-    }
-
-    // Reverse the buffer to get the correct hexadecimal string
-    int j = 0;
-    for (int i = index - 1; i >= 0; i--) {
-        out[j++] = buffer[i];
-    }
-    out[j] = '\0'; // Null-terminate the string
+int puts(const char * str) {
+  for (const char *c = str; *c; c++) putch(*c);
+  putch('\n');
+  return 0;
 }
-
-
 
 #endif
