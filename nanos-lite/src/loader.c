@@ -1,6 +1,7 @@
 #include <proc.h>
 #include <elf.h>
 #include "ramdisk.h"
+#include <fs.h>
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -36,11 +37,12 @@ void naive_uload(PCB *pcb, const char *filename) {
 
 // 获取 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 num_pt_load_segments 中
 uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
-
+  // 从文件系统中读取文件
+  int fd = fs_open(filename, 0, 0);
   Elf_Ehdr ehdr;
   
   // Step 1: 读取 ELF 头部
-  ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+  fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
   
   // 检查 ELF 魔数
   if (memcmp(ehdr.e_ident, ELFMAG, SELFMAG) != 0) {
@@ -49,8 +51,11 @@ uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments,
   
   // Step 2: 读取所有 Program Headers
   Elf_Phdr phdrs[MAX_SEGMENTS];
-  ramdisk_read(phdrs, ehdr.e_phoff, ehdr.e_phnum * sizeof(Elf_Phdr));
-  
+  fs_lseek(fd, ehdr.e_phoff, SEEK_SET); // 设置当前的偏移为程序表地址
+  fs_read(fd, phdrs, ehdr.e_phnum * sizeof(Elf_Phdr));
+  fs_lseek(fd, 0, SEEK_SET); // 清除偏移量
+
+
   // Step 3: 筛选出所有 PT_LOAD 段
   int count = 0;
   for (int i = 0; i < ehdr.e_phnum; i++) {
