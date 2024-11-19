@@ -34,7 +34,7 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 static int check_fd(int fd) {
-  assert(fd >=0 && fd < sizeof(fs_open));
+  assert(fd >=0 && fd < sizeof(file_table));
   return fd;
 } 
 #define sys_file(fd) file_table[check_fd(fd)]
