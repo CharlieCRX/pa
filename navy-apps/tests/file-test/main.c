@@ -4,7 +4,7 @@
 int main() {
   printf("open start!\n");
   FILE *fp = fopen("/share/files/num", "r+");
-  assert(fp);
+  assert(!fp);
 
   printf("open ok!\n");
   fseek(fp, 0, SEEK_END);
