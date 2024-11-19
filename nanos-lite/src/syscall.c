@@ -33,11 +33,7 @@ void sys_sbrk(Context *c) {
 }
 
 void sys_open(Context *c) {
-  const char *pathname = (char *)c->GPR2;
-  int flags = (int) c->GPR3;
-  int mode = (int) c->GPR4;
 
-  c->GPRx = fs_open(pathname, flags, mode);
 }
 
 void sys_read(Context *c) {
