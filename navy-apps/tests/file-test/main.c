@@ -22,7 +22,7 @@ int main() {
   }
   printf("*****************\n");
   fseek(fp, 0, SEEK_CUR);
-
+  printf("*****************\n");
   for (i = 500; i < 1000; i ++) {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
