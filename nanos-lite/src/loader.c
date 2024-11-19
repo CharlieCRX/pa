@@ -54,7 +54,7 @@ uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments,
   Elf_Phdr phdrs[MAX_SEGMENTS];
   fs_lseek(fd, ehdr.e_phoff, SEEK_SET); // 设置当前的偏移为程序表地址
   fs_read(fd, phdrs, ehdr.e_phnum * sizeof(Elf_Phdr));
-  fs_lseek(fd, 0, SEEK_SET); // 清除偏移量
+  fs_close(fd);
 
 
   // Step 3: 筛选出所有 PT_LOAD 段
