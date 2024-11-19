@@ -102,7 +102,10 @@ size_t fs_read(int fd, void *buf, size_t len) {
   size_t count = ramdisk_read(buf, operation_offset(fd), len);
 
   // 更新此文件的open_offset
-  sys_file(fd).open_offset += count;  
+  sys_file(fd).open_offset += count;
+  Log("************fs_read start*************");
+  print_file(fd);
+  Log("************fs_read end  *************");
   return count;
 }
 
@@ -146,6 +149,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
     default:
       assert(0);
   }
+  Log("fs_lseek: now %d file open_offset is %d", fd, sys_file(fd).open_offset);
   return sys_file(fd).open_offset;
 }
 

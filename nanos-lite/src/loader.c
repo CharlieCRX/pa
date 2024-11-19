@@ -13,19 +13,21 @@
 
 #define MAX_SEGMENTS 16  // 假设 ELF 文件中 Program Headers 的最大数量
 
-uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments);
-void load_segments(Elf_Phdr *pt_load_segments, int num_segments);
+uintptr_t get_pt_load_segments(int fd, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments);
+void load_segments(int fd, Elf_Phdr *pt_load_segments, int num_segments);
 void print_pt_load_segments(const Elf_Phdr *segments, size_t count);
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
   size_t count;
   Elf_Phdr pt_load_segments[MAX_SEGMENTS];
+  int fd = fs_open(filename, 0, 0);
   // 获取要加载的段信息
-  uintptr_t entry = get_pt_load_segments(filename, pt_load_segments, &count);
+  uintptr_t entry = get_pt_load_segments(fd, pt_load_segments, &count);
   print_pt_load_segments(pt_load_segments, count);
 
   // 加载段到内存中
-  load_segments(pt_load_segments, count);
+  load_segments(fd, pt_load_segments, count);
+  fs_close(fd);
   return entry;
 }
 
@@ -36,13 +38,12 @@ void naive_uload(PCB *pcb, const char *filename) {
 }
 
 
-// 获取 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 num_pt_load_segments 中
-uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
-  // 从文件系统中读取文件
-  int fd = fs_open(filename, 0, 0);
+// 获取fd文件中 PT_LOAD 段信息，并将 PT_LOAD 段的数量存储到 num_pt_load_segments 中
+uintptr_t get_pt_load_segments(int fd, Elf_Phdr *pt_load_segments, size_t *num_pt_load_segments) {
   Elf_Ehdr ehdr;
   
   // Step 1: 读取 ELF 头部
+  fs_lseek(fd, 0, SEEK_SET);
   fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
   
   // 检查 ELF 魔数
@@ -80,7 +81,7 @@ void print_pt_load_segments(const Elf_Phdr *segments, size_t count) {
 }
 
 // 段加载函数，输入参数为pt_load_segments和其数量
-void load_segments(Elf_Phdr *pt_load_segments, int num_segments){
+void load_segments(int fd, Elf_Phdr *pt_load_segments, int num_segments){
   for (int i = 0; i < num_segments; i++) {
     Elf_Phdr *seg = &pt_load_segments[i];
 
@@ -90,8 +91,10 @@ void load_segments(Elf_Phdr *pt_load_segments, int num_segments){
     size_t filesz = seg->p_filesz;
     size_t memsz = seg->p_memsz;
 
-    // 从ramdisk中读取段数据到内存
-    ramdisk_read((void *)(vaddr), offset, filesz);
+    // 从文件fd中读取段数据到内存
+    fs_lseek(fd, offset, SEEK_CUR);
+    fs_read(fd, (void *)(vaddr), filesz);
+    fs_close(fd);
 
     // 清零 [VirtAddr + FileSiz, VirtAddr + MemSiz) 的内存
     if (memsz > filesz) {
