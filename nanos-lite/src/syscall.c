@@ -37,7 +37,7 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_exit : strace(c); sys_exit(SYS_exit);   break;
     case SYS_yield: strace(c); sys_yield(c);  break;
-    case SYS_write:  sys_write(c);  break;
+    case SYS_write: strace(c); sys_write(c);  break;
     case SYS_brk:   strace(c); sys_sbrk(c);   break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
