@@ -9,8 +9,8 @@ void sys_yield(Context *c) {
   yield();
   c->GPRx = 0;
 }
-void sys_exit(int status) {
-  halt(status);
+void sys_exit(Context *c) {
+  halt(c->GPR2);
 }
 
 void sys_write(Context *c) {
@@ -35,7 +35,7 @@ void do_syscall(Context *c) {
   a[0] = c->GPR1;
 
   switch (a[0]) {
-    case SYS_exit : strace(c); sys_exit(SYS_exit);   break;
+    case SYS_exit : strace(c); sys_exit(c);   break;
     case SYS_yield: strace(c); sys_yield(c);  break;
     case SYS_write: strace(c); sys_write(c);  break;
     case SYS_brk:   strace(c); sys_sbrk(c);   break;
