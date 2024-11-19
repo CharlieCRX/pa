@@ -88,8 +88,6 @@ void *_sbrk(intptr_t increment) {
     current_break = new_break;       // 更新当前的 program break
     return old_break;                // 返回旧的 program break
   }
-
-  assert(0);
   // 如果失败，返回 -1
   return (void *)-1;
 }
