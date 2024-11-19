@@ -64,7 +64,7 @@ static size_t valid_operation_len(int fd, size_t len) {
 // For test
 void print_file(int fd) {
   Finfo ready_file = sys_file(fd);
-  printf("fileName: %s, size = %d, disk_offset = %d, open_offset = %d\n",
+  Log("fileName: %s, size = %d, disk_offset = %d, open_offset = %d\n",
     ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
 }
 
