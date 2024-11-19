@@ -42,15 +42,24 @@ void sys_open(Context *c) {
 }
 
 void sys_read(Context *c) {
+  int fd = (int) c->GPR2;
+  void *buf = (void *)c->GPR3;
+  size_t len = (size_t) c->GPR4;
 
+  c->GPRx = fs_read(fd, buf, len);
 }
 
 void sys_lseek(Context *c) {
-
+  int fd = (int) c->GPR2;
+  size_t offset = (size_t) c->GPR3;
+  int whence = (int) c->GPR4;
+  
+  c->GPRx = fs_lseek(fd, offset, whence);
 }
 
 void sys_close(Context *c) {
-
+  int fd = (int) c->GPR2;
+  c->GPRx = fs_close(fd);
 }
 
 void do_syscall(Context *c) {
