@@ -5,6 +5,7 @@
 #include <time.h>
 #include "syscall.h"
 
+
 // helper macros
 #define _concat(x, y) x ## y
 #define concat(x, y) _concat(x, y)
@@ -66,18 +67,31 @@ int _open(const char *path, int flags, mode_t mode) {
 }
 
 int _write(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_write, fd, buf, count);
+  return _syscall_(SYS_write, fd, (intptr_t)buf, count);
 }
 
+// 声明链接器符号 _end，表示初始堆结束位置
 extern char _end;
+
 void *_sbrk(intptr_t increment) {
-  static char *myend = &_end;
-  if (_syscall_(SYS_brk, increment, 0, 0) == 0) {
-    void *ret = myend;
-    myend += increment;
-    return (void*)ret;
+  // 静态变量记录当前的 program break
+  static char *current_break = &_end;
+
+  // 计算新的 program break
+  char *new_break = current_break + increment;
+
+  // 调用 SYS_brk，尝试设置新的 program break
+  int result = _syscall_(SYS_brk,  (intptr_t)new_break, 0, 0);
+
+  // 检查返回值
+  if (result == 0) {
+    void *old_break = current_break; // 记录旧的 program break
+    current_break = new_break;      // 更新当前的 program break
+    return old_break;               // 返回旧的 program break
   }
-  return (void*)-1;
+
+  // 如果失败，返回 (void *)-1
+  return (void *)-1;
 }
 
 
