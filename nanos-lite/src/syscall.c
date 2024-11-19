@@ -23,6 +23,8 @@ void sys_write(Context *c) {
 	  for (int i = 0; i < count; i++) {
 	  	putch(buf[i]);
 	  }
+  } else {
+    fs_write(fd, buf, count);
   }
 
   c->GPRx = count;
