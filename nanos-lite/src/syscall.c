@@ -61,7 +61,7 @@ void do_syscall(Context *c) {
     case SYS_yield: strace(c); sys_yield(c);  break;
     case SYS_write:  sys_write(c);  break;
     case SYS_brk:   strace(c); sys_sbrk(c);   break;
-    case SYS_open:  strace(c); sys_open(c);   break;
+    case SYS_open:  strace(c); sys_open(c);strace(c);   break;
     case SYS_read:  strace(c); sys_read(c);   break;
     case SYS_lseek: strace(c); sys_lseek(c);  break;
     case SYS_close: strace(c); sys_close(c);  break;
