@@ -39,6 +39,14 @@ static int check_fd(int fd) {
 } 
 #define sys_file(fd) file_table[check_fd(fd)]
 
+
+// For test
+void print_file(int fd) {
+  Finfo ready_file = sys_file(fd);
+  Log("fileName: %s, size = %d, disk_offset = %d, open_offset = %d",
+    ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
+}
+
 // 获取fd所指文件的操作偏移地址
 static size_t operation_offset(int fd){
   return sys_file(fd).disk_offset + sys_file(fd).open_offset; 
@@ -48,7 +56,7 @@ static size_t operation_offset(int fd){
 static size_t valid_operation_len(int fd, size_t len) {
   // 根据文件描述符获取文件信息
   Finfo ready_file = sys_file(fd);
-
+  
   // 合法读取长度
   size_t max_offset   = ready_file.disk_offset + ready_file.size;
   size_t start_offset = operation_offset(fd);
@@ -61,12 +69,7 @@ static size_t valid_operation_len(int fd, size_t len) {
   return len;
 }
 
-// For test
-void print_file(int fd) {
-  Finfo ready_file = sys_file(fd);
-  Log("fileName: %s, size = %d, disk_offset = %d, open_offset = %d\n",
-    ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
-}
+
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
@@ -77,7 +80,6 @@ void init_fs() {
 int fs_open(const char *pathname, int flags, int mode) {
   for (int i = 0; i < sizeof(file_table); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
-      print_file(i);
       return check_fd(i);
     }
   }
@@ -92,7 +94,8 @@ int fs_open(const char *pathname, int flags, int mode) {
 //  如果最总返回的字数count小于要读取的长度len，说明数据不够长；
 //  读取失败，返回-1--且此时不改变文件的打开偏移open_offset
 size_t fs_read(int fd, void *buf, size_t len) {
-  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR) return 0;
+  if(fd == FD_STDIN || fd == FD_STDOUT || fd == FD_STDERR)  
+    assert(0);
 
   // 从文件中读取合法长度的数据，同时更新此文件的open_offset
   len = valid_operation_len(fd, len);

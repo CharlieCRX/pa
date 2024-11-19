@@ -22,6 +22,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Phdr pt_load_segments[MAX_SEGMENTS];
   // 获取要加载的段信息
   uintptr_t entry = get_pt_load_segments(filename, pt_load_segments, &count);
+  print_pt_load_segments(pt_load_segments, count);
 
   // 加载段到内存中
   load_segments(pt_load_segments, count);
