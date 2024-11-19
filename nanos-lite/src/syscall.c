@@ -28,7 +28,7 @@ void sys_write(Context *c) {
 }
 
 void sys_sbrk(Context *c) {
-  c->GPRx = -1;
+  c->GPRx = 0;
 }
 void do_syscall(Context *c) {
   uintptr_t a[4];
