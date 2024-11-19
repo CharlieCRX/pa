@@ -87,7 +87,6 @@ void *_sbrk(intptr_t increment) {
   }
 
   // 如果失败，返回 (void *)-1
-  assert(0);
   return (void *)-1;
 }
 
