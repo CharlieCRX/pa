@@ -20,8 +20,9 @@ int main() {
   for (i = 0; i < 500; i ++) {
     fprintf(fp, "%4d\n", i + 1 + 1000);
   }
+  printf("*****************\n");
+  fseek(fp, 0, SEEK_CUR);
 
-  printf("00000000000000000000000000000\n");
   for (i = 500; i < 1000; i ++) {
     fscanf(fp, "%d", &n);
     assert(n == i + 1);
