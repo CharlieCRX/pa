@@ -69,27 +69,15 @@ int _write(int fd, void *buf, size_t count) {
   return _syscall_(SYS_write, fd, buf, count);
 }
 
-// 声明链接器符号 _end
 extern char _end;
-
 void *_sbrk(intptr_t increment) {
-  // 静态变量记录当前 program break
-  static char *current_break = &_end;
-
-  // 计算新的 program break
-  char *new_break = current_break + increment;
-
-  // 调用 SYS_brk，尝试设置新的 program break
-  int result = _syscall_(SYS_brk, (intptr_t) new_break, 0, 0);
-
-  // 检查是否成功
-  if (result == 0) {
-    void *old_break = current_break; // 记录旧的 program break
-    current_break = new_break;       // 更新当前的 program break
-    return old_break;                // 返回旧的 program break
+  static char *myend = &_end;
+  if (_syscall_(SYS_brk, increment, 0, 0) == 0) {
+    void *ret = myend;
+    myend += increment;
+    return (void*)ret;
   }
-  // 如果失败，返回 -1
-  return (void *)-1;
+  return (void*)-1;
 }
 
 
