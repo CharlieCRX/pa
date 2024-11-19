@@ -62,8 +62,7 @@ void _exit(int status) {
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  _syscall_(SYS_open, (intptr_t)path, flags, mode);
-  return 0;
+  return _syscall_(SYS_open, (intptr_t)path, flags, mode);
 }
 
 // 声明链接器符号 _end，表示初始堆结束位置
