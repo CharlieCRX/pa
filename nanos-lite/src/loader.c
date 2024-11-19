@@ -82,6 +82,7 @@ void print_pt_load_segments(const Elf_Phdr *segments, size_t count) {
 
 // 段加载函数，输入参数为pt_load_segments和其数量
 void load_segments(int fd, Elf_Phdr *pt_load_segments, int num_segments){
+  Log("load segments.....");
   for (int i = 0; i < num_segments; i++) {
     Elf_Phdr *seg = &pt_load_segments[i];
 
@@ -92,7 +93,7 @@ void load_segments(int fd, Elf_Phdr *pt_load_segments, int num_segments){
     size_t memsz = seg->p_memsz;
 
     // 从文件fd中读取段数据到内存
-    fs_lseek(fd, offset, SEEK_CUR);
+    fs_lseek(fd, offset, SEEK_SET);
     fs_read(fd, (void *)(vaddr), filesz);
     fs_close(fd);
 
