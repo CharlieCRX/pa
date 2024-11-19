@@ -34,6 +34,7 @@ int main() {
 
   fclose(fp);
   for(int i = 0; i < 10; i++)
+  write(1, "PASS World!\n", 13);
   printf("PASS!!!\n");
 
   return 0;
