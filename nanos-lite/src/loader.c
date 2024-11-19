@@ -74,7 +74,7 @@ uintptr_t get_pt_load_segments(const char *filename, Elf_Phdr *pt_load_segments,
 void print_pt_load_segments(const Elf_Phdr *segments, size_t count) {
     for (size_t i = 0; i < count; i++) {
         const Elf_Phdr *phdr = &segments[i];
-        Log("PT_LOAD Segment %d: Offset 0x%d, Virtual Address 0x%d, Size in File %d, Size in Memory %d\n",
+        Log("PT_LOAD Segment %d: Offset 0x%x, Virtual Address 0x%x, Size in File 0x%x, Size in Memory 0x%x\n",
                i, phdr->p_offset, phdr->p_vaddr, phdr->p_filesz, phdr->p_memsz);
     }
 }
