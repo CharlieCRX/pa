@@ -29,6 +29,7 @@ void sys_write(Context *c) {
 }
 
 void sys_sbrk(Context *c) {
+  for(int i = 0; i < 10000; i++);
   c->GPRx = 0;
 }
 
