@@ -61,6 +61,13 @@ static size_t valid_operation_len(int fd, size_t len) {
   return len;
 }
 
+// For test
+void print_file(int fd) {
+  Finfo ready_file = sys_file(fd);
+  printf("fileName: %s, size = %d, disk_offset = %d, open_offset = %d\n",
+    ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
+}
+
 void init_fs() {
   // TODO: initialize the size of /dev/fb
 }
@@ -70,6 +77,7 @@ void init_fs() {
 int fs_open(const char *pathname, int flags, int mode) {
   for (int i = 0; i < sizeof(file_table); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
+      print_file(i);
       return check_fd(i);
     }
   }
