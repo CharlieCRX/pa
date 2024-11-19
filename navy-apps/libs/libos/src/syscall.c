@@ -80,7 +80,7 @@ void *_sbrk(intptr_t increment) {
   char *new_break = current_break + increment;
 
   // 调用 SYS_brk，尝试设置新的 program break
-  int result = (void *)_syscall_(SYS_brk, (intptr_t) new_break, 0, 0);
+  int result = _syscall_(SYS_brk, (intptr_t) new_break, 0, 0);
 
   // 检查是否成功
   if (result == 0) {
