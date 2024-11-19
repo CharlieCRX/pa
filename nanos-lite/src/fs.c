@@ -113,6 +113,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
     2. 写入失败，返回-1
 */
 size_t fs_write(int fd, const void *buf, size_t len) {
+  if(fd == FD_STDOUT) Log("fs_write(FD_STDOUT)");
   if (fd == FD_STDIN) { return 0;}
   len = valid_operation_len(fd, len);
 
