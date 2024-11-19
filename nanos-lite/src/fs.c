@@ -125,8 +125,6 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 // 描述：定位fd所指文件的偏移
 // 定位后更新文件的open_offset，偏移量不能超过文件的边界
 size_t fs_lseek(int fd, size_t offset, int whence) {
-
-  assert(sys_file(fd).size - sys_file(fd).open_offset >= offset);
   switch (whence)
   {
     case SEEK_SET:
