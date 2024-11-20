@@ -1,5 +1,8 @@
 #include <fs.h>
 #include "ramdisk.h"
+#include <device.h>
+//helper
+size_t normal_fs_write(int fd, const void *buf, size_t len);
 
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
@@ -28,8 +31,8 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
 /* This is the information about all files in disk. */
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin" , 0, 0, 0, invalid_read, invalid_write},
-  [FD_STDOUT] = {"stdout", 0, 0, 0, invalid_read, invalid_write},
-  [FD_STDERR] = {"stderr", 0, 0, 0, invalid_read, invalid_write},
+  [FD_STDOUT] = {"stdout", 0, 0, 0, invalid_read, serial_write},
+  [FD_STDERR] = {"stderr", 0, 0, 0, invalid_read, serial_write},
 #include "files.h"
 };
 
@@ -107,6 +110,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
   return count;
 }
 
+
 /* 描述：从buf的初始值位置读取len个字节的数据，写入到fd所指的文件中
 /   返回值：
     1. 成功写入，return_val == len,返回写入的字节数
@@ -114,13 +118,14 @@ size_t fs_read(int fd, void *buf, size_t len) {
     2. 写入失败，返回-1
 */
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if(fd == FD_STDOUT) Log("fs_write(FD_STDOUT)");
-  if (fd == FD_STDIN) { return 0;}
-  len = valid_operation_len(fd, len);
-
-  size_t count = ramdisk_write(buf, operation_offset(fd), len);
-  // 更新此文件的open_offset
-  sys_file(fd).open_offset += count;  
+  assert(fd == FD_STDIN);
+  size_t count;
+  // 判断文件类型为普通
+  if(sys_file(fd).write == NULL) {
+    count = normal_fs_write(fd, buf, len);
+  } else {
+    count = sys_file(fd).write(buf, 0, len);
+  }
   return count;
 }
 
@@ -155,4 +160,21 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
 int fs_close(int fd) {
   fs_lseek(fd, 0, SEEK_CUR);
   return 0;
+}
+
+/*helper */
+/*  描述：写普通文件的操作 - 存储在ramdisk
+/   返回值：
+    1. 成功写入，return_val == len,返回写入的字节数
+                return_val <  len,剩余ramdisk空间不足以写入len数据
+    2. 写入失败，返回-1
+*/
+size_t normal_fs_write(int fd, const void *buf, size_t len) {
+  assert(fd == FD_STDERR || fd == FD_STDIN || fd == FD_STDOUT);
+  len = valid_operation_len(fd, len);
+
+  size_t count = ramdisk_write(buf, operation_offset(fd), len);
+  // 更新此文件的open_offset
+  sys_file(fd).open_offset += count;  
+  return count;
 }

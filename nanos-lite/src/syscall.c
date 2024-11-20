@@ -19,14 +19,7 @@ void sys_write(Context *c) {
   char *buf    = (char *)c->GPR3;
   size_t count = (size_t)c->GPR4;
 
-  if (fd == 1 || fd == 2) {
-	  for (int i = 0; i < count; i++) {
-	  	putch(buf[i]);
-	  }
-  } else {
-    fs_write(fd, buf, count);
-  }
-
+  count = fs_write(fd, buf, count);
   c->GPRx = count;
 }
 
