@@ -1,11 +1,14 @@
 #include <common.h>
 #include "syscall.h"
 #include "fs.h"
+#include <sys/time.h>
+#include <time.h>
 
 void strace(Context *c) {
   Log("strace: Syscall num: %d, param(a0, a1, a2) = (0x%x, 0x%x, 0x%x)", 
   c->GPR1, c->GPR2, c->GPR3, c->GPR4);
 }
+
 void sys_yield(Context *c) {
   yield();
   c->GPRx = 0;
@@ -58,10 +61,38 @@ void sys_close(Context *c) {
 }
 
 /*描述：用于获取系统时间的系统调用
+        tv_sec= 秒数，从1970年1月1日 00:00:00 UTC开始的时间（UNIX时间戳）
+        tv_usec= 微秒数（0 ~ 999,999）
+        tz_minuteswest = 当前时区与 UTC 时间的差值，以分钟为单位
+        tz_dsttime = 是否使用夏令时
   返回值：成功时返回 0，失败时返回 -1
 */
 void sys_gettimeofday(Context *c) {
-  TODO();
+  struct timeval  *tv = (struct timeval *) c->GPR2;
+  struct timezone *tz = (struct timezone *) c->GPR3;
+  /*TODO  
+    io_read(AM_TIMER_UPTIME):AM系统启动时间, 可读出系统启动后的微秒数
+    现在仅实现了获取系统启动后的微秒数,且没有限制最大为999,999
+    固定秒数为100s
+    日后需要修改此处代码
+  */
+  if (tv == NULL) {
+    c->GPRx = -1;
+    return;
+  }
+
+  uint64_t usec= io_read(AM_TIMER_UPTIME).us;
+  tv->tv_sec = usec / 1000000;
+  tv->tv_usec = usec % 999999;
+  if(tz != NULL) {
+    // 如果传入的 tz 不为空，设置默认值
+    tz->tz_minuteswest = -480;  //UTC+8（中国标准时间）
+    tz->tz_dsttime = 0; // 假设无夏令时
+  }
+
+
+  c->GPRx = 0;
+
 }
 
 void do_syscall(Context *c) {
