@@ -150,6 +150,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
     default:
       assert(0);
   }
+  Log("After fs_lseek:");
   print_file(fd);
   return sys_file(fd).open_offset;
 }
