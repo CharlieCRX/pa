@@ -83,7 +83,6 @@ void init_fs() {
 int fs_open(const char *pathname, int flags, int mode) {
   for (int i = 0; i < sizeof(file_table); i++) {
     if(strcmp(pathname, file_table[i].name) == 0) {
-      print_file(i);
       return check_fd(i);
     }
   }
