@@ -118,7 +118,6 @@ size_t fs_read(int fd, void *buf, size_t len) {
     2. 写入失败，返回-1
 */
 size_t fs_write(int fd, const void *buf, size_t len) {
-  assert(fd == FD_STDIN);
   size_t count;
   // 判断文件类型为普通
   if(sys_file(fd).write == NULL) {
