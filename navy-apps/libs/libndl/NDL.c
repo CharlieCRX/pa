@@ -3,13 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
+static uint64_t now_time = -1;
 
+// 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
-  return 0;
+  if(now_time == -1) {
+    assert(0);//目前配合init的工作
+  }
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  return now.tv_sec * 1000 + now.tv_usec / 1000;
 }
 
 int NDL_PollEvent(char *buf, int len) {
@@ -57,8 +65,10 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  now_time = 0;
   return 0;
 }
 
 void NDL_Quit() {
+  now_time = -1;
 }
