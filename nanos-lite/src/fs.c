@@ -169,7 +169,7 @@ int fs_close(int fd) {
     2. 写入失败，返回-1
 */
 size_t normal_fs_write(int fd, const void *buf, size_t len) {
-  assert(fd == FD_STDERR || fd == FD_STDIN || fd == FD_STDOUT);
+  assert(fd != FD_STDERR && fd != FD_STDIN && fd != FD_STDOUT);
   len = valid_operation_len(fd, len);
 
   size_t count = ramdisk_write(buf, operation_offset(fd), len);
