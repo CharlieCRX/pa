@@ -70,29 +70,23 @@ void sys_close(Context *c) {
 void sys_gettimeofday(Context *c) {
   struct timeval  *tv = (struct timeval *) c->GPR2;
   struct timezone *tz = (struct timezone *) c->GPR3;
-  /*TODO  
-    io_read(AM_TIMER_UPTIME):AM系统启动时间, 可读出系统启动后的微秒数
-    现在仅实现了获取系统启动后的微秒数,且没有限制最大为999,999
-    固定秒数为100s
-    日后需要修改此处代码
-  */
+
   if (tv == NULL) {
-    c->GPRx = -1;
+    c->GPRx = -1; // 返回错误码
     return;
   }
-
+  // io_read(AM_TIMER_UPTIME):AM系统启动时间, 可读出系统启动后的微秒数
   uint64_t usec= io_read(AM_TIMER_UPTIME).us;
   tv->tv_sec = usec / 1000000;
   tv->tv_usec = usec % 999999;
+
   if(tz != NULL) {
     // 如果传入的 tz 不为空，设置默认值
     tz->tz_minuteswest = -480;  //UTC+8（中国标准时间）
     tz->tz_dsttime = 0; // 假设无夏令时
   }
 
-
   c->GPRx = 0;
-
 }
 
 void do_syscall(Context *c) {

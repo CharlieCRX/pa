@@ -11,16 +11,13 @@ int main() {
   gettimeofday(&start, NULL);
 
   while (1) {
-    gettimeofday(&now, NULL);
-
+    gettimeofday(&now, NULL); 
     // 计算经过的时间 (秒 + 微秒)
-    elapsed_time_us = (now.tv_sec - start.tv_sec) * 1000000 + (now.tv_usec - start.tv_usec);
-
+    elapsed_time_us = (now.tv_sec - start.tv_sec) * 1000000 + (now.tv_usec - start.tv_usec);  
     if (elapsed_time_us >= interval_us) {
-        printf("This is a line of text.\n");
-
-        // 更新开始时间，避免累积误差
-        start = now;
+      printf("This is a line of text.\n");
+      // 更新开始时间，避免累积误差
+      start = now;
     }
   }
 
