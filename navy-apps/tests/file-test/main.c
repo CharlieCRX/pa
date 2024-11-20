@@ -22,6 +22,7 @@ int main() {
 
   // 修改1到500行的数据
   fseek(fp, 0, SEEK_SET);
+  printf("fseek(fp, 0, SEEK_SET) OK!\n");
   for (i = 0; i < 500; i ++) {
     fprintf(fp, "%4d\n", i + 1 + 1000);
   }
