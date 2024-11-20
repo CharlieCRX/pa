@@ -169,6 +169,7 @@ int fs_close(int fd) {
     2. 写入失败，返回-1
 */
 size_t normal_fs_write(int fd, const void *buf, size_t len) {
+  // 禁止写入特殊文件
   assert(fd != FD_STDERR && fd != FD_STDIN && fd != FD_STDOUT);
   len = valid_operation_len(fd, len);
 
