@@ -57,6 +57,13 @@ void sys_close(Context *c) {
   c->GPRx = fs_close(fd);
 }
 
+/*描述：用于获取系统时间的系统调用
+  返回值：成功时返回 0，失败时返回 -1
+*/
+void sys_gettimeofday(Context *c) {
+  TODO();
+}
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -70,6 +77,7 @@ void do_syscall(Context *c) {
     case SYS_read:  strace(c); sys_read(c);   break;
     case SYS_lseek: strace(c); sys_lseek(c);  break;
     case SYS_close: strace(c); sys_close(c);  break;
+    case SYS_gettimeofday:  strace(c); sys_gettimeofday(c); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
   
