@@ -15,6 +15,12 @@
 #define putstr(s) \
   ({ for (const char *p = s; *p; p++) putch(*p); })
 
+#define putn(buf,len) \
+  ({ const char *char_buf = (const char *)buf;\
+    for (int i = 0; i < len; i++) \
+          putch(char_buf[i]);          \
+  })
+
 #define io_read(reg) \
   ({ reg##_T __io_param; \
     ioe_read(reg, &__io_param); \
