@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <NDL.h>
 #include <unistd.h>
+#include <NDL.h>
+
 
 int main() {
   uint32_t start, now, elapsed_time_us; // 用于计算已经过去的时间
