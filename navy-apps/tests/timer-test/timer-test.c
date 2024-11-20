@@ -9,7 +9,7 @@ int main() {
 
   NDL_Init(0);
   // 获取开始时间
-  uint32_t start = NDL_GetTicks();
+  start = NDL_GetTicks();
 
   while (1) {
     uint32_t now = NDL_GetTicks();
