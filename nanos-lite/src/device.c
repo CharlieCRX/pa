@@ -35,7 +35,6 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
  * @return size_t 实际字长， 若当前没有有效按键, 则返回0即可.
  */
 size_t events_read(void *buf, size_t offset, size_t len) {
-  Log("Event read.......\n");
   // 从IOE的部分读取键盘数据寄存器
   AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
 
