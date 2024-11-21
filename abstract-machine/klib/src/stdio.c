@@ -64,9 +64,8 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 			}
 			else if (*fmt_ptr == 's') {
 				char *s = va_arg(args, char *);
-				// strcpy(out_ptr, s);
-        putstr(s);
-				out_ptr += 0;
+				strcpy(out_ptr, s);
+				out_ptr += strlen(s);
 			}
       else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
         // Handle hexadecimal format (%x)
@@ -91,8 +90,7 @@ int printf(const char *fmt, ...) {
 	char buf[MAX_STRING_LEN];
 	va_list args;
 	va_start(args, fmt);
-
-  panic_on((strlen(fmt) > MAX_STRING_LEN), "Too lang for printf");//废话，不可能超长的
+  
 	int len = process_format_string(buf, fmt, args);
 
 	for (int i = 0; i < len; i++) {
