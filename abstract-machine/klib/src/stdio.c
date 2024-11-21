@@ -66,6 +66,7 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 				char *s = va_arg(args, char *);
         // 处理不了特别长的字符串，现在直接输出
         putstr(s);
+        putch('\n');
         return 0;
 			}
       else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
