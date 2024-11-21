@@ -28,7 +28,6 @@ void sys_write(Context *c) {
 
 void sys_sbrk(Context *c) {
   c->GPRx = 0;
-  strace(c);
 }
 
 void sys_open(Context *c) {
