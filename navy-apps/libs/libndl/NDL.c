@@ -31,16 +31,13 @@ uint32_t NDL_GetTicks() {
 int NDL_PollEvent(char *buf, int len) {
   assert(evtdev != -1);//检查是否init
   // 判断events文件是否打开
-  while(1) {
-    FILE *fp = fopen("/dev/events", "r+");
-    assert(fp);
-  
-    //读取数据
-    fscanf(fp, "%s", buf);
-    if (buf == NULL) break;
-    return strlen(buf);
-  }
-  return 0;
+  FILE *fp = fopen("/dev/events", "r+");
+  assert(fp);
+
+  //读取数据
+  fscanf(fp, "%s", buf);
+  if (buf == NULL) return 0;
+  return strlen(buf);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
