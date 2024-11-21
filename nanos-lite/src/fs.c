@@ -21,7 +21,7 @@ typedef struct {
   WriteFn write;
 } Finfo;
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_EVENT};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENT, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -52,7 +52,6 @@ void init_fs() {
 // return: 存在，返回文件下标；不存在，直接报错
 int fs_open(const char *pathname, int flags, int mode) {
   for (int i = 0; i < sizeof(file_table); i++) {
-    print_file(i);
     if(strcmp(pathname, file_table[i].name) == 0) {
       return check_fd(i);
     }
