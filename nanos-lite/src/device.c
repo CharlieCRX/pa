@@ -51,6 +51,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     // printf("event_name :%s, event_keydown: %s\n",event_name, event_keydown );
     sprintf(buf, "%s %s", event_keydown, event_name);
     printf("buf = %s\n", buf);
+    assert(0);
     // 获取写入的长度
     break;
   }
