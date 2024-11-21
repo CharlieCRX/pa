@@ -33,7 +33,9 @@ int NDL_PollEvent(char *buf, int len) {
   FILE *fp = fopen("/dev/events", "r+");
   assert(fp);
   
-  return 0;
+  //读取数据
+  fscanf(fp, "%s", buf);
+  return strlen(buf);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
