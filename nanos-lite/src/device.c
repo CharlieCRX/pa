@@ -47,9 +47,9 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     const char *event_name    = keyname[ev.keycode];
     char *event_keydown = ev.keydown ? "kd" : "ku";
     sprintf(buf, "%s %s", event_keydown, event_name); 
-
     assert(buf != NULL);
     // 获取写入的长度
+    break;
   }
 
   return strlen(buf);
