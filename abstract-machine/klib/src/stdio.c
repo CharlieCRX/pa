@@ -11,7 +11,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-#define MAX_STRING_LEN 1024
+#define MAX_STRING_LEN 10240
 void int_to_str(int num, char* str);
 void int_to_hex(int value, char *out);
 int process_format_string(char *out, const char *fmt, va_list args);
@@ -90,7 +90,7 @@ int printf(const char *fmt, ...) {
 	char buf[MAX_STRING_LEN];
 	va_list args;
 	va_start(args, fmt);
-  
+
 	int len = process_format_string(buf, fmt, args);
 
 	for (int i = 0; i < len; i++) {
