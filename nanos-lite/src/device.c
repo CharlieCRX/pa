@@ -35,20 +35,23 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
  * @return size_t 实际字长， 若当前没有有效按键, 则返回0即可.
  */
 size_t events_read(void *buf, size_t offset, size_t len) {
-  // 从IOE的部分读取键盘数据寄存器
-  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+  while(1) {
+    // 从IOE的部分读取键盘数据寄存器
+    AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
 
-  // 如果没有有效按键，则返回0
-  if (ev.keycode == AM_KEY_NONE) return 0;
+    // 如果没有有效按键，则返回0
+    if (ev.keycode == AM_KEY_NONE) return 0;
 
-  // 将IOE的键盘事件转换为 /dev/events 文件支持的格式
-  // 类似"kd RETURN" or "ku A" 
-  const char *event_name    = keyname[ev.keycode];
-  char *event_keydown = ev.keydown ? "kd" : "ku";
-  sprintf(buf, "%s %s", event_keydown, event_name); 
-  
-  assert(buf != NULL);
-  // 获取写入的长度
+    // 将IOE的键盘事件转换为 /dev/events 文件支持的格式
+    // 类似"kd RETURN" or "ku A" 
+    const char *event_name    = keyname[ev.keycode];
+    char *event_keydown = ev.keydown ? "kd" : "ku";
+    sprintf(buf, "%s %s", event_keydown, event_name); 
+
+    assert(buf != NULL);
+    // 获取写入的长度
+  }
+
   return strlen(buf);
 }
 
