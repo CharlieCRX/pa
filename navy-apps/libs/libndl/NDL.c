@@ -34,11 +34,13 @@ int NDL_PollEvent(char *buf, int len) {
   FILE *fp = fopen("/dev/events", "r");
   assert(fp);
 
-  //读取数据
+  //从fp所指的文件中，读取字长为len的数据
   if(fgets(buf, len, fp) == NULL) {
     return 0;
-  } 
+  }
+
   return strlen(buf);
+
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
