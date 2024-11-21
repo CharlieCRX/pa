@@ -20,8 +20,35 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
   return len;
 }
 
+/**
+ * @brief 
+ * 将键盘事件写入到buf中, 最长写入len字节, 然后返回写入的实际长度
+ * 这里定义了两种事件：
+ * - 按下按键事件, 如kd RETURN表示按下回车键
+ * - 松开按键事件, 如ku A表示松开A键
+ * 两种格式要求对IOE读取的键盘事件做相应的转换
+ * 
+ * @param buf 事件写入地址
+ * @param offset 暂时不用
+ * @param len 期待字长
+ * @return size_t 实际字长， 若当前没有有效按键, 则返回0即可.
+ */
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  // 从IOE的部分读取键盘数据寄存器
+  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+
+  // 如果没有有效按键，则返回0
+  if (ev.keycode == AM_KEY_NONE) return 0;
+
+  // 将IOE的键盘事件转换为 /dev/events 文件支持的格式
+  // 类似"kd RETURN" or "ku A" 
+  const char *event_name    = keyname[ev.keycode];
+  char *event_keydown = ev.keydown ? "kd" : "ku";
+  sprintf(buf, "%s %s", event_keydown, event_name); 
+
+  assert(buf == NULL);
+  // 获取写入的长度
+  return strlen(buf);
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
