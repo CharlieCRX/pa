@@ -31,12 +31,13 @@ uint32_t NDL_GetTicks() {
 int NDL_PollEvent(char *buf, int len) {
   assert(evtdev != -1);//检查是否init
   // 判断events文件是否打开
-  FILE *fp = fopen("/dev/events", "r+");
+  FILE *fp = fopen("/dev/events", "r");
   assert(fp);
 
   //读取数据
-  int count = fscanf(fp, "%s", buf);
-  if (count == 0) return 0;
+  if(fgets(buf, len, fp) == NULL) {
+    return 0;
+  } 
   return strlen(buf);
 }
 

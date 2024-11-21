@@ -50,7 +50,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     // 获取写入的长度
     break;
   }
-
   return strlen(buf);
 }
 
