@@ -64,7 +64,8 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 			}
 			else if (*fmt_ptr == 's') {
 				char *s = va_arg(args, char *);
-				strcpy(out_ptr, s);
+				// strcpy(out_ptr, s);
+        strncpy(out_ptr, s, strlen(s));
 				out_ptr += strlen(s);
 			}
       else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
