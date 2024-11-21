@@ -20,7 +20,19 @@ uint32_t NDL_GetTicks() {
   return now.tv_sec * 1000 + now.tv_usec / 1000;
 }
 
+/**
+ * @brief 读出一条按键事件信息, 将其写入`buf`中, 最长写入`len`字节
+ * @param buf 
+ * @param len 
+ * @return int 读出了有效的事件, 返回1, 否则返回0
+ * @date 2024-11-21
+ */
 int NDL_PollEvent(char *buf, int len) {
+  assert(evtdev != -1);
+  // 判断events文件是否打开
+  FILE *fp = fopen("/dev/events", "r+");
+  assert(fp);
+  
   return 0;
 }
 
