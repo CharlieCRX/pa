@@ -33,7 +33,6 @@ int NDL_PollEvent(char *buf, int len) {
   // 判断events文件是否打开
   FILE *fp = fopen("/dev/events", "r+");
   assert(fp);
-  printf("fopen(events) is ok\n");
 
   //读取数据
   fscanf(fp, "%s", buf);

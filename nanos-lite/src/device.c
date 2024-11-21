@@ -41,15 +41,14 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 
     // 如果没有有效按键，则返回0
     if (ev.keycode == AM_KEY_NONE) {
-      buf = NULL;
+      strcpy(buf, NULL);
       return 0;
     }
     // 将IOE的键盘事件转换为 /dev/events 文件支持的格式
     // 类似"kd RETURN" or "ku A" 
-    const char *event_name    = keyname[ev.keycode];
+    const char *event_name  = keyname[ev.keycode];
     char *event_keydown = ev.keydown ? "kd" : "ku";
-    sprintf(buf, "%s %s", event_keydown, event_name); 
-    assert(buf != NULL);
+    sprintf(buf, "%s %s", event_keydown, event_name);
     // 获取写入的长度
     break;
   }
