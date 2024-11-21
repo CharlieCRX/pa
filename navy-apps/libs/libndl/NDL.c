@@ -35,8 +35,8 @@ int NDL_PollEvent(char *buf, int len) {
   assert(fp);
 
   //读取数据
-  fscanf(fp, "%s", buf);
-  if (buf == NULL) return 0;
+  int count = fscanf(fp, "%s", buf);
+  if (count == 0) return 0;
   return strlen(buf);
 }
 
