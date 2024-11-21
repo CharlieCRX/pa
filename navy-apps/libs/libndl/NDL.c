@@ -29,7 +29,7 @@ uint32_t NDL_GetTicks() {
  * @date 2024-11-21
  */
 int NDL_PollEvent(char *buf, int len) {
-  assert(evtdev != -1);
+  assert(evtdev != -1);//检查是否init
   // 判断events文件是否打开
   FILE *fp = fopen("/dev/events", "r+");
   assert(fp);
@@ -81,6 +81,7 @@ int NDL_Init(uint32_t flags) {
     evtdev = 3;
   }
   now_time = 0;
+  evtdev = 0;
   return 0;
 }
 
