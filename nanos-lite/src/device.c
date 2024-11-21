@@ -48,7 +48,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     // 类似"kd RETURN" or "ku A" 
     const char *event_name  = keyname[ev.keycode];
     char *event_keydown = ev.keydown ? "kd" : "ku";
-    sprintf(buf, "%s %s", event_keydown, event_name);
+    printf("event_name :%s, event_keydown: %s\n",event_name, event_keydown );
+    // sprintf(buf, "%s %s", event_keydown, event_name);
     // 获取写入的长度
     break;
   }
