@@ -28,6 +28,7 @@ void sys_write(Context *c) {
 
 void sys_sbrk(Context *c) {
   c->GPRx = 0;
+  strace(c);
 }
 
 void sys_open(Context *c) {
@@ -96,10 +97,10 @@ void do_syscall(Context *c) {
     case SYS_exit : strace(c); sys_exit(c);   break;
     case SYS_yield: strace(c); sys_yield(c);  break;
     case SYS_write: strace(c); sys_write(c);  break;
-    case SYS_brk:   sys_sbrk(c);   break;
-    case SYS_open:   sys_open(c);   break;
-    case SYS_read:   sys_read(c);   break;
-    case SYS_lseek: sys_lseek(c);  break;
+    case SYS_brk:   strace(c); sys_sbrk(c);   break;
+    case SYS_open:  strace(c); sys_open(c);   break;
+    case SYS_read:  strace(c); sys_read(c);   break;
+    case SYS_lseek: strace(c); sys_lseek(c);  break;
     case SYS_close: strace(c); sys_close(c);  break;
     case SYS_gettimeofday:  strace(c); sys_gettimeofday(c); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
