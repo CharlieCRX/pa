@@ -21,7 +21,7 @@ typedef struct {
   WriteFn write;
 } Finfo;
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_EVENT};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -41,7 +41,7 @@ static Finfo file_table[] __attribute__((used)) = {
 #include "files.h"
 };
 #define sys_file(fd) file_table[check_fd(fd)]
-
+#define IS_NORMAL_FD(fd) ((fd) != FD_STDOUT && (fd) != FD_STDERR && (fd) != FD_STDOUT)
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
@@ -77,7 +77,7 @@ int fs_open(const char *pathname, int flags, int mode) {
  */
 size_t fs_read(int fd, void *buf, size_t len) {
   if(fd == FD_STDOUT || fd == FD_STDERR)  
-    assert(0);
+  assert(0);
   size_t count = -1;
   // 读取普通文件
   if(sys_file(fd).read == NULL) {
@@ -188,6 +188,7 @@ static size_t valid_operation_len(int fd, size_t len) {
  * @date 2024-11-21
  */
 size_t normal_fs_read(int fd, void *buf, size_t len){
+  assert(IS_NORMAL_FD(fd));
   // 从文件中读取合法长度的数据，同时更新此文件的open_offset
   len = valid_operation_len(fd, len);
   size_t count = ramdisk_read(buf, operation_offset(fd), len);
@@ -206,7 +207,7 @@ size_t normal_fs_read(int fd, void *buf, size_t len){
 */
 size_t normal_fs_write(int fd, const void *buf, size_t len) {
   // 禁止写入特殊文件
-  assert(fd != FD_STDERR && fd != FD_STDIN && fd != FD_STDOUT);
+  assert(IS_NORMAL_FD(fd));
   len = valid_operation_len(fd, len);
 
   size_t count = ramdisk_write(buf, operation_offset(fd), len);
