@@ -13,7 +13,7 @@
 #define CONCAT(x, y)        _CONCAT(x, y)
 
 #define putstr(s) \
-  ({ for (const char *p = s; *p; p++) putch(*p); })
+  ({ for (const char *p = s; *p; p++) putch(*p); putch('\n');})
 
 #define putn(buf,len) \
   ({ const char *char_buf = (const char *)buf;\
