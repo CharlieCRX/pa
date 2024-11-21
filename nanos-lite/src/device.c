@@ -41,7 +41,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 
     // 如果没有有效按键，则返回0
     if (ev.keycode == AM_KEY_NONE) {
-      strcpy(buf, NULL);
+      strcpy(buf, "\0");
       return 0;
     }
     // 将IOE的键盘事件转换为 /dev/events 文件支持的格式
