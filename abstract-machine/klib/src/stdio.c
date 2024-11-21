@@ -66,6 +66,9 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 				char *s = va_arg(args, char *);
 				strcpy(out_ptr, s);
 				out_ptr += strlen(s);
+        if(strlen(s) == strlen(out_ptr)) {
+          panic("len is ok\n");
+        }
 			}
       else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
         // Handle hexadecimal format (%x)
