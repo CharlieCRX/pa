@@ -64,9 +64,8 @@ int process_format_string(char *out, const char *fmt, va_list args) {
 			}
 			else if (*fmt_ptr == 's') {
 				char *s = va_arg(args, char *);
-        // 处理不了特别长的字符串，现在直接输出
-        putstr(s);
-        return 0;
+				strcpy(out_ptr, s);
+				out_ptr += strlen(s);
 			}
       else if (*fmt_ptr == 'x' || *fmt_ptr == 'p') {
         // Handle hexadecimal format (%x)
