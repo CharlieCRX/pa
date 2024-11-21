@@ -38,9 +38,7 @@ int NDL_PollEvent(char *buf, int len) {
   if(fgets(buf, len, fp) == NULL) {
     return 0;
   }
-
   return strlen(buf);
-
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
