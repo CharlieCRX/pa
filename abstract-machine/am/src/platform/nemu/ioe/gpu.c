@@ -33,7 +33,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
 
   // 如果同步寄存器为false 并且 要没有要输出的图像（宽高任意为0），则不做任何操作
-  if (w == 0 || h == 0) return;
+  if (!ctl->sync && (w == 0 || h == 0)) return;
 
   uint32_t *pixels = ctl->pixels;
 
