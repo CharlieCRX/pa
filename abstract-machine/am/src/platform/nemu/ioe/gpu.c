@@ -1,6 +1,6 @@
 #include <am.h>
 #include <nemu.h>
-// 同步寄存器内存地址：0xa000104
+// 同步寄存器内存地址：0xa00,0104
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
 void __am_gpu_init() {
@@ -43,7 +43,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 
   for (int j = y; j < y+h; j++) { // 固定行的高度为j
     for (int i = x; i < x+w; i++) { // 按列遍历此行的每一个像素点
-      fb[i*screen_w + j] = pixels[(i-x)*w + (j - y)];
+      fb[i + j*screen_w] = pixels[(i-x) + (j - y)*w];
     }
   }
 
