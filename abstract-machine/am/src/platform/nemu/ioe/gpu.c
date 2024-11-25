@@ -43,10 +43,10 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 
   for (int j = y; j < y+h; j++) { // 固定行的高度为j
     for (int i = x; i < x+w; i++) { // 按列遍历此行的每一个像素点
-      fb[i + j*screen_w] = pixels[(i-x) + (j - y)*w];
+      fb[i*screen_w + j] = pixels[(i-x)*w + (j - y)];
     }
   }
-  
+
   // 若`sync`为`true`, 则马上将帧缓冲中的内容同步到屏幕上
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
