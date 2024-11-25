@@ -29,8 +29,8 @@ void etrace(const char *inst, vaddr_t epc, word_t mcause, word_t gpr, word_t mtv
 #define ETRACE(inst) do { bool success = true; word_t a7 = isa_reg_str2val("a7",&success); assert(success);  etrace(inst, read_csrs(CSR_MEPC), read_csrs(CSR_MCAUSE), a7, read_csrs(CSR_MTVEC));} while(0)
 #define ECALL(dnpc) do { dnpc = isa_raise_intr(ENVIRONMENT_CALL_FROM_M_MODE, s->pc); ETRACE("ecall");} while(0)
 #else
-#define ETRACE(inst) do{} while(0);
-#define ECALL(dnpc) do {} while(0);
+#define ETRACE(inst) do{panic("No itrace!");} while(0);
+#define ECALL(dnpc) do {panic("No itrace!");} while(0);
 #endif
 
 
