@@ -80,6 +80,16 @@ void vga_update_screen() {
   }
 }
 
+/**
+ * @brief 初始化vga的相关操作
+ * 1. 初始化初始化VGA显示控制器。此控制器包含两个寄存器：
+ *  - 屏幕大小寄存器：vgactl_port_base[0]
+ *  - 同步寄存器：vgactl_port_base[1]
+ * 
+ * 2. 初始化显存vmem数据.将 vmem 映射到内存
+ * 
+ * @date 2024-11-25
+ */
 void init_vga() {
   // 初始化VGA显示控制器数据，将 vgactl 的控制寄存器映射到内存地址[0xa0000100,0xa0000108]
   vgactl_port_base = (uint32_t *)new_space(8);
@@ -92,8 +102,8 @@ void init_vga() {
   add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
 #endif
 
-  // 初始化显存vmem数据.将 vmem 映射到内存地址[0xa1000000， 0xa1000008]
-  vmem = new_space(screen_size());
+  // 初始化显存vmem数据.将 vmem 映射到内存地址[0xa100,0000， 0xa101,D4C0]
+  vmem = new_space(screen_size()); // 400 * 300 = 1,D4C0
   add_mmio_map("vmem", CONFIG_FB_ADDR, vmem, screen_size(), NULL);
   IFDEF(CONFIG_VGA_SHOW_SCREEN, init_screen());
   IFDEF(CONFIG_VGA_SHOW_SCREEN, memset(vmem, 0, screen_size()));
