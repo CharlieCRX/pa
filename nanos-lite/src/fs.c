@@ -149,9 +149,9 @@ static int check_fd(int fd) {
 } 
 
 void print_file(int fd) {
-  Finfo ready_file = sys_file(fd);
-  Log("fileName: %s, size = %d, disk_offset = %d, open_offset = %d",
-    ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
+  // Finfo ready_file = sys_file(fd);
+  // Log("fileName: %s, size = %d, disk_offset = %d, open_offset = %d",
+    // ready_file.name, ready_file.size, ready_file.disk_offset, ready_file.open_offset);
 }
 
 // 获取fd所指文件的操作偏移地址
