@@ -258,6 +258,7 @@ void str_to_one_pair(const char *oneKeyValueString, KeyValuePair *pair) {
  * @date 2024-11-26
  */
 void str_to_pairs(const char *mulKeyValueString, KeyValuePair pairs[]) {
+  printf("str_to_pairs:%s", NDL_GetDisplayInfo);
   char tempStr[500];
   assert(strlen(mulKeyValueString) <= 500);
   strcpy(tempStr, mulKeyValueString);
