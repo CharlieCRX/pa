@@ -18,9 +18,9 @@ typedef struct {
     char key[MAX_KEY_LEN];
     char value[MAX_VALUE_LEN];
 } KeyValuePair;
-
-const char* get_value(KeyValuePair pairs[], int num_pairs, const char* key);
-void str_to_one_pair(const char *oneKeyValueString, KeyValuePair *pair);
+char* get_value(KeyValuePair pairs[], int num_pairs, const char* key);
+int get_width(KeyValuePair pairs[]);
+int get_height(KeyValuePair pairs[]);
 void str_to_pairs(const char *mulKeyValueString, KeyValuePair pairs[]);
 
 // 以毫秒为单位返回系统时间
@@ -69,9 +69,9 @@ void NDL_GetDisplayInfo(int *width, int *height) {
 
   // 将键值对字符串解析为结构体数组
   str_to_pairs(fp, pairs);
-  width = get_width(pairs);
-  height = get_height(pairs);
-  printf("screen size:width = %d, height = %d\n", width, height);
+  *width = get_width(pairs);
+  *height = get_height(pairs);
+  printf("screen size:width = %d, height = %d\n", *width, *height);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -138,7 +138,7 @@ void NDL_Quit() {
  * @return const char* 
  * @date 2024-11-25
  */
-const char* get_value(KeyValuePair pairs[], int num_pairs, const char* key) {
+char* get_value(KeyValuePair pairs[], int num_pairs, const char* key) {
   for (int i = 0; i < num_pairs; i++) {
     if (strcmp(pairs[i].key, key) == 0) {
       return pairs[i].value;
@@ -148,14 +148,22 @@ const char* get_value(KeyValuePair pairs[], int num_pairs, const char* key) {
 }
 
 int get_width(KeyValuePair pairs[]) {
-  const char width[100] = get_value(pairs, 2, "WIDTH");
+  char width[MAX_VALUE_LEN];
+  char *temp = get_value(pairs, 2, "WIDTH");
+  assert(strlen(temp) >= MAX_VALUE_LEN);
+  strcpy(width, temp);
+
   int w = -1;
   assert(sscanf(width, "%d", &w) == 1);
   return w;
 }
 
 int get_height(KeyValuePair pairs[]) {
-  const char height[100] = get_value(pairs, 2, "HEIGHT");
+  char height[100];
+  char *temp = get_value(pairs, 2, "HEIGHT");
+  assert(strlen(temp) >= MAX_VALUE_LEN);
+  strcpy(height, temp);
+
   int h = -1;
   assert(sscanf(height, "%d", &h) == 1);
   return h;
