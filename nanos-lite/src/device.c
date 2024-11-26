@@ -75,7 +75,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   int height = io_read(AM_GPU_CONFIG).height;
 
   // 将信息按照key-value的形式存储到buf中
-  sprintf(buf, "WIDTH:%d, HEIGHT:%d", width, height);
+  sprintf(buf, "WIDTH:%d, HEIGHT:%d\n", width, height);
 
   // 返回输入到buf的键值对字节数
   return strlen(buf);
