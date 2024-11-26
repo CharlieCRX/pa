@@ -138,7 +138,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
     offset = x + (y+j)*screen_w;
-    
+    printf("offset = %d\n", offset);
     // 将此行的所有像素存储到 lines_pixels 中
     for (int i = 0; i < w; i++) { 
       lines_pixels[i] = pixels[i + j*w];
