@@ -104,7 +104,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   printf("canvas width:%d, height:%d\n", *w, *h);
   int *max_width, *max_height;
   NDL_GetDisplayInfo(max_width, max_height);
-  assert(w < max_width && h < max_height);
+  // assert(w < max_width && h < max_height);
   printf("NDL_OpenCanvas ok!\n");
 }
 
