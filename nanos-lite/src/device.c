@@ -104,7 +104,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
   // 创建像素行的副本
   uint32_t pixels[405];
-  memcpy(pixels, buf, len);
+  memcpy(pixels, buf, 4*len);
   
   // 将此行像素点写入到显存中
   io_write(AM_GPU_FBDRAW, x, y, pixels, len, 1, true);
