@@ -71,7 +71,7 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   char line[256];  // 用来存储读取的一行内容
   if (fgets(line, sizeof(line), fp) != NULL) {
     // fgets 读取到一行内容
-    printf("Read line: %s", line);
+    printf("Read line: %s\n", line);
   }
   // str_to_pairs(fp, pairs);
   // *width = get_width(pairs);
