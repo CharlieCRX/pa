@@ -24,6 +24,8 @@ void sys_write(Context *c) {
 
   count = fs_write(fd, buf, count);
   c->GPRx = count;
+  printf("After write....\n");
+  strace(c);
 }
 
 void sys_sbrk(Context *c) {
