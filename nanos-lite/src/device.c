@@ -107,7 +107,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   memcpy(pixels, buf, len);
   
   // 将此行像素点写入到显存中
-  io_write(AM_GPU_FBDRAW, x, y, pixels, len/2, 1, true);
+  io_write(AM_GPU_FBDRAW, x, y, pixels, len/4, 1, true);
 
   return len;
 }
