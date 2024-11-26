@@ -144,12 +144,12 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     // 将此行的所有像素存储到 lines_pixels 中
     for (int i = 0; i < w; i++) { 
       lines_pixels[i] = pixels[i + j*w];
-      // printf("lines_pixels[%d] = %x\n", i, lines_pixels[i]);
+      printf("lines_pixels[%d] = %d\n", i, lines_pixels[i]);
     }
     
     // 设置显存的偏移为此行第一个像素的位置
     assert(fseek(fp, offset, SEEK_SET) == 0);
-    // printf("\n%d line is ok\n", j);
+    printf("\n%d line is ok\n", j);
 
     // 将此行的像素值数组保存到显存中
     size_t num_written = write(fd, lines_pixels, w);
