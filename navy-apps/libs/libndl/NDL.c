@@ -61,23 +61,25 @@ int NDL_PollEvent(char *buf, int len) {
  * @date 2024-11-25
  */
 void NDL_GetDisplayInfo(int *width, int *height) {
-  FILE *fp = fopen("/proc/dispinfo", "r");
-  assert(fp);
+  // FILE *fp = fopen("/proc/dispinfo", "r");
+  // assert(fp);
 
-  // 建立两个键值对存放高度和宽度
-  KeyValuePair pairs[2];
+  // // 建立两个键值对存放高度和宽度
+  // KeyValuePair pairs[2];
 
-  // 将键值对字符串解析为结构体数组
-  char line[256];  // 用来存储读取的一行内容
-  if (fgets(line, sizeof(line), fp) != NULL) {
-    printf("sizeof(line) = %d\n", sizeof(line));
-    // fgets 读取到一行内容
-    printf("Read line: %s\n", line);
-  }
+  // // 将键值对字符串解析为结构体数组
+  // char line[256];  // 用来存储读取的一行内容
+  // if (fgets(line, sizeof(line), fp) != NULL) {
+  //   printf("sizeof(line) = %d\n", sizeof(line));
+  //   // fgets 读取到一行内容
+  //   printf("Read line: %s\n", line);
+  // }
 
-  str_to_pairs(line, pairs);
-  *width = get_width(pairs);
-  *height = get_height(pairs);
+  // str_to_pairs(line, pairs);
+  // *width = get_width(pairs);
+  // *height = get_height(pairs);
+  *width = 400;
+  *height = 300;
   printf("NDL_GetDisplayInfo ok!\n");
 }
 
