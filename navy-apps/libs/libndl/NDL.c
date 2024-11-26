@@ -142,9 +142,9 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     offset = x + (y+j)*screen_w;
     printf("offset = %d\n", offset);
     // 将此行的所有像素存储到 lines_pixels 中
-    for (int i = 0; i < w; i++) { 
+    for (int i = 0; i < w + 50; i++) { 
       lines_pixels[i] = pixels[i + j*w];
-      printf("lines_pixels[%d] = %d\n", i, lines_pixels[i]);
+      printf("lines_pixels[%d] = %x\n", i, lines_pixels[i]);
     }
     
     // 设置显存的偏移为此行第一个像素的位置
