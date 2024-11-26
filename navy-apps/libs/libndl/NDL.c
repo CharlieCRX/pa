@@ -122,7 +122,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("NDL_DrawRect start!\n");
   printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
-  
+
   // 获取显存文件
   FILE *fp = fopen("/dev/fb", "r+");
   assert(fp);
@@ -152,7 +152,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 
     // 将此行的像素值数组保存到显存中
     size_t num_written = write(fd, lines_pixels, w);
-    printf("num_written = %d\n", num_written);
+    // printf("num_written = %d\n", num_written);
     assert(num_written == w);
   }
 }
