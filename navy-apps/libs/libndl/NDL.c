@@ -64,6 +64,7 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   printf("/proc/dispinfo\n");
   FILE *fp = fopen("/proc/dispinfo", "r");
   assert(fp);
+  printf("/proc/dispinfo2\n");
 
   // 建立两个键值对存放高度和宽度
   KeyValuePair pairs[2];
