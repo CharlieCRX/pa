@@ -78,6 +78,7 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   str_to_pairs(line, pairs);
   *width = get_width(pairs);
   *height = get_height(pairs);
+  printf("NDL_GetDisplayInfo ok!\n");
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
