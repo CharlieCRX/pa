@@ -135,8 +135,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int offset;
   uint32_t lines_pixels[405];
   
-  printf("NDL_DrawRect: line start storing...sizeof(pixels) = %d\n", sizeof(pixels));
-  assert(0);
+  printf("NDL_DrawRect: line start storing...");
   // 固定画布高度，将画布的每行存储到显存中
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
@@ -145,16 +144,18 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     // 将此行的所有像素存储到 lines_pixels 中
     for (int i = 0; i < w; i++) { 
       lines_pixels[i] = pixels[i + j*w];
+      printf("lines_pixels[i] = %d\n", lines_pixels[i]);
     }
     
     // 设置显存的偏移为此行第一个像素的位置
-    assert(fseek(fp, offset, SEEK_SET) == 0);
+    // assert(fseek(fp, offset, SEEK_SET) == 0);
     printf("\n%d line is ok\n", j);
+    assert(0);
 
     // 将此行的像素值数组保存到显存中
-    size_t num_written = write(fd, lines_pixels, w);
+    // size_t num_written = write(fd, lines_pixels, w);
     // printf("num_written = %d\n", num_written);
-    assert(num_written == w);
+    // assert(num_written == w);
   }
 }
 
