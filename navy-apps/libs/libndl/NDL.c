@@ -20,6 +20,8 @@ typedef struct {
 } KeyValuePair;
 
 const char* get_value(KeyValuePair pairs[], int num_pairs, const char* key);
+void str_to_one_pair(const char *oneKeyValueString, KeyValuePair *pair);
+void str_to_pairs(const char *mulKeyValueString, KeyValuePair pairs[]);
 
 // 以毫秒为单位返回系统时间
 uint32_t NDL_GetTicks() {
@@ -65,14 +67,20 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   // 建立两个键值对存放高度和宽度
   KeyValuePair pairs[2];
 
-  // 将键值对转换为对应的值
-
+  // 将键值对字符串解析为结构体数组
+  str_to_pairs(fp, pairs);
+  width = get_width(pairs);
+  height = get_height(pairs);
+  printf("screen size:width = %d, height = %d\n", width, height);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
+    if(w == 0 && h == 0) {
+      NDL_GetDisplayInfo(w, h);
+    }
     screen_w = *w; screen_h = *h;
     char buf[64];
     int len = sprintf(buf, "%d %d", screen_w, screen_h);
@@ -153,25 +161,61 @@ int get_height(KeyValuePair pairs[]) {
   return h;
 }
 
-// 字符串转换为键值对
-int parse_key_value(const char *str, KeyValuePair *pair) {
-  char temp_str[MAX_KEY_LEN + MAX_VALUE_LEN + 1];
-  strncpy(temp_str, str, sizeof(temp_str) - 1);
-  temp_str[sizeof(temp_str) - 1] = '\0';
+/**
+ * @brief 将一个键值对字符串转换为键值对结构体
+ * 字符串格式："key1:'abc'" 或者 "key1: 123"
+ * @param oneKeyValueString 包含一个键值对的字符串
+ * @param pair 一个键值对结构体
+ * @date 2024-11-26
+ */
+void str_to_one_pair(const char *oneKeyValueString, KeyValuePair *pair) {
+  // 复制字符串避免被修改
+  char tempStr[30];
+  assert(strlen(oneKeyValueString) <= 30);
+  strcpy(tempStr, oneKeyValueString);
 
-  char *key = strtok(temp_str, "=");
-  char *value = strtok(NULL, "=");
-
-  if (key && value) {
-    strncpy(pair->key, key, MAX_KEY_LEN);
-    strncpy(pair->value, value, MAX_VALUE_LEN);
-    return 0; // 成功解析
+  // 将字符串按照键值之间的分隔符 ':' 分割
+  // 获取冒号的位置
+  int i = 0;
+  while(tempStr[i] != ':') {
+    i++;
   }
-  return -1; // 解析失败
+  assert(i > 0);
+
+  // 未处理字符中的空格
+  strncpy(pair->key, tempStr, i);
+  pair->key[i] = '\0';
+  strncpy(pair->value, tempStr + i + 1, strlen(oneKeyValueString) - i);
+  pair->value[strlen(oneKeyValueString) - i] = '\0';
 }
 
-// 将多个键值对字符串转换为键值对数组
-int parse_multiple_key_values(const char *strcmp, KeyValuePair pairs[], int max_pairs) {
-  // 获取字符串中的键值对数量
+/**
+ * @brief 将包含多个key-value的字符串转换为键值对结构体数组
+ * 字符串格式为：" key1:123, key2:'23a', key5:'abc' "
+ * 处理步骤为：
+ *  1. 遍历每一对键值对
+ *  2. 将一个键值对元素转换为结构体元素
+ * @param keyValueString 包含多个键值对的字符串
+ * @param pairs 包含字符串键值对类的结构体数组
+ * @date 2024-11-26
+ */
+void str_to_pairs(const char *mulKeyValueString, KeyValuePair pairs[]) {
+  char tempStr[500];
+  assert(strlen(mulKeyValueString) <= 500);
+  strcpy(tempStr, mulKeyValueString);
 
+  // 将键值对按照分隔符 ","分割
+  int i = 0;
+  char *token = strtok(tempStr, ",");
+  while (token != NULL) {
+    // 去除可能的前后空白字符
+    while (*token == ' ') token++;
+
+    // 调用解析单个键值对的函数
+    str_to_one_pair(token, &pairs[i]);
+    i++;
+
+    // 获取下一个键值对
+    token = strtok(NULL, ",");
+  }
 }
