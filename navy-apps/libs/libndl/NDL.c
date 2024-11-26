@@ -70,6 +70,7 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   // 将键值对字符串解析为结构体数组
   char line[256];  // 用来存储读取的一行内容
   if (fgets(line, sizeof(line), fp) != NULL) {
+    printf("sizeof(line) = %d\n", sizeof(line));
     // fgets 读取到一行内容
     printf("Read line: %s\n", line);
   }
