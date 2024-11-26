@@ -105,6 +105,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   int *max_width, *max_height;
   NDL_GetDisplayInfo(max_width, max_height);
   assert(w < max_width && h < max_height);
+  printf("NDL_OpenCanvas ok!\n");
 }
 
 /**
@@ -118,6 +119,7 @@ void NDL_OpenCanvas(int *w, int *h) {
  * @date 2024-11-26
  */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  printf("NDL_DrawRect start!\n");
   // 获取显存文件
   FILE *fp = fopen("/dev/fb", "r+");
   assert(fp);
