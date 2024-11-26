@@ -61,6 +61,7 @@ int NDL_PollEvent(char *buf, int len) {
  * @date 2024-11-25
  */
 void NDL_GetDisplayInfo(int *width, int *height) {
+  printf("/proc/dispinfo\n");
   FILE *fp = fopen("/proc/dispinfo", "r");
   assert(fp);
 
