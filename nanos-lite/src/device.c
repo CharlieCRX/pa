@@ -95,7 +95,6 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   // 获取屏幕信息
   int width  = io_read(AM_GPU_CONFIG).width;
   int height = io_read(AM_GPU_CONFIG).height;
-  Log("width = %d, height = %d", width, height);
 
   // 从offset 获取画布在屏幕的位置信息(x, y)
   int x = offset % width;
