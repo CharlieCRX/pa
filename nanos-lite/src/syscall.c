@@ -5,8 +5,8 @@
 #include <time.h>
 
 void strace(Context *c) {
-  // Log("strace: Syscall num: %d, param(a0, a1, a2) = (0x%x, 0x%x, 0x%x)", 
-  // c->GPR1, c->GPR2, c->GPR3, c->GPR4);
+  Log("strace: Syscall num: %d, param(a0, a1, a2) = (0x%x, 0x%x, 0x%x)", 
+  c->GPR1, c->GPR2, c->GPR3, c->GPR4);
 }
 
 void sys_yield(Context *c) {
@@ -24,7 +24,7 @@ void sys_write(Context *c) {
 
   count = fs_write(fd, buf, count);
   c->GPRx = count;
-  // Log("After write....");
+  Log("After write....");
   strace(c);
 }
 
