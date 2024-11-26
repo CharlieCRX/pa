@@ -71,10 +71,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
  */
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   // 从IOE中读取屏幕信息
-  // int width  = io_read(AM_GPU_CONFIG).width;
-  // int height = io_read(AM_GPU_CONFIG).height;
-  int width = 40; 
-  int height = 30;
+  int width  = io_read(AM_GPU_CONFIG).width;
+  int height = io_read(AM_GPU_CONFIG).height;
 
   // 将信息按照key-value的形式存储到buf中
   sprintf(buf, "WIDTH:%d, HEIGHT:%d", width, height);
