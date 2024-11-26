@@ -99,7 +99,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
   // 从offset 获取画布在屏幕的位置信息(x, y)
   int x = offset % width;
-  int y = offset / width - len;
+  int y = offset / width;
   assert(y < height);
   Log("x = %d, y = %d\n", x, y);
 
