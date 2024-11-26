@@ -75,9 +75,11 @@ void NDL_GetDisplayInfo(int *width, int *height) {
     break;  // 为何多次调用？
   }
 
-  str_to_pairs(line, pairs);
-  *width = get_width(pairs);
-  *height = get_height(pairs);
+  // str_to_pairs(line, pairs);
+  // *width = get_width(pairs);
+  // *height = get_height(pairs);
+  *width = 400;
+  *height = 300;
   printf("NDL_GetDisplayInfo ok!\n");
 }
 
