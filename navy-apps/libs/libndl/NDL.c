@@ -96,6 +96,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+  printf("AAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaa\n");
   NDL_GetDisplayInfo(w, h);
 }
 
