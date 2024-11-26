@@ -53,7 +53,6 @@ void init_fs() {
   assert(vmemsz != 0);
   file_table[FD_FB].size = vmemsz;
   printf("FD_FB size is %d\n",file_table[FD_FB].size);
-  assert(0);
 }
 
 // 名称：按照名称文件查询文件描述符（文件表下标）
