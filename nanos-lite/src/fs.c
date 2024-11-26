@@ -12,6 +12,7 @@ static size_t valid_operation_len(int fd, size_t len);
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
 
+static size_t vmemsz; // 显存大小
 typedef struct {
   char *name;
   size_t size;
@@ -40,13 +41,17 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDERR] =       {"stderr", 0, 0, 0, invalid_read, serial_write},
   [FD_EVENT]  =       {"/dev/events", 0, 0, 0, events_read, invalid_write},
   [FD_VGA_CONFIG]   = {"/proc/dispinfo", 0, 0 ,0, dispinfo_read, invalid_write},
+  [FD_FB]     =       {"/dev/fb", 0, 0, 0, invalid_read, fb_write},
 #include "files.h"
 };
 #define sys_file(fd) file_table[check_fd(fd)]
 #define IS_NORMAL_FD(fd) ((fd) != FD_STDOUT && (fd) != FD_STDERR && (fd) != FD_STDOUT)
 
 void init_fs() {
-  // TODO: initialize the size of /dev/fb
+  // initialize the size of /dev/fb
+  vmemsz = io_read(AM_GPU_CONFIG).vmemsz;
+  assert(vmemsz == 0);
+  file_table[FD_FB].size = vmemsz;
 }
 
 // 名称：按照名称文件查询文件描述符（文件表下标）
@@ -103,7 +108,8 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   if(sys_file(fd).write == NULL) {
     count = normal_fs_write(fd, buf, len);
   } else {
-    count = sys_file(fd).write(buf, 0, len);
+    size_t offset = file_table[fd].open_offset;
+    count = sys_file(fd).write(buf, offset, len);
   }
   return count;
 }

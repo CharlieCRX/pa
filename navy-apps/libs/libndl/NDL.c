@@ -72,9 +72,9 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   while (fgets(line, sizeof(line), fp) != NULL) {
     // fgets 读取到一行内容
     printf("Read line: %s\n", line);
-    break;
+    break;  // 为何多次调用？
   }
-  
+
   str_to_pairs(line, pairs);
   *width = get_width(pairs);
   *height = get_height(pairs);
@@ -101,9 +101,50 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+  printf("canvas width:%d, height:%d\n", *w, *h);
+  int *max_width, *max_height;
+  NDL_GetDisplayInfo(max_width, max_height);
+  assert(w < max_width && h < max_height);
 }
 
+/**
+ * @brief 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
+ * 要求：将画布 canvas 中的像素数据按行优先的顺序存储到显存中
+ * @param pixels 像素的颜色值(32位). 每个像素是`00rrggbb`的形式, 8位颜色
+ * @param x 画布位于屏幕的横坐标
+ * @param y 画布位于屏幕的纵坐标
+ * @param w 画布宽度
+ * @param h 画布高度
+ * @date 2024-11-26
+ */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  // 获取显存文件
+  FILE *fp = fopen("/dev/fb", "r+");
+  assert(fp);
+
+  // 获取屏幕信息
+  int screen_w, screen_h;
+  NDL_GetDisplayInfo(&screen_w, &screen_h);
+
+  int offset;
+  uint32_t lines_pixels[405];
+
+  // 固定画布高度，将画布的每行存储到显存中
+  for (int j = 0; j < h; j++) { 
+    // 确定画布每一行的初始像素 在屏幕中的偏移
+    offset = x + (y+j)*screen_w;
+
+    // 将此行的所有像素存储到 lines_pixels 中
+    for (int i = 0; i < w; i++) { 
+      lines_pixels[i] = pixels[i + j*w];
+    }
+
+    // 设置显存的偏移为此行第一个像素的位置
+    assert(fseek(fp, offset, SEEK_SET) == 0);
+    // 将此行的像素值数组保存到显存中
+    size_t num_written = fwrite(lines_pixels, sizeof(uint32_t), w, fp);
+    assert(num_written == w);
+  }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {

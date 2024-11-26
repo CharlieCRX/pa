@@ -81,7 +81,33 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   return strlen(buf);
 }
 
+
+/**
+ * @brief 把buf中的len字节写到屏幕上offset处
+ * 
+ * @param buf 画布中的一行像素数组
+ * @param offset 画布行第一个像素在屏幕中的偏移
+ * @param len 画布行的宽度（高度恒为1）
+ * @return size_t 成功写入显存的像素数量
+ * @date 2024-11-26
+ */
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+  // 获取屏幕信息
+  int width  = io_read(AM_GPU_CONFIG).width;
+  int height = io_read(AM_GPU_CONFIG).height;
+
+  // 从offset 获取画布在屏幕的位置信息(x, y)
+  int x = offset % width;
+  int y = offset / width - len;
+  assert(y < height);
+
+  // 创建像素行的副本
+  uint32_t pixels[405];
+  memcpy(pixels, buf, len);
+  
+  // 将此行像素点写入到显存中
+  io_write(AM_GPU_FBDRAW, x, y, pixels, len, 1, true);
+
   return 0;
 }
 
