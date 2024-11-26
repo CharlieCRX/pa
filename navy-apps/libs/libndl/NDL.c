@@ -161,7 +161,7 @@ char* get_value(KeyValuePair pairs[], int num_pairs, const char* key) {
 int get_width(KeyValuePair pairs[]) {
   char width[MAX_VALUE_LEN];
   char *temp = get_value(pairs, 2, "WIDTH");
-  assert(strlen(temp) >= MAX_VALUE_LEN);
+  assert(strlen(temp) <= MAX_VALUE_LEN);
   strcpy(width, temp);
 
   int w = -1;
@@ -172,7 +172,7 @@ int get_width(KeyValuePair pairs[]) {
 int get_height(KeyValuePair pairs[]) {
   char height[100];
   char *temp = get_value(pairs, 2, "HEIGHT");
-  assert(strlen(temp) >= MAX_VALUE_LEN);
+  assert(strlen(temp) <= MAX_VALUE_LEN);
   strcpy(height, temp);
 
   int h = -1;
