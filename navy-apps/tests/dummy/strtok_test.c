@@ -98,7 +98,9 @@ void test_one_pair() {
 
 void test_mul_pairs() {
   // char str[] = "TOKEN1:mmp, TOKEN2:jjp";
-  char str[] = "key1:123, key2:'23a', key5:'abc' ";
+  // char str[] = "key1:123, key2:'23a', key5:'abc' ";
+  char str[50];
+  sprintf(str, "WIDTH:%d, HEIGHT:%d", 400, 900);
   keyValuePair pairs[MAX_NUMS];
   str_to_pairs(str, pairs);
   print_pairs(pairs, 3);
