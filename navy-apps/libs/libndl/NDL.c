@@ -125,6 +125,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // 获取显存文件
   FILE *fp = fopen("/dev/fb", "r+");
   assert(fp);
+  int fd = fileno(fp);
 
   // 获取屏幕信息
   int screen_w, screen_h;
@@ -149,7 +150,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     printf("%d line is ok\n", j);
 
     // 将此行的像素值数组保存到显存中
-    size_t num_written = write(fp, lines_pixels, w);
+    size_t num_written = write(fd, lines_pixels, w);
     assert(num_written == w);
   }
 }
