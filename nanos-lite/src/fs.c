@@ -108,7 +108,6 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   if(sys_file(fd).write == NULL) {
     count = normal_fs_write(fd, buf, len);
   } else {
-    printf("非正常文件写入....\n");
     size_t offset = file_table[fd].open_offset;
     count = sys_file(fd).write(buf, offset, len);
   }
