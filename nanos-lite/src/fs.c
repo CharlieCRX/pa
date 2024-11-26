@@ -52,6 +52,7 @@ void init_fs() {
   vmemsz = io_read(AM_GPU_CONFIG).vmemsz;
   assert(vmemsz == 0);
   file_table[FD_FB].size = vmemsz;
+  printf("FD_FB size is %d\n",file_table[FD_FB].size);
 }
 
 // 名称：按照名称文件查询文件描述符（文件表下标）
