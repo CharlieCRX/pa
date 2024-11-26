@@ -76,6 +76,7 @@ void NDL_GetDisplayInfo(int *width, int *height) {
 
 void NDL_OpenCanvas(int *w, int *h) {
   if (getenv("NWM_APP")) {
+    printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
     int fbctl = 4;
     fbdev = 5;
     // if(w == 0 && h == 0) {
