@@ -72,14 +72,13 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   while (fgets(line, sizeof(line), fp) != NULL) {
     // fgets 读取到一行内容
     printf("Read line: %s\n", line);
-    break;
   }
 
-  fclose(fp);  // 关闭文件
-  // str_to_pairs(fp, pairs);
-  // *width = get_width(pairs);
-  // *height = get_height(pairs);
-  // printf("screen size:width = %d, height = %d\n", *width, *height);
+  
+  str_to_pairs(line, pairs);
+  *width = get_width(pairs);
+  *height = get_height(pairs);
+  printf("screen size:width = %d, height = %d\n", *width, *height);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
