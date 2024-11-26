@@ -147,8 +147,9 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     // 设置显存的偏移为此行第一个像素的位置
     assert(fseek(fp, offset, SEEK_SET) == 0);
     printf("%d line is ok\n", j);
+
     // 将此行的像素值数组保存到显存中
-    size_t num_written = fwrite(lines_pixels, sizeof(uint32_t), w, fp);
+    size_t num_written = write(fp, lines_pixels, w);
     assert(num_written == w);
   }
 }
