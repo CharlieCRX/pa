@@ -73,6 +73,8 @@ void NDL_GetDisplayInfo(int *width, int *height) {
     // fgets 读取到一行内容
     printf("Read line: %s\n", line);
   }
+
+  fclose(fp);  // 关闭文件
   // str_to_pairs(fp, pairs);
   // *width = get_width(pairs);
   // *height = get_height(pairs);
