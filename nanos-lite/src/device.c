@@ -53,8 +53,32 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   return strlen(buf);
 }
 
+/**
+ * @brief 获取VGA中关于屏幕的信息
+ *  将屏幕信息转换为key-value的形式
+ *  这里将key-value转换为结构体：
+ *  typedef struct {
+    char key[MAX_KEY_LEN];
+    char value[MAX_VALUE_LEN];
+  } KeyValuePair;
+  即"WIDTH:400, HEIGHT:300"
+
+ * @param buf 
+ * @param offset 
+ * @param len 
+ * @return size_t 
+ * @date 2024-11-25
+ */
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  // 从IOE中读取屏幕信息
+  int width  = io_read(AM_GPU_CONFIG).width;
+  int height = io_read(AM_GPU_CONFIG).height;
+
+  // 将信息按照key-value的形式存储到buf中
+  sprintf(buf, "WIDTH:%d, HEIGHT:%d", width, height);
+
+  // 返回输入到buf的键值对字节数
+  return strlen(buf);
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
