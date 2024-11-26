@@ -96,6 +96,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+  NDL_GetDisplayInfo(w, h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
