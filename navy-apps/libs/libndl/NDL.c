@@ -136,6 +136,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   if (x == 0 && y == 0) {
     x = (screen_w - w) / 2;
     y = (screen_h - h) / 2;
+    printf("NDL_DrawRect: Center the canvas! Now x = %d, y = %d\n",x,y);
   }
 
   int offset;
