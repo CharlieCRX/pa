@@ -100,7 +100,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   int x = offset % width;
   int y = offset / width;
   assert(y < height);
-  Log("x = %d, y = %d\n", x, y);
+  // Log("x = %d, y = %d\n", x, y);
 
   // 创建像素行的副本
   uint32_t pixels[405];
