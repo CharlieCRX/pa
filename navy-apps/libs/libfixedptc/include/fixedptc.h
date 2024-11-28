@@ -127,35 +127,61 @@ typedef	__uint128_t fixedptud;
 
 /* Multiplies a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_muli(fixedpt A, int B) {
-	return 0;
+  fixedpt FB = fixedpt_rconst(B);
+	return A * FB / FIXEDPT_ONE;
 }
 
 /* Divides a fixedpt number with an integer, returns the result. */
 static inline fixedpt fixedpt_divi(fixedpt A, int B) {
-	return 0;
+  fixedpt FB = fixedpt_rconst(B);
+	return A * FIXEDPT_ONE / FB;
 }
 
 /* Multiplies two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_mul(fixedpt A, fixedpt B) {
-	return 0;
+  //  A * B = a * 2^8 * b * 2^8 = (a * b) * 2^16 != (a * b) * 2^8
+  return A * B / FIXEDPT_ONE;
 }
 
 
 /* Divides two fixedpt numbers, returns the result. */
 static inline fixedpt fixedpt_div(fixedpt A, fixedpt B) {
-	return 0;
+  // A / B = (a * 2^8) / (b * 2^8) = (a / b) != (a / b) * 2^8
+  // 这样会导致损失精度太高：小数部分（低8位不会被保存 -- 已经舍弃）
+	// return A / B * FIXEDPT_ONE;
+  return A * FIXEDPT_ONE / B;
 }
 
 static inline fixedpt fixedpt_abs(fixedpt A) {
-	return 0;
+  // 1.2-->0X133, -1.2-->0Xffff,fecd
+  // 提取符号位
+  int is_negative = (A >> (FIXEDPT_BITS - 1)) & 1;
+  if(is_negative) {
+    A = -A;
+  }
+	return A;
 }
 
 static inline fixedpt fixedpt_floor(fixedpt A) {
-	return 0;
+  return A >> FIXEDPT_FBITS << FIXEDPT_FBITS;
 }
 
+/**
+ * @brief 定点数的向上取整
+ * 实数带小数  ：实数的整数部分+1，小数部分清空
+ * 实数不带小数：不做任何操作即可
+ * 
+ * 判断条件：如果实数带小数，则定点数后8位不为0
+ * @param A 
+ * @return fixedpt 
+ * @date 2024-11-28
+ */
 static inline fixedpt fixedpt_ceil(fixedpt A) {
-	return 0;
+  // 实数带小数  ：实数的整数部分+1，小数部分清空
+  if (fixedpt_fracpart(A) != 0) {
+    A = A - fixedpt_fracpart(A) + FIXEDPT_ONE;
+  }
+	return A;
 }
 
 /*
