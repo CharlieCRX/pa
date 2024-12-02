@@ -112,7 +112,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 
   // 实现居中画布
   if (x == 0 && y == 0) {
-    center_canvas_on_screen(x, y, w, h);
+    center_canvas_on_screen(&x, &y, &w, &h);
   }
 
   int offset;
