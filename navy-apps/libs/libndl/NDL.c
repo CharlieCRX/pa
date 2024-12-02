@@ -109,7 +109,6 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   if (x == 0 && y == 0) {
     center_canvas_on_screen(&x, &y, &w, &h);
   }
-
   uint32_t *line = pixels;
   // 固定画布高度，将画布的每行存储到显存中
   for (int j = 0; j < h; j++) { 
