@@ -156,7 +156,7 @@ extern "C" ssize_t write(int fd, const void *buf, size_t count);
 extern "C" int execve(const char *filename, char *const argv[], char *const envp[]);
 
 FILE *fopen(const char *path, const char *mode) {
-  printf("fopen %s\n", path);
+  // printf("native.so:fopen %s\n", path);
   char newpath[512];
   if (glibc_fopen == NULL) {
     glibc_fopen = (FILE*(*)(const char*, const char*))dlsym(RTLD_NEXT, "fopen");
@@ -166,6 +166,7 @@ FILE *fopen(const char *path, const char *mode) {
 }
 
 int open(const char *path, int flags, ...) {
+  printf("native.so open %s\n", path);
   if (strcmp(path, "/proc/dispinfo") == 0) {
     return dispinfo_fd;
   } else if (strcmp(path, "/dev/events") == 0) {

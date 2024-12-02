@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <assert.h>
+#include <fcntl.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -59,10 +60,11 @@ int NDL_PollEvent(char *buf, int len) {
  * @param width 
  * @param height 
  * @date 2024-11-25
+ * @delete
  */
-void NDL_GetDisplayInfo(int *width, int *height) {
+void NDL_GetDisplayInfo_backup(int *width, int *height) {
   FILE *fp = fopen("/proc/dispinfo", "r");
-  assert(fp);
+  assert(fp != NULL);
 
   // 建立两个键值对存放高度和宽度
   KeyValuePair pairs[2];
@@ -79,6 +81,24 @@ void NDL_GetDisplayInfo(int *width, int *height) {
   *width = get_width(pairs);
   *height = get_height(pairs);
   printf("NDL_GetDisplayInfo ok!\n");
+}
+
+void NDL_GetDisplayInfo(int *width, int *height) {
+  int fd = open("/proc/dispinfo", O_RDONLY);
+  assert(fd == -1);
+
+  KeyValuePair pairs[2];
+  char line[256];
+  ssize_t bytes_read = read(fd, line, sizeof(line) - 1);
+  assert(bytes_read == -1);
+  printf("Read line: %s\n", line);
+
+
+  str_to_pairs(line, pairs);
+  *width = get_width(pairs);
+  *height = get_height(pairs);
+  printf("NDL_GetDisplayInfo ok!\n");
+  
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
