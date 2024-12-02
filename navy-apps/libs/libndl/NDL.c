@@ -117,7 +117,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     int offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
     assert(lseek(fbdev, offset, SEEK_SET) != -1);
 
-    size_t bytes_written = write(fbdev, line, w*sizeof(uint32_t));
+    size_t bytes_written = write(fbdev, line, w * sizeof(uint32_t));
     assert(bytes_written == w*sizeof(uint32_t));
     line += w;
   }
