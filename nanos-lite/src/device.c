@@ -98,9 +98,11 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
   int x = (offset / sizeof(uint32_t)) % width;
   int y = (offset / sizeof(uint32_t)) / width;
+  int canvas_width = len / sizeof(uint32_t);
+  int cavas_height = 1;
   assert(y < height);
 
-  io_write(AM_GPU_FBDRAW, x, y, (uint32_t*)buf, len * sizeof(uint32_t), 1, true);
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t*)buf, canvas_width, cavas_height, true);
 
   return len;
 }
