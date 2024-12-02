@@ -115,12 +115,6 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("NDL_DrawRect start!\n");
   printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
 
-  int fd = open("/dev/fb", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-  assert(fd != -1);
-
-  int screen_w, screen_h;
-  NDL_GetDisplayInfo(&screen_w, &screen_h);
-
   // 实现居中画布
   if (x == 0 && y == 0) {
     x = (screen_w - w) / 2;
@@ -136,8 +130,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     // 确定画布每一行的初始像素 在屏幕中的偏移
     offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
 
-    assert(lseek(fd, offset, SEEK_SET) != -1);
-    size_t num_written = write(fd, line, w*sizeof(uint32_t));
+    assert(lseek(fbdev, offset, SEEK_SET) != -1);
+    size_t num_written = write(fbdev, line, w*sizeof(uint32_t));
     assert(num_written == w*sizeof(uint32_t));
     line += w;
   }
@@ -161,6 +155,9 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  fbdev = open("/dev/fb", O_WRONLY);
+  assert(fbdev != -1);
+  NDL_GetDisplayInfo(&screen_w, &screen_h);
   now_time = 0;
   evtdev = 0;
   return 0;
