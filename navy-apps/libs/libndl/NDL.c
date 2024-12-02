@@ -100,7 +100,11 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 
-
+void center_canvas_on_screen(int *x, int *y,int *w, int *h) {
+  x = (screen_w - *w) / 2;
+  y = (screen_h - *h) / 2;
+  printf("NDL_DrawRect: Center the canvas! Now x = %d, y = %d\n",x,y);
+}
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("NDL_DrawRect start!\n");
@@ -108,9 +112,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 
   // 实现居中画布
   if (x == 0 && y == 0) {
-    x = (screen_w - w) / 2;
-    y = (screen_h - h) / 2;
-    printf("NDL_DrawRect: Center the canvas! Now x = %d, y = %d\n",x,y);
+    center_canvas_on_screen(x, y, w, h);
   }
 
   int offset;
