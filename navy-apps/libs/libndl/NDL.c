@@ -95,22 +95,13 @@ void NDL_OpenCanvas(int *w, int *h) {
     close(fbctl);
   }
   printf("canvas width:%d, height:%d\n", *w, *h);
-  int max_width, max_height;
-  NDL_GetDisplayInfo(&max_width, &max_height);
-  // assert(w < max_width && h < max_height);
+  assert(*w < screen_w && *h < screen_h);
   printf("NDL_OpenCanvas ok!\n");
 }
 
-/**
- * @brief 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
- * 要求：将画布 canvas 中的像素数据按行优先的顺序存储到显存中
- * @param pixels 像素的颜色值(32位). 每个像素是`00rrggbb`的形式, 8位颜色
- * @param x 画布位于屏幕的横坐标
- * @param y 画布位于屏幕的纵坐标
- * @param w 画布宽度
- * @param h 画布高度
- * @date 2024-11-26
- */
+
+
+
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("NDL_DrawRect start!\n");
   printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
@@ -136,6 +127,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     line += w;
   }
 }
+
+
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
 }
