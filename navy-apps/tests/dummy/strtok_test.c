@@ -13,6 +13,7 @@ typedef struct
   char value[MAX_VAL_LEN];
 }keyValuePair;
 
+
 /**
  * @brief 将一个键值对字符串转换为键值对结构体
  * 字符串格式："key1:'abc'" 或者 "key1: 123"
@@ -23,7 +24,7 @@ typedef struct
 void str_to_one_pair(const char *oneKeyValueString, keyValuePair *pair) {
   // 复制字符串避免被修改
   char tempStr[30];
-  assert(strlen(oneKeyValueString) <= 30);
+  assert(strlen(oneKeyValueString) < 30);
   strcpy(tempStr, oneKeyValueString);
 
   // 将字符串按照键值之间的分隔符 ':' 分割
@@ -39,6 +40,7 @@ void str_to_one_pair(const char *oneKeyValueString, keyValuePair *pair) {
   strncpy(pair->value, tempStr + i + 1, strlen(oneKeyValueString) - i);
   pair->value[strlen(oneKeyValueString) - i] = '\0';
 }
+
 
 /**
  * @brief 将包含多个key-value的字符串转换为键值对结构体数组
@@ -78,19 +80,63 @@ void print_pairs(keyValuePair pairs[], int count) {
 }
 
 
-void test1() {
-  char str[] = "TOKEN1:mmp, TOKEN2:jjp";
-  char *token = strtok(str, ",");
-
-  while(token != NULL) {
-    printf("token is %s\n", token);
-    token = strtok(NULL, ",");
+char* get_value(keyValuePair pairs[], int num_pairs, const char* key) {
+  for (int i = 0; i < num_pairs; i++) {
+    if (strcmp(pairs[i].key, key) == 0) {
+      return pairs[i].value;
+    }
   }
-  printf("str = %s\n", str);
+  assert(0);
 }
 
+int get_width(keyValuePair pairs[]) {
+  char width[MAX_VAL_LEN];
+  char *temp = get_value(pairs, 5, "WIDTH");
+  assert(strlen(temp) <= MAX_VAL_LEN);
+  strcpy(width, temp);
+
+  int w = -1;
+  assert(sscanf(width, "%d", &w) == 1);
+  return w;
+}
+
+int get_height(keyValuePair pairs[]) {
+  char height[100];
+  char *temp = get_value(pairs, 5, "HEIGHT");
+  assert(strlen(temp) <= MAX_VAL_LEN);
+  strcpy(height, temp);
+
+  int h = -1;
+  assert(sscanf(height, "%d", &h) == 1);
+  return h;
+}
+
+
+
+void test_get_value() {
+  // 定义一个包含常量结构体元素的常量数组
+  keyValuePair kvpArray[] = {
+    {"key1", "value1"},
+    {"key2", "value2"},
+    {"key3", "value3"},
+    {"HEIGHT", "12345"},
+    {"WIDTH", "98765"}
+  };
+  int value;
+  value = get_height(kvpArray);
+  assert(value == 12345);
+
+  value = get_width(kvpArray);
+  assert(value == 98765);
+  //
+
+
+  printf("Test get value is OK\n");
+}
+
+
 void test_one_pair() {
-  char str[] = "TOKEN1:mmp";
+  char str[] = "TOKEN1111111:mmp";
   keyValuePair pair;
   str_to_one_pair(str, &pair);
   print_pairs(&pair, 1);
@@ -105,8 +151,8 @@ void test_mul_pairs() {
   str_to_pairs(str, pairs);
   print_pairs(pairs, 3);
 }
+
 int main() {
-  // test_one_pair();
-  test_mul_pairs();
+  test_get_value();
   return 0;
 }
