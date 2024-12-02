@@ -49,7 +49,7 @@ static Finfo file_table[] __attribute__((used)) = {
 
 void init_fs() {
   // initialize the size of /dev/fb
-  vmemsz = io_read(AM_GPU_CONFIG).width * io_read(AM_GPU_CONFIG).height;
+  vmemsz = io_read(AM_GPU_CONFIG).width * io_read(AM_GPU_CONFIG).height * sizeof(uint32_t);
   assert(vmemsz > 0);
   file_table[FD_FB].size = vmemsz;
 }

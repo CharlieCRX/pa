@@ -55,37 +55,6 @@ int NDL_PollEvent(char *buf, int len) {
   return strlen(buf);
 }
 
-/**
- * @brief 获取屏幕信息
- * `/proc/dispinfo`文件的格式："WIDTH:400 \n HEIGHT:300"
- * 但是这个不能在native中运行，很奇怪，需要将fopen换成open
- * 
- * @param width 
- * @param height 
- * @date 2024-11-25
- * @delete
- */
-void NDL_GetDisplayInfo_backup(int *width, int *height) {
-  FILE *fp = fopen("/proc/dispinfo", "r");
-  assert(fp != NULL);
-
-  // 建立两个键值对存放高度和宽度
-  KeyValuePair pairs[2];
-
-  // 将键值对字符串解析为结构体数组
-  char line[256];  // 用来存储读取的一行内容
-  if (fgets(line, sizeof(line), fp) != NULL) {
-    printf("sizeof(line) = %d\n", sizeof(line));
-    // fgets 读取到一行内容
-    printf("Read line: %s\n", line);
-  }
-
-  str_to_pairs(line, pairs);
-  *width = get_width(pairs);
-  *height = get_height(pairs);
-  printf("NDL_GetDisplayInfo ok!\n");
-}
-
 void NDL_GetDisplayInfo(int *width, int *height) {
   printf("************* NDL_GetDisplayInfo start! *************\n");
   int fd = open("/proc/dispinfo", O_RDONLY);
@@ -146,12 +115,9 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("NDL_DrawRect start!\n");
   printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
 
-  // 获取显存文件
   int fd = open("/dev/fb", O_WRONLY | O_CREAT | O_TRUNC, 0644);
   assert(fd != -1);
-  printf("fd of (/dev/fb) is %d\n", fd);
 
-  // 获取屏幕信息
   int screen_w, screen_h;
   NDL_GetDisplayInfo(&screen_w, &screen_h);
 
@@ -166,26 +132,18 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   uint32_t lines_pixels[405];
   
   printf("NDL_DrawRect: line start storing...\n");
-
   // 固定画布高度，将画布的每行存储到显存中
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
-    offset = x + (y+j)*screen_w;
-    // printf("offset = %d\n", offset);
-    // 将此行的所有像素存储到 lines_pixels 中
+    offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
+
     for (int i = 0; i < w; i++) { 
       lines_pixels[i] = pixels[i + j*w];
-      // printf("lines_pixels[%d] = %d\n", i, lines_pixels[i]);
     }
-    
-    // 设置显存的偏移为此行第一个像素的位置
-    assert(lseek(fd, offset, SEEK_SET) != -1);
-    // printf("\n%d line is ok\n", j);
 
-    // 将此行的像素值数组保存到显存中
-    size_t num_written = write(fd, lines_pixels, w);
-    // printf("num_written = %d\n", num_written);
-    assert(num_written == w);
+    assert(lseek(fd, offset, SEEK_SET) != -1);
+    size_t num_written = write(fd, lines_pixels, w*sizeof(uint32_t));
+    assert(num_written == w*sizeof(uint32_t));
   }
 }
 
