@@ -166,7 +166,6 @@ FILE *fopen(const char *path, const char *mode) {
 }
 
 int open(const char *path, int flags, ...) {
-  printf("native.so open %s\n", path);
   if (strcmp(path, "/proc/dispinfo") == 0) {
     return dispinfo_fd;
   } else if (strcmp(path, "/dev/events") == 0) {

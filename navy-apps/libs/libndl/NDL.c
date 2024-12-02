@@ -19,6 +19,7 @@ typedef struct {
     char key[MAX_KEY_LEN];
     char value[MAX_VALUE_LEN];
 } KeyValuePair;
+void print_pairs(KeyValuePair pairs[], int count);
 char* get_value(KeyValuePair pairs[], int num_pairs, const char* key);
 int get_width(KeyValuePair pairs[]);
 int get_height(KeyValuePair pairs[]);
@@ -56,7 +57,9 @@ int NDL_PollEvent(char *buf, int len) {
 
 /**
  * @brief 获取屏幕信息
- * `/proc/dispinfo`文件的格式："WIDTH:400, HEIGHT:300"
+ * `/proc/dispinfo`文件的格式："WIDTH:400 \n HEIGHT:300"
+ * 但是这个不能在native中运行，很奇怪，需要将fopen换成open
+ * 
  * @param width 
  * @param height 
  * @date 2024-11-25
@@ -84,20 +87,23 @@ void NDL_GetDisplayInfo_backup(int *width, int *height) {
 }
 
 void NDL_GetDisplayInfo(int *width, int *height) {
+  printf("************* NDL_GetDisplayInfo start! *************\n");
   int fd = open("/proc/dispinfo", O_RDONLY);
   assert(fd != -1);
+  printf("NDL_GetDisplayInfo fd is %d\n", fd);
 
   KeyValuePair pairs[2];
   char line[256];
   ssize_t bytes_read = read(fd, line, sizeof(line) - 1);
   assert(bytes_read != -1);
-  printf("Read line: %s\n", line);
+  printf("Read line:\n %s\n", line);
 
 
   str_to_pairs(line, pairs);
   *width = get_width(pairs);
   *height = get_height(pairs);
-  printf("NDL_GetDisplayInfo ok!\n");
+  printf("NDL_GetDisplayInfo: After str_to_pairs, width = %d, height = %d\n", *width, *height);
+  printf("************* NDL_GetDisplayInfo ok! *************\n\n");
   
 }
 
@@ -141,9 +147,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
 
   // 获取显存文件
-  FILE *fp = fopen("/dev/fb", "r+");
-  assert(fp);
-  int fd = fileno(fp);
+  int fd = open("/dev/fb", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  assert(fd != -1);
 
   // 获取屏幕信息
   int screen_w, screen_h;
@@ -159,7 +164,8 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int offset;
   uint32_t lines_pixels[405];
   
-  printf("NDL_DrawRect: line start storing...");
+  printf("NDL_DrawRect: line start storing...\n");
+
   // 固定画布高度，将画布的每行存储到显存中
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
@@ -172,7 +178,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     }
     
     // 设置显存的偏移为此行第一个像素的位置
-    assert(fseek(fp, offset, SEEK_SET) == 0);
+    assert(lseek(fd, offset, SEEK_SET) != -1);
     // printf("\n%d line is ok\n", j);
 
     // 将此行的像素值数组保存到显存中
@@ -211,6 +217,11 @@ void NDL_Quit() {
 
 
 //helper func
+void print_pairs(KeyValuePair pairs[], int count) {
+  for (int i = 0; i < count; i++) {
+    printf("%s:%s\n", pairs[i].key, pairs[i].value);
+  }
+}
 /**
  * @brief Get the value object
  * 
@@ -281,7 +292,11 @@ void str_to_one_pair(const char *oneKeyValueString, KeyValuePair *pair) {
 
 /**
  * @brief 将包含多个key-value的字符串转换为键值对结构体数组
- * 字符串格式为：" key1:123, key2:'23a', key5:'abc' "
+ * 字符串格式为："
+ * key1:123
+ * key2:'23a'
+ * key5:'abc' 
+ * "
  * 处理步骤为：
  *  1. 遍历每一对键值对
  *  2. 将一个键值对元素转换为结构体元素
@@ -294,9 +309,9 @@ void str_to_pairs(const char *mulKeyValueString, KeyValuePair pairs[]) {
   assert(strlen(mulKeyValueString) <= 500);
   strcpy(tempStr, mulKeyValueString);
 
-  // 将键值对按照分隔符 ","分割
+  // 将键值对按照分隔符 "\n"分割
   int i = 0;
-  char *token = strtok(tempStr, ",");
+  char *token = strtok(tempStr, "\n");
   while (token != NULL) {
     // 去除可能的前后空白字符
     while (*token == ' ') token++;
