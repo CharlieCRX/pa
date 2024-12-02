@@ -55,25 +55,20 @@ int NDL_PollEvent(char *buf, int len) {
   return strlen(buf);
 }
 
-void NDL_GetDisplayInfo(int *width, int *height) {
-  printf("************* NDL_GetDisplayInfo start! *************\n");
+void NDL_GetDisplayInfo() {
   int fd = open("/proc/dispinfo", O_RDONLY);
   assert(fd != -1);
-  printf("NDL_GetDisplayInfo fd is %d\n", fd);
 
   KeyValuePair pairs[2];
-  char line[256];
-  ssize_t bytes_read = read(fd, line, sizeof(line) - 1);
+  char info[256];
+  ssize_t bytes_read = read(fd, info, sizeof(info) - 1);
   assert(bytes_read != -1);
-  printf("Read line:\n %s\n", line);
 
 
-  str_to_pairs(line, pairs);
-  *width = get_width(pairs);
-  *height = get_height(pairs);
-  printf("NDL_GetDisplayInfo: After str_to_pairs, width = %d, height = %d\n", *width, *height);
-  printf("************* NDL_GetDisplayInfo ok! *************\n\n");
-  
+  str_to_pairs(info, pairs);
+  screen_w = get_width(pairs);
+  screen_h = get_height(pairs);
+  printf("NDL_GetDisplayInfo: screen_w = %d, screen_h = %d\n", screen_w, screen_h);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -150,7 +145,7 @@ int NDL_Init(uint32_t flags) {
   }
   fbdev = open("/dev/fb", O_WRONLY);
   assert(fbdev != -1);
-  NDL_GetDisplayInfo(&screen_w, &screen_h);
+  NDL_GetDisplayInfo();
   now_time = 0;
   evtdev = 0;
   return 0;
