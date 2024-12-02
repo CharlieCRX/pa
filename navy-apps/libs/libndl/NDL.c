@@ -96,7 +96,10 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
   printf("canvas width:%d, height:%d\n", *w, *h);
   assert(*w < screen_w && *h < screen_h);
-  printf("NDL_OpenCanvas ok!\n");
+  if (*w == 0 && *h == 0) {
+    *w = screen_w;
+    *h = screen_h;
+  }
 }
 
 
@@ -107,25 +110,20 @@ void center_canvas_on_screen(int *x, int *y, int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  printf("NDL_DrawRect start!\n");
-  printf("x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
-
   // 实现居中画布
   if (x == 0 && y == 0) {
     center_canvas_on_screen(&x, &y, &w, &h);
   }
 
-  int offset;
   uint32_t *line = pixels;
-  printf("NDL_DrawRect: line start storing...\n");
   // 固定画布高度，将画布的每行存储到显存中
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
-    offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
-
+    int offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
     assert(lseek(fbdev, offset, SEEK_SET) != -1);
-    size_t num_written = write(fbdev, line, w*sizeof(uint32_t));
-    assert(num_written == w*sizeof(uint32_t));
+
+    size_t bytes_written = write(fbdev, line, w*sizeof(uint32_t));
+    assert(bytes_written == w*sizeof(uint32_t));
     line += w;
   }
 }
@@ -159,6 +157,7 @@ int NDL_Init(uint32_t flags) {
 }
 
 void NDL_Quit() {
+  close(fbdev);
   now_time = -1;
 }
 
