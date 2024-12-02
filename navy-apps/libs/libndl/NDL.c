@@ -85,12 +85,12 @@ void NDL_GetDisplayInfo_backup(int *width, int *height) {
 
 void NDL_GetDisplayInfo(int *width, int *height) {
   int fd = open("/proc/dispinfo", O_RDONLY);
-  assert(fd == -1);
+  assert(fd != -1);
 
   KeyValuePair pairs[2];
   char line[256];
   ssize_t bytes_read = read(fd, line, sizeof(line) - 1);
-  assert(bytes_read == -1);
+  assert(bytes_read != -1);
   printf("Read line: %s\n", line);
 
 
