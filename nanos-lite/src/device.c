@@ -61,7 +61,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     char key[MAX_KEY_LEN];
     char value[MAX_VALUE_LEN];
   } KeyValuePair;
-  即"WIDTH:400, HEIGHT:300"
+  即"WIDTH:400
+    HEIGHT:300"
 
  * @param buf 
  * @param offset 
