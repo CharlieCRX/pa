@@ -43,13 +43,9 @@ uint32_t NDL_GetTicks() {
  * @date 2024-11-21
  */
 int NDL_PollEvent(char *buf, int len) {
-  assert(evtdev != -1);//检查是否init
-  // 判断events文件是否打开
-  FILE *fp = fopen("/dev/events", "r");
-  assert(fp);
 
   //从fp所指的文件中，读取字长为len的数据
-  if(fgets(buf, len, fp) == NULL) {
+  if(read(evtdev, buf, len) == 0) {
     return 0;
   }
   return strlen(buf);
@@ -160,6 +156,8 @@ int NDL_Init(uint32_t flags) {
     evtdev = 3;
   }
   fbdev = open("/dev/fb", O_WRONLY);
+  assert(fbdev != -1);
+  evtdev = open("/dev/events", O_RDONLY);
   assert(fbdev != -1);
   NDL_GetDisplayInfo();
   now_time = 0;
