@@ -44,8 +44,8 @@ uint32_t NDL_GetTicks() {
  */
 int NDL_PollEvent(char *buf, int len) {
   if(evtdev == -1) {
-    fbdev = open("/dev/fb", O_WRONLY);
-    assert(fbdev == -1);
+    evtdev = open("/dev/events", O_RDONLY);
+    assert(evtdev == -1);
   }
   printf("NDL_PollEvent: evtdev = %d\n", evtdev);
   if(read(evtdev, buf, len) == 0) {
@@ -161,7 +161,7 @@ int NDL_Init(uint32_t flags) {
   fbdev = open("/dev/fb", O_WRONLY);
   assert(fbdev != -1);
   evtdev = open("/dev/events", O_RDONLY);
-  assert(fbdev != -1);
+  assert(evtdev != -1);
   NDL_GetDisplayInfo();
   now_time = 0;
   evtdev = 0;
