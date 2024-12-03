@@ -99,26 +99,39 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 
 void center_canvas_on_screen(int *x, int *y, int *w, int *h) {
+  assert(screen_w > *w && screen_h > *h);
   *x = (screen_w - *w) / 2;
   *y = (screen_h - *h) / 2;
   printf("NDL_DrawRect: Center the canvas! Now x = %d, y = %d\n",*x, *y);
 }
 
+/**
+ * @brief 
+ * 向画布`(x, y)`坐标处绘制`w*h`的矩形图像, 并将该绘制区域同步到屏幕上
+ * 图像像素按行优先方式存储在`pixels`中, 每个像素用32位整数以`00RRGGBB`的方式描述颜色
+ * 
+ * @param pixels 
+ * @param x 
+ * @param y 
+ * @param w 
+ * @param h 
+ * @date 2024-12-03
+ */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // 实现居中画布
   if (x == 0 && y == 0) {
     center_canvas_on_screen(&x, &y, &w, &h);
   }
-  uint32_t *line = pixels;
-  // 固定画布高度，将画布的每行存储到显存中
+  uint32_t *line_start_ptr = pixels;
+
   for (int j = 0; j < h; j++) { 
     // 确定画布每一行的初始像素 在屏幕中的偏移
-    int offset = sizeof(uint32_t) * (x + (y+j)*screen_w);
-    assert(lseek(fbdev, offset, SEEK_SET) != -1);
+    int line_offset = sizeof(uint32_t) * (x + (y + j) * screen_w);
+    assert(lseek(fbdev, line_offset, SEEK_SET) != -1);
 
-    size_t bytes_written = write(fbdev, line, w * sizeof(uint32_t));
+    size_t bytes_written = write(fbdev, line_start_ptr, w * sizeof(uint32_t));
     assert(bytes_written == w*sizeof(uint32_t));
-    line += w;
+    line_start_ptr += w;
   }
 }
 
