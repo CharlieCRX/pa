@@ -9,8 +9,16 @@ static const char *keyname[] = {
   _KEYS(keyname)
 };
 
-#define temp(k) SDLK_##k
+// 按键名称到 SDL_Keys 枚举的映射
+#define KEY_TO_ENUM(k) if (strcmp(key_name, #k) == 0) return SDLK_##k;
 
+int get_key_code(const char *key_name) {
+  if (key_name == NULL) return SDLK_NONE;
+
+  _KEYS(KEY_TO_ENUM)  // 使用宏生成所有按键的判断
+
+  return SDLK_NONE;  // 如果没有匹配的按键，返回 SDLK_NONE
+}
 int SDL_PushEvent(SDL_Event *ev) {
   return 0;
 }
@@ -38,7 +46,7 @@ int SDL_WaitEvent(SDL_Event *event) {
     sprintf(key_name, "%s", buf+3);
     printf("SDL_WaitEvent: %s\n", key_name);
 
-    event->key.keysym.sym = temp(key_name);
+    event->key.keysym.sym = get_key_code(key_name);
 
     return 0;
   }
