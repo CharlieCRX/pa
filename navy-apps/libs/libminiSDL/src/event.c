@@ -26,6 +26,7 @@ int SDL_WaitEvent(SDL_Event *event) {
     char key_name[64];
     sprintf(key_name, "%s", buf+3);
     printf("SDL_WaitEvent: %s\n", key_name);
+    Assert(0,"ooook");
   }
 
 }
