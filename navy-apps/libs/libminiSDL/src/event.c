@@ -37,14 +37,14 @@ int SDL_WaitEvent(SDL_Event *event) {
     char key_oper[10];
     char key_name[64];
     snprintf(key_oper, 3, "%s", buf);
-    printf("SDL_WaitEvent: %s\n", key_oper);
+
     if (strcmp(key_oper, "ku") == 0) {
       event->type = SDL_KEYUP;
     } else if (strcmp(key_oper, "kd") == 0) {
       event->type = SDL_KEYDOWN;
     }
     sprintf(key_name, "%s", buf+3);
-    printf("SDL_WaitEvent: %s\n", key_name);
+    printf("SDL_WaitEvent: %s\n", buf);
 
     event->key.keysym.sym = get_key_code(key_name);
 
