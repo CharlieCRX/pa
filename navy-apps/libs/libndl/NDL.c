@@ -47,6 +47,7 @@ int NDL_PollEvent(char *buf, int len) {
     fbdev = open("/dev/fb", O_WRONLY);
     assert(fbdev == -1);
   }
+  printf("NDL_PollEvent: evtdev = %d\n", evtdev);
   if(read(evtdev, buf, len) == 0) {
     return 0;
   }
