@@ -25,7 +25,7 @@ int SDL_WaitEvent(SDL_Event *event) {
     // kd DOWN/kd RIGHT 去除固定字符
     char key_oper[10];
     char key_name[64];
-    snprintf(key_oper, 2, "%s", buf);
+    snprintf(key_oper, 3, "%s", buf);
     printf("SDL_WaitEvent: %s\n", key_oper);
     sprintf(key_name, "%s", buf+3);
     printf("SDL_WaitEvent: %s\n", key_name);
