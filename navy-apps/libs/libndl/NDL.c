@@ -90,7 +90,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     close(fbctl);
   }
   printf("canvas width:%d, height:%d\n", *w, *h);
-  assert(*w < screen_w && *h < screen_h);
+  assert(screen_w >= *w && screen_h >= *h);
   if (*w == 0 && *h == 0) {
     *w = screen_w;
     *h = screen_h;
