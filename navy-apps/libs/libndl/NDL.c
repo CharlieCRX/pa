@@ -43,8 +43,10 @@ uint32_t NDL_GetTicks() {
  * @date 2024-11-21
  */
 int NDL_PollEvent(char *buf, int len) {
-  printf("NDL_PollEvent start!\n");
-
+  if(evtdev == -1) {
+    fbdev = open("/dev/fb", O_WRONLY);
+    assert(fbdev == -1);
+  }
   if(read(evtdev, buf, len) == 0) {
     return 0;
   }
