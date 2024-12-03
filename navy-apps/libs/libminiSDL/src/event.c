@@ -17,7 +17,17 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-  return 1;
+  while(1) {
+    char buf[64];
+    int result = NDL_PollEvent(buf, sizeof(buf));
+    if (result == 0) continue;
+
+    // kd DOWN/kd RIGHT 去除固定字符
+    char key_name[64];
+    sprintf(key_name, "%s", buf+3);
+    printf("SDL_WaitEvent: %s\n", key_name);
+  }
+
 }
 
 int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {

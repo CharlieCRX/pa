@@ -44,7 +44,6 @@ uint32_t NDL_GetTicks() {
  */
 int NDL_PollEvent(char *buf, int len) {
 
-  //从fp所指的文件中，读取字长为len的数据
   if(read(evtdev, buf, len) == 0) {
     return 0;
   }
