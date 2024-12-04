@@ -17,7 +17,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   if (dstrect == NULL) {
       dstrect = &((SDL_Rect){0, 0, dst->w, dst->h});
   }
-  printf("srcrect(w, h) = (%d, %d)\n, dstrect(w, h) = (%d, %d)\n", );
 
   // 计算目标矩形左上角的索引
   int dst_start_idx = dstrect->y * dst->w + dstrect->x;
