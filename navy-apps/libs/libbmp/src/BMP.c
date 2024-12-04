@@ -43,7 +43,7 @@ void* BMP_Load(const char *filename, int *width, int *height) {
       uint8_t g = *(((uint8_t*)&pixels[w * i]) + 3 * j + 1);
       uint8_t r = *(((uint8_t*)&pixels[w * i]) + 3 * j + 2);
       pixels[w * i + j] = (r << 16) | (g << 8) | b;
-      printf("pixels[%d] = 0x%x, ", w * i + j, pixels[w * i + j]);
+      // printf("pixels[%d] = 0x%x, ", w * i + j, pixels[w * i + j]);
     }
   }
   fseek(fp, 0, SEEK_SET);
