@@ -68,7 +68,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
       // assert(x == 3);
     }
-    assert(0);
+    if(y == 2) break;
   }
 }
 
