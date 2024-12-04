@@ -69,7 +69,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充整个画布的像素为 color
     for (int y = 0; y < screen_h; y++) {
       for (int x = 0; x < screen_w; x++) {
-        pixels[y * screen_w + x] = 0xFF0000FF;
+        pixels[y * screen_w + x] = 0xFFFF00FF;
       }
     }
 
