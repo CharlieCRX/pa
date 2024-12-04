@@ -28,11 +28,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect->w = 0;
     dstrect->h = 0;
   }
-  
-  printf("screen src w = %d, h = %d\n", src->w, src->h);
-  printf("screen dst w = %d, h = %d\n", dst->w, dst->h);
-  printf("srcrect w = %d, h = %d\n", srcrect->w, srcrect->h);
-  printf("dstrect x = %d, y = %d\n", dstrect->x, dstrect->y);
 
 
   // 计算目标矩形左上角的索引
@@ -46,7 +41,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   uint32_t *dst_pixels = (uint32_t *)dst->pixels;
 
   // 获取源矩形像素信息
-  printf("SDL_BlitSurface start drawing...\n");
   for (int y = 0; y < srcrect->h; y++) {
     for (int x = 0; x < srcrect->w; x++) {
 
@@ -111,7 +105,6 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     }
   }
 
-  printf("SDL_FillRect OK!\n");
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
