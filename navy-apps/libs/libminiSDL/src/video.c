@@ -51,9 +51,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     for (int x = 0; x < srcrect->w; x++) {
       
       // 像素点在源矩形的位置偏移
-      int pixel_offset = y * srcrect->w + x;
 
-      int dst_now_idx = dst_start_idx + pixel_offset;
+      int dst_now_idx = dst_start_idx + y * dst->w + x;
 
       // 如果映射的目标画布位置超过了画布大小，则不做处理
       if (dst_now_idx > dst->w * dst->h) {
@@ -61,7 +60,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
         // continue;
       } 
 
-      int src_now_idx = src_start_idx + pixel_offset;
+      int src_now_idx = src_start_idx + y * srcrect->w + x;
       // printf("pixel_offset = %d,", pixel_offset);
       // printf("dst_now_idx = %d,", dst_now_idx);
       // printf("src_now_idx = %d\n", src_now_idx);
