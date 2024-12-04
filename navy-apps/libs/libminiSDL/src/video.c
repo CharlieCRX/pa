@@ -47,8 +47,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
   // 获取源矩形像素信息
   printf("SDL_BlitSurface start drawing...\n");
-  dst->pixels = src->pixels;
-  return;
   for (int y = 0; y < srcrect->h; y++) {
     for (int x = 0; x < srcrect->w; x++) {
       
