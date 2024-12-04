@@ -36,7 +36,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       int dst_now_idx = dst_start_idx + y * srcrect->w + x;
 
       // 如果映射的目标画布位置超过了画布大小，则不做处理
-      if (dst_now_idx > dst->w * dst->h) {
+      if (dst_now_idx < dst->w * dst->h) {
         continue;
       } 
 
@@ -64,7 +64,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充整个画布的像素为 color
     for (int y = 0; y < screen_h; y++) {
       for (int x = 0; x < screen_w; x++) {
-        pixels[y * screen_w + x] = 0xFFFF00FF;
+        pixels[y * screen_w + x] = color;
       }
     }
 
@@ -80,7 +80,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充指定矩形区域的像素为 color
     for (int j = y; j < y + h; j++) {
       for (int i = x; i < x + w; i++) {
-        pixels[j * dst->w + i] = 0xFFFF00FF;
+        pixels[j * dst->w + i] = color;
       }  
     }
   }
