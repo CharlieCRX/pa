@@ -46,7 +46,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
         dst_pixels[dst_idx] = src_pixels[src_idx];
       } else {
          // 目标区域超出的部分填充指定颜色
-         dst_pixels[dst_idx] = 0xffffff;
+         dst_pixels[dst_idx] = 0;
       }
     }
   }
