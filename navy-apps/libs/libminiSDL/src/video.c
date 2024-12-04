@@ -28,23 +28,23 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   uint32_t *src_pixels = (uint32_t *)src->pixels;
   uint32_t *dst_pixels = (uint32_t *)dst->pixels;
 
-  // // 获取源矩形像素信息
-  // for (int y = 0; y < srcrect->h; y++) {
-  //   for (int x = 0; x < srcrect->w; x++) {
+  // 获取源矩形像素信息
+  for (int y = 0; y < srcrect->h; y++) {
+    for (int x = 0; x < srcrect->w; x++) {
       
-  //     // 像素点映射到目标画布的位置
-  //     int dst_now_idx = dst_start_idx + y * srcrect->w + x;
+      // 像素点映射到目标画布的位置
+      int dst_now_idx = dst_start_idx + y * srcrect->w + x;
 
-  //     // 如果映射的目标画布位置超过了画布大小，则不做处理
-  //     if (dst_now_idx > dst->w * dst->h) {
-  //       continue;
-  //     } 
+      // 如果映射的目标画布位置超过了画布大小，则不做处理
+      if (dst_now_idx > dst->w * dst->h) {
+        continue;
+      } 
 
-  //     int src_now_idx = src_start_idx + y * srcrect->w + x;
-  //     // 否则正常复制即可
-  //     dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
-  //   }
-  // }
+      int src_now_idx = src_start_idx + y * srcrect->w + x;
+      // 否则正常复制即可
+      dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
+    }
+  }
 }
 
 // 往画布的指定矩形区域中填充指定的颜色
