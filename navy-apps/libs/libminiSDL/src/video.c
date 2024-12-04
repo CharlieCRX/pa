@@ -11,6 +11,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   // 如果没有提供源矩形，使用整个源表面
   if (srcrect == NULL) {
     printf("srcrect == NULL\n");
+    srcrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
     srcrect->x = 0;
     srcrect->y = 0;
     srcrect->w = src->w;
