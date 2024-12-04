@@ -7,6 +7,7 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  printf("src->w = %d, dst->w = %d, src->h = %d,  dst->h = %d\n", src->w ,dst->w ,src->h ,dst->h);
   assert(src->w == dst->w && src->h == dst->h); 
 
   // If srcrect is NULL, the entire surface is copied. 
