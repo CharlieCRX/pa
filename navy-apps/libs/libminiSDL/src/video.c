@@ -80,7 +80,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充指定矩形区域的像素为 color
     for (int j = y; j < y + h; j++) {
       for (int i = x; i < x + w; i++) {
-        pixels[j * dst->w + i] = color;
+        pixels[j * dst->w + i] = 0xFFFF00FF;
       }  
     }
   }
