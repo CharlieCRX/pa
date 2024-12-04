@@ -61,14 +61,13 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       } 
 
       int src_now_idx = src_start_idx + y * srcrect->w + x;
-      printf("dst_now_idx = %d,", dst_now_idx);
-      printf("src_now_idx = %d\n", src_now_idx);
+      // printf("dst_now_idx = %d,", dst_now_idx);
+      // printf("src_now_idx = %d\n", src_now_idx);
 
       // 否则正常复制即可
       dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
       // assert(x == 3);
     }
-    if(y == 2) break;
   }
 }
 
