@@ -61,7 +61,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
       int src_now_idx = src_start_idx + pixel_offset;
       // 否则正常复制即可
-      dst->pixels[src_now_idx] = src->pixels[src_now_idx];
+      dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
     }
   }
 }
