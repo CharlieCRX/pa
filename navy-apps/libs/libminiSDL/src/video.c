@@ -7,25 +7,48 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  printf("src->w = %d, dst->w = %d, src->h = %d,  dst->h = %d\n", src->w ,dst->w ,src->h ,dst->h);
-  assert(src->w == dst->w && src->h == dst->h); 
 
-  // If srcrect is NULL, the entire surface is copied. 
+  // 如果没有提供源矩形，使用整个源表面
   if (srcrect == NULL) {
-    for (int y = 0; y < dst->h; y++) {
-      for (int x = 0; x < dst->w; x++) {
-        dst->pixels[y * dst->w + x] = src->pixels[y * dst->w + x];
+    srcrect = &((SDL_Rect){0, 0, src->w, src->h});
+  }
+
+  // 如果没有提供目标矩形，使用整个目标表面
+  if (dstrect == NULL) {
+      dstrect = &((SDL_Rect){0, 0, dst->w, dst->h});
+  }
+
+  // 计算源矩形和目标矩形的宽度和高度
+  int src_w = srcrect->w;
+  int src_h = srcrect->h;
+  int dst_w = dstrect->w;
+  int dst_h = dstrect->h;
+
+  // 计算目标矩形左上角的索引
+  int dst_x = dstrect->x;
+  int dst_y = dstrect->y;
+  int dst_idx = dst_y * dst->w + dst_x;
+
+  // 获取源和目标的像素指针
+  uint32_t *src_pixels = (uint32_t *)src->pixels;
+  uint32_t *dst_pixels = (uint32_t *)dst->pixels;
+
+  // 填充目标矩形
+  for (int y = 0; y < dst_h; y++) {
+    for (int x = 0; x < dst_w; x++) {
+      // 判断源矩形是否还在源表面范围内
+      int src_x = x + srcrect->x;
+      int src_y = y + srcrect->y;
+
+      if (src_x >= srcrect->x && src_x <= srcrect->x + src_w && src_y >= srcrect->y && src_y < srcrect->y + src_h) {
+        // 目标区域内的像素来自源表面
+        int src_idx = src_y * src->w + src_x;
+        dst_pixels[dst_idx] = src_pixels[src_idx];
+      } else {
+         // 目标区域超出的部分填充指定颜色
+         dst_pixels[dst_idx] = 0xffffff;
       }
     }
-  } else if (dstrect == NULL) {
-    // If dstrect is NULL, then the destination position (upper left corner) is (0, 0)
-    for (int y = 0; y < srcrect->h; y++) {
-      for (int x = 0; x < srcrect->w; x++) {
-        dst->pixels[y * dst->w + x] = src->pixels[y * dst->w + x];
-      }
-    }
-  } else {
-    assert(0);
   }
 }
 
