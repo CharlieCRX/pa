@@ -46,7 +46,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
         dst_pixels[dst_idx] = src_pixels[src_idx];
       } else {
          // 目标区域超出的部分填充指定颜色
-         dst_pixels[dst_idx] = 0xFF0000FF;
+         dst_pixels[dst_idx] = 0xFF0000FF; // 只有红色通道为 255，其他为 0. RGB = (255, 0, 0), 完全不透明
       }
     }
   }
@@ -69,7 +69,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充整个画布的像素为 color
     for (int y = 0; y < screen_h; y++) {
       for (int x = 0; x < screen_w; x++) {
-        pixels[y * screen_w + x] = color;
+        pixels[y * screen_w + x] = 0xFF0000FF;
       }
     }
 
