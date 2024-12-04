@@ -17,37 +17,33 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   if (dstrect == NULL) {
       dstrect = &((SDL_Rect){0, 0, dst->w, dst->h});
   }
-
-  // 计算源矩形和目标矩形的宽度和高度
-  int src_w = srcrect->w;
-  int src_h = srcrect->h;
-  int dst_w = dstrect->w;
-  int dst_h = dstrect->h;
+  printf("srcrect(w, h) = (%d, %d)\n, dstrect(w, h) = (%d, %d)\n", );
 
   // 计算目标矩形左上角的索引
-  int dst_x = dstrect->x;
-  int dst_y = dstrect->y;
-  int dst_idx = dst_y * dst->w + dst_x;
+  int dst_start_idx = dstrect->y * dst->w + dstrect->x;
+  // 计算源头矩形左上角的索引
+  int src_start_idx = srcrect->y * src->w + srcrect->x;
+
 
   // 获取源和目标的像素指针
   uint32_t *src_pixels = (uint32_t *)src->pixels;
   uint32_t *dst_pixels = (uint32_t *)dst->pixels;
 
-  // 填充目标矩形
-  for (int y = 0; y < dst_h; y++) {
-    for (int x = 0; x < dst_w; x++) {
-      // 判断源矩形是否还在源表面范围内
-      int src_x = x + srcrect->x;
-      int src_y = y + srcrect->y;
+  // 获取源矩形像素信息
+  for (int y = 0; y < srcrect->h; y++) {
+    for (int x = 0; x < srcrect->w; x++) {
+      
+      // 像素点映射到目标画布的位置
+      int dst_now_idx = dst_start_idx + y * srcrect->w + x;
 
-      if (src_x >= srcrect->x && src_x <= srcrect->x + src_w && src_y >= srcrect->y && src_y < srcrect->y + src_h) {
-        // 目标区域内的像素来自源表面
-        int src_idx = src_y * src->w + src_x;
-        dst_pixels[dst_idx] = src_pixels[src_idx];
-      } else {
-         // 目标区域超出的部分填充指定颜色
-         dst_pixels[dst_idx] = 0xFF0000FF; // 只有红色通道为 255，其他为 0. RGB = (255, 0, 0), 完全不透明
-      }
+      // 如果映射的目标画布位置超过了画布大小，则不做处理
+      if (dst_now_idx > dst->w * dst->h) {
+        continue;
+      } 
+
+      int src_now_idx = src_start_idx + y * srcrect->w + x;
+      // 否则正常复制即可
+      dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
     }
   }
 }
@@ -69,7 +65,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     // 填充整个画布的像素为 color
     for (int y = 0; y < screen_h; y++) {
       for (int x = 0; x < screen_w; x++) {
-        pixels[y * screen_w + x] = 0xFFFF00FF;
+        pixels[y * screen_w + x] = color;
       }
     }
 
