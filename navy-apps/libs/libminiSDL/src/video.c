@@ -16,7 +16,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     srcrect->y = 0;
     srcrect->w = src->w;
     srcrect->h = src->h;
-    //  &((SDL_Rect){0, 0, src->w, src->h});
   }
 
   // 如果没有提供目标矩形，使用整个目标表面
@@ -49,21 +48,13 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // 如果映射的目标画布位置超过了画布大小，则不做处理
       if (dst_now_idx > dst->w * dst->h) {
         assert(0);
-        // continue;
       } 
 
       int src_now_idx = src_start_idx + y * src->w + x;
-      // printf("dst_now_idx = %d, ", dst_now_idx);
-      // printf("src_now_idx = %d\n", src_now_idx);
 
       // 否则正常复制即可
       dst_pixels[dst_now_idx] = src_pixels[src_now_idx];
-      // printf("src->pixels[src_now_idx] = 0x%x\n", src->pixels[src_now_idx]);
-      // dst_pixels[dst_now_idx] = 0;
-      // assert(x == 3);
     }
-    // printf("\n");
-    // if(y == 0) return;
   }
 }
 
