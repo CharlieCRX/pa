@@ -10,7 +10,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
   // 如果没有提供源矩形，使用整个源表面
   if (srcrect == NULL) {
-    printf("srcrect == NULL\n");
+    // printf("srcrect == NULL\n");
     srcrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
     srcrect->x = 0;
     srcrect->y = 0;
@@ -21,7 +21,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
   // 如果没有提供目标矩形，使用整个目标表面
   if (dstrect == NULL) {
-    printf("dstrect == NULL\n");
+    // printf("dstrect == NULL\n");
     dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
     dstrect->x = 0;
     dstrect->y = 0;
@@ -29,10 +29,12 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect->h = 0;
   }
   
-  printf("screen src w = %d, h = %d\n", src->w, src->h);
-  printf("screen dst w = %d, h = %d\n", dst->w, dst->h);
-  printf("srcrect w = %d, h = %d\n", srcrect->w, srcrect->h);
-  printf("dstrect x = %d, y = %d\n", dstrect->x, dstrect->y);
+  // printf("screen src w = %d, h = %d\n", src->w, src->h);
+  // printf("screen dst w = %d, h = %d\n", dst->w, dst->h);
+  // printf("srcrect w = %d, h = %d\n", srcrect->w, srcrect->h);
+  // printf("dstrect x = %d, y = %d\n", dstrect->x, dstrect->y);
+
+
   // 计算目标矩形左上角的索引
   int dst_start_idx = dstrect->y * dst->w + dstrect->x;
   // 计算源头矩形左上角的索引
@@ -52,6 +54,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
       // 如果映射的目标画布位置超过了画布大小，则不做处理
       if (dst_now_idx > dst->w * dst->h) {
+        assert(0);
         continue;
       } 
 
