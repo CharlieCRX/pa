@@ -29,10 +29,10 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect->h = 0;
   }
   
-  // printf("screen src w = %d, h = %d\n", src->w, src->h);
-  // printf("screen dst w = %d, h = %d\n", dst->w, dst->h);
-  // printf("srcrect w = %d, h = %d\n", srcrect->w, srcrect->h);
-  // printf("dstrect x = %d, y = %d\n", dstrect->x, dstrect->y);
+  printf("screen src w = %d, h = %d\n", src->w, src->h);
+  printf("screen dst w = %d, h = %d\n", dst->w, dst->h);
+  printf("srcrect w = %d, h = %d\n", srcrect->w, srcrect->h);
+  printf("dstrect x = %d, y = %d\n", dstrect->x, dstrect->y);
 
 
   // 计算目标矩形左上角的索引
