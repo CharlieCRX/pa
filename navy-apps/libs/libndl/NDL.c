@@ -99,8 +99,8 @@ void center_canvas_on_screen(int *x, int *y, int *w, int *h) {
     *w = screen_w;
     *h = screen_h;
   }
-  // *x = (screen_w - *w) / 2;
-  // *y = (screen_h - *h) / 2;
+  *x = (screen_w - *w) / 2;
+  *y = (screen_h - *h) / 2;
   // printf("NDL_DrawRect: Center the canvas! Now x = %d, y = %d\n",*x, *y);
 }
 
