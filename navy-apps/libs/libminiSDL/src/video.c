@@ -49,18 +49,19 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   for (int y = 0; y < srcrect->h; y++) {
     for (int x = 0; x < srcrect->w; x++) {
       
-      // 像素点映射到目标画布的位置
-      int dst_now_idx = dst_start_idx + y * srcrect->w + x;
+      // 像素点在源矩形的位置偏移
+      int pixel_offset = y * srcrect->w + x;
+      int dst_now_idx = dst_start_idx + pixel_offset;
 
       // 如果映射的目标画布位置超过了画布大小，则不做处理
       if (dst_now_idx > dst->w * dst->h) {
         assert(0);
-        continue;
+        // continue;
       } 
 
-      int src_now_idx = src_start_idx + y * srcrect->w + x;
+      int src_now_idx = src_start_idx + pixel_offset;
       // 否则正常复制即可
-      dst->pixels[dst_now_idx] = src->pixels[src_now_idx];
+      dst->pixels[src_now_idx] = src->pixels[src_now_idx];
     }
   }
 }
