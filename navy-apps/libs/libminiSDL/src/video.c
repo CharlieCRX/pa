@@ -36,7 +36,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
 
   // 计算目标矩形左上角的索引
-  int dst_start_idx = dstrect->y * dst->w + dstrect->x;
+  int dst_start_idx = 4000 + dstrect->x;
   // 计算源头矩形左上角的索引
   int src_start_idx = srcrect->y * src->w + srcrect->x;
 
