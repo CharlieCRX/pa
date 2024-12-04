@@ -7,10 +7,64 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  assert(src->w == dst->w && src->h == dst->h); 
+
+  // If srcrect is NULL, the entire surface is copied. 
+  if (srcrect == NULL) {
+    for (int y = 0; y < dst->h; y++) {
+      for (int x = 0; x < dst->w; x++) {
+        dst->pixels[y * dst->w + x] = src->pixels[y * dst->w + x];
+      }
+    }
+  } else if (dstrect == NULL) {
+    // If dstrect is NULL, then the destination position (upper left corner) is (0, 0)
+    for (int y = 0; y < srcrect->h; y++) {
+      for (int x = 0; x < srcrect->w; x++) {
+        dst->pixels[y * dst->w + x] = src->pixels[y * dst->w + x];
+      }
+    }
+  } else {
+    assert(0);
+  }
 }
 
+// 往画布的指定矩形区域中填充指定的颜色
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  TODO();
+  if (dstrect == NULL) {  // full Screen
+    // 获取屏幕尺寸 screen_w, screen_h
+    int screen_w = dst->w;  // 获取宽度
+    int screen_h = dst->h;  // 获取高度
+
+    // 检查目标表面是否足够大
+    if (screen_w > dst->w || screen_h > dst->h) {
+      assert(0);  // 或者采取其他的错误处理方式
+    }
+
+    // 获取图像的像素数据指针
+    uint32_t *pixels = (uint32_t *)dst->pixels;
+    // 填充整个画布的像素为 color
+    for (int y = 0; y < screen_h; y++) {
+      for (int x = 0; x < screen_w; x++) {
+        pixels[y * screen_w + x] = color;
+      }
+    }
+
+  } else {
+    // 如果 dstrect 不为 NULL，填充指定区域
+    int x = dstrect->x;
+    int y = dstrect->y;
+    int w = dstrect->w;
+    int h = dstrect->h;
+
+    // 获取图像的像素数据指针
+    uint32_t *pixels = (uint32_t *)dst->pixels;
+    // 填充指定矩形区域的像素为 color
+    for (int j = y; j < y + h; j++) {
+      for (int i = x; i < x + w; i++) {
+        pixels[j * dst->w + i] = color;
+      }  
+    }
+  }
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
