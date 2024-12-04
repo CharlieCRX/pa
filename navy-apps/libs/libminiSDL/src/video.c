@@ -21,8 +21,12 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
   // 如果没有提供目标矩形，使用整个目标表面
   if (dstrect == NULL) {
-      printf("dstrect == NULL\n");
-      dstrect = &((SDL_Rect){0, 0, dst->w, dst->h});
+    printf("dstrect == NULL\n");
+    dstrect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+    dstrect->x = 0;
+    dstrect->y = 0;
+    dstrect->w = 0;
+    dstrect->h = 0;
   }
   
   printf("screen src w = %d, h = %d\n", src->w, src->h);
