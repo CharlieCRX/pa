@@ -68,7 +68,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // assert(x == 3);
     }
     printf("\n");
-    if(y == 1) return;
+    if(y == 0) return;
   }
 }
 
